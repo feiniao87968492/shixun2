@@ -2,8 +2,8 @@
   "stem": "q2_ode_model_comparison",
   "title": "Q2 ODE model comparison",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-12T14:59:13.253951+00:00",
-  "rows": 2,
+  "generated_at": "2026-07-12T15:59:03.846766+00:00",
+  "rows": 4,
   "columns": [
     "model",
     "carry_rmse",
@@ -13,5 +13,5 @@
     "lateral_mae",
     "flight_failure_rate"
   ],
-  "notes": "Vacuum and drag-only ODE models on the fixed test split."
+  "notes": "Vacuum, drag, constant-lift, and spin-factor-lift ODE models on the fixed test split."
 }

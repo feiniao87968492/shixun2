@@ -113,8 +113,12 @@ def test_ode_first_stage_units_vacuum_and_drag_outputs_are_verified() -> None:
         metrics.columns
     )
     assert {"vacuum", "drag"}.issubset(set(comparison["model"]))
-    assert "preliminary_drag_only" in set(parameters["calibration_stage"])
-    assert failures["model"].isin(["vacuum", "drag"]).all()
+    drag_stage = parameters.loc[
+        (parameters["model"] == "drag") & (parameters["parameter"] == "C_D"),
+        "calibration_stage",
+    ].iloc[0]
+    assert drag_stage in {"preliminary_drag_only", "train_representative_grid"}
+    assert {"vacuum", "drag"}.issubset(set(failures["model"]))
 
     config = yaml.safe_load((ROOT / "configs" / "default.yaml").read_text(encoding="utf-8"))["q2"]
     constants = ode_model.PhysicalConstants.from_config(config["physics"])

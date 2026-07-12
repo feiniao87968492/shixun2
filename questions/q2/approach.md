@@ -1,99 +1,84 @@
-# q2 解法方案：飞行轨迹预测
+# q2 解法方案：监督预测与三维 ODE 轨迹
 
-## 1. 题意解释
-
-第二问要求预测飞行距离和最高点高度，并建立三维轨迹模型。当前阶段先完成可复现的基础层：
-
-- 监督预测：按 70%/30% 固定划分训练集和测试集，报告 RMSE、MAPE、MAE、R2、MdAPE。
-- 物理模型：实现真空抛体和仅阻力 ODE，完成单位换算、落地事件和真空解析解验证。
-- 暂不宣称：最终 `C_D`、`C_L`、含升力轨迹、100/150/200 yd 典型轨迹和灵敏度分析。
-
-## 2. 输入、输出和单位
+## 1. 输入与输出
 
 输入数据为 q1 清洗后的 `data/processed/golf_shots_clean.csv`。Q2 在加载层把 q1 的 `max_height_yd` 显式映射为本题术语 `apex_height_yd`，不修改 q1 产物。
 
-监督模型特征集：
-
-| 特征集 | 字段 | 用途 |
-|---|---|---|
-| `launch_state_model` | `ball_speed_mph`、`launch_angle_deg`、`launch_direction_deg`、`spin_rate_rpm`、`spin_axis_deg` | 主模型；与 ODE 初始状态一致 |
-| `full_shot_model` | launch state + `club_speed_mph`、`attack_angle_deg` | 精度对照；缺失值只在训练流水线内部插补 |
-
-目标变量：
+监督模型目标：
 
 - `carry_distance_yd`
 - `apex_height_yd`
 
-ODE 内部统一使用 SI 单位：m、s、kg、rad；输出再换算回 yd。
+ODE 输出：
 
-## 3. 固定划分与防泄漏规则
+- 飞行距离
+- 最高点高度
+- 横向偏移
+- 飞行时间
+- 完整三维轨迹
+
+## 2. 固定划分与防泄漏
 
 使用 `random_seed=2026` 和 `test_size=0.30` 建立主划分，保存到 `q2_data_split.csv`。当前样本数为 train=514、test=221。
 
 规则：
 
-- 超参数和模型选择只使用训练集 5 折交叉验证。
-- 测试集只用于最终指标报告和图表诊断。
-- 插补、标准化、模型拟合均封装在 sklearn pipeline 内，避免测试集泄漏。
-- 所有监督模型和 ODE 测试评估使用同一主划分。
+- 监督模型选择只使用训练集 5 折交叉验证。
+- ODE 参数标定只使用训练集代表样本。
+- 固定测试集只用于最终评估、典型记录选择和图表报告。
+- 插补、标准化和模型拟合均封装在 sklearn pipeline 内，避免测试集泄漏。
 
-## 4. 监督预测模型
+## 3. 监督预测模型
 
-候选模型：
+主特征集 `launch_state_model` 包含：
 
-- `DummyRegressor(strategy="mean")`
-- `LinearRegression`
-- `RidgeCV`
-- `ExtraTreesRegressor`
-- `HistGradientBoostingRegressor`
+- `ball_speed_mph`
+- `launch_angle_deg`
+- `launch_direction_deg`
+- `spin_rate_rpm`
+- `spin_axis_deg`
 
-每个目标分别在两套特征集上比较候选模型，以训练集 CV RMSE 最低者作为选中模型。测试集输出 RMSE、MAPE、MAE、R2、MdAPE，并用 1000 次测试集 bootstrap 给出 RMSE/MAPE/MAE 区间。
+扩展特征集 `full_shot_model` 额外包含：
 
-## 5. ODE 第一阶段
+- `club_speed_mph`
+- `attack_angle_deg`
+
+候选模型包括 Dummy、Linear、Ridge、ExtraTrees、HistGradientBoosting。每个目标独立选模，选择规则为训练集 CV RMSE 最低。
+
+## 4. ODE 坐标与自旋
 
 坐标定义：
 
-- `x`：目标方向，向前为正；
-- `y`：横向方向，向右为正；
-- `z`：竖直方向，向上为正。
+- `x`：目标方向，向前为正
+- `y`：横向方向，向右为正
+- `z`：竖直方向，向上为正
 
-初速度由球速、发射角和发射方向分解：
+初速度由球速、发射角和发射方向分解；ODE 内部统一使用 SI 单位。
 
-```text
-v_x(0)=v0 cos(theta) cos(phi)
-v_y(0)=v0 cos(theta) sin(phi)
-v_z(0)=v0 sin(theta)
-```
+自旋向量由 `spin_rate_rpm` 和 `spin_axis_deg` 构造。根据 `q2_spin_geometry_check.csv`，侧旋符号采用数据重构误差更小的符号；在当前坐标下，正后旋沿局部横向正轴，使 `u x omega` 产生向上升力。
 
-第一阶段模型：
+## 5. ODE 层级
 
-| 模型 | 力项 | 目的 |
+| 模型 | 力项 | 作用 |
 |---|---|---|
-| vacuum | 重力 | 校验单位、初速度分解、落地事件和解析解 |
-| drag | 重力 + 二次阻力 | 建立阻力接口和参数扫描基线 |
+| `vacuum` | 重力 | 验证初速度、单位换算和落地事件 |
+| `drag` | 重力 + 二次阻力 | 建立阻力基线 |
+| `constant_lift` | 重力 + 阻力 + 常数升力 | 直接估计 `C_D` 与 `C_L` |
+| `spin_factor_lift` | 重力 + 阻力 + `C_L(S)=k_L S` | 比较自旋因子升力改进 |
 
-仅阻力模型使用一维粗网格扫描 `C_D in [0.05, 0.60]`。当前得到 `C_D=0.05` 且位于下界，因此只登记为 `preliminary_drag_only`，后续必须进入含升力和参数可识别性检查后才能形成最终物理结论。
+参数用训练集代表样本粗网格标定。标定阶段采用 `max_step=0.05` 加速；最终测试集评估使用配置中的正式求解器参数。
 
-## 6. 产物
+## 6. 典型轨迹与灵敏度
 
-| 产物 | 路径 |
-|---|---|
-| 数据划分 | `questions/q2/artifacts/tables/q2_data_split.csv` |
-| 监督模型指标 | `questions/q2/artifacts/tables/q2_supervised_metrics.csv` |
-| 监督预测明细 | `questions/q2/artifacts/tables/q2_supervised_predictions.csv` |
-| ODE 参数 | `questions/q2/artifacts/tables/q2_ode_parameters.csv` |
-| ODE 测试指标 | `questions/q2/artifacts/tables/q2_ode_test_metrics.csv` |
-| ODE 验证检查 | `questions/q2/artifacts/tables/q2_ode_validation_checks.csv` |
-| 图表 | `questions/q2/artifacts/figures/` |
-| 生图数据和 meta | `questions/q2/artifacts/figure_data/` |
-| 模型文件 | `questions/q2/artifacts/models/` |
+典型记录只从固定测试集、ODE 必需字段完整的样本中选择，目标距离为 100/150/200 yd，选择规则为实际 carry 距目标最近且不按模型误差挑选。
 
-## 7. 后续工作
+灵敏度覆盖：
 
-下一阶段需要完成：
+- 监督模型 30 次重复 70/30 划分稳定性。
+- ODE 参数 `C_D`、`k_L` 的 ±10%、±20% 扰动。
+- 积分器 `rtol`、`atol`、`max_step`、RK45/DOP853 对比。
+- 小风速和自旋衰减假设对输出的影响。
 
-- 含升力 ODE；
-- `C_D/C_L` 或自旋因子升力参数标定；
-- 参数曲面和边界复核；
-- 100/150/200 yd 典型轨迹；
-- 监督模型重复划分稳定性和 ODE 灵敏度分析。
+## 7. 局限
+
+常数升力模型在当前测试集上误差最低，但 ODE 仍使用全局常数参数、无完整风场、无精细自旋衰减和球面姿态模型。参数结果应解释为该数据与简化模型下的有效参数，不应外推为通用空气动力系数。

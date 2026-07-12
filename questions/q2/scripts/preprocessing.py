@@ -150,4 +150,55 @@ def select_drag_calibration_records(
     else:
         positions = np.linspace(0, len(frame) - 1, representative_count).round().astype(int)
         selected = frame.iloc[np.unique(positions)]
-    return selected[["record_id", "carry_distance_yd", "apex_height_yd", *required_features]].reset_index(drop=True)
+    columns = ["record_id", "carry_distance_yd", "apex_height_yd", *required_features]
+    if "lateral_offset_yd" in selected.columns:
+        columns.append("lateral_offset_yd")
+    return selected[columns].reset_index(drop=True)
+
+
+def select_typical_records(
+    test: pd.DataFrame,
+    *,
+    required_features: list[str],
+    target_distances_yd: list[int] | None = None,
+) -> pd.DataFrame:
+    """Select deterministic typical records from the fixed test split only."""
+    if target_distances_yd is None:
+        target_distances_yd = [100, 150, 200]
+    frame = test.dropna(
+        subset=[*required_features, "carry_distance_yd", "apex_height_yd", "lateral_offset_yd"]
+    ).copy()
+    if frame.empty:
+        raise ValueError("No complete test records are available for q2 typical trajectory selection")
+
+    rows = []
+    used_ids: set[int] = set()
+    for target in target_distances_yd:
+        candidates = frame.copy()
+        candidates["distance_to_target_yd"] = (candidates["carry_distance_yd"] - float(target)).abs()
+        candidates = candidates.sort_values(["distance_to_target_yd", "record_id"])
+        selected = None
+        for _, candidate in candidates.iterrows():
+            candidate_id = int(candidate["record_id"])
+            if candidate_id not in used_ids:
+                selected = candidate
+                used_ids.add(candidate_id)
+                break
+        if selected is None:
+            selected = candidates.iloc[0]
+        rows.append(
+            {
+                "target_distance_yd": int(target),
+                "target_group": f"{int(target)}yd",
+                "sample_id": int(selected["record_id"]),
+                "record_id": int(selected["record_id"]),
+                "actual_carry_yd": float(selected["carry_distance_yd"]),
+                "distance_to_target_yd": float(abs(selected["carry_distance_yd"] - float(target))),
+                "ball_speed_mph": float(selected["ball_speed_mph"]),
+                "launch_angle_deg": float(selected["launch_angle_deg"]),
+                "launch_direction_deg": float(selected["launch_direction_deg"]),
+                "spin_rate_rpm": float(selected["spin_rate_rpm"]),
+                "spin_axis_deg": float(selected["spin_axis_deg"]),
+            }
+        )
+    return pd.DataFrame(rows)

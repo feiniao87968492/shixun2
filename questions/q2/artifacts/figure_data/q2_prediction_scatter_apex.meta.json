@@ -2,7 +2,7 @@
   "stem": "q2_prediction_scatter_apex",
   "title": "Q2 apex prediction scatter",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-12T14:59:12.152288+00:00",
+  "generated_at": "2026-07-12T15:59:01.373113+00:00",
   "rows": 221,
   "columns": [
     "record_id",

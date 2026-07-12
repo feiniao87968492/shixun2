@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-07-12T14:59:13.940588+00:00",
+  "timestamp": "2026-07-12T15:59:10.587430+00:00",
   "python_version": "3.10.11",
   "config_path": "configs\\default.yaml",
   "train_n": 514,
@@ -11,6 +11,12 @@
     "carry_distance_yd:launch_state_model/hist_gradient_boosting"
   ],
   "preliminary_drag_cd": 0.05,
+  "constant_lift_cd": 0.26999999999999996,
+  "constant_lift_cl": 0.18,
+  "spin_factor_lift_cd": 0.26999999999999996,
+  "spin_factor_lift_k_l": 0.8,
+  "trajectory_model": "spin_factor_lift",
+  "side_spin_sign": -1,
   "physics_source": "题面 raw OCR 第 9 行；docs/references.md 物理常数表",
   "tables": {
     "q2_data_split": "questions\\q2\\artifacts\\tables\\q2_data_split.csv",
@@ -20,15 +26,23 @@
     "q2_supervised_predictions": "questions\\q2\\artifacts\\tables\\q2_supervised_predictions.csv",
     "q2_supervised_bootstrap_ci": "questions\\q2\\artifacts\\tables\\q2_supervised_bootstrap_ci.csv",
     "q2_supervised_error_groups": "questions\\q2\\artifacts\\tables\\q2_supervised_error_groups.csv",
+    "q2_supervised_repeated_split": "questions\\q2\\artifacts\\tables\\q2_supervised_repeated_split.csv",
     "q2_ode_representative_records": "questions\\q2\\artifacts\\tables\\q2_ode_representative_records.csv",
     "q2_ode_parameter_surface": "questions\\q2\\artifacts\\tables\\q2_ode_parameter_surface.csv",
     "q2_ode_test_predictions": "questions\\q2\\artifacts\\tables\\q2_ode_test_predictions.csv",
     "q2_ode_test_metrics": "questions\\q2\\artifacts\\tables\\q2_ode_test_metrics.csv",
     "q2_ode_model_comparison": "questions\\q2\\artifacts\\tables\\q2_ode_model_comparison.csv",
     "q2_ode_failures": "questions\\q2\\artifacts\\tables\\q2_ode_failures.csv",
+    "q2_typical_records": "questions\\q2\\artifacts\\tables\\q2_typical_records.csv",
+    "q2_ode_typical_errors": "questions\\q2\\artifacts\\tables\\q2_ode_typical_errors.csv",
+    "q2_typical_trajectories": "questions\\q2\\artifacts\\tables\\q2_typical_trajectories.csv",
+    "q2_ode_sensitivity": "questions\\q2\\artifacts\\tables\\q2_ode_sensitivity.csv",
     "q2_ode_parameters": "questions\\q2\\artifacts\\tables\\q2_ode_parameters.csv",
     "q2_ode_validation_checks": "questions\\q2\\artifacts\\tables\\q2_ode_validation_checks.csv",
     "q2_validation_checks": "questions\\q2\\artifacts\\tables\\q2_validation_checks.csv"
+  },
+  "models": {
+    "q2_ode_parameters": "questions\\q2\\artifacts\\models\\q2_ode_parameters.json"
   },
   "figures": {
     "q2_prediction_scatter_carry": {
@@ -60,6 +74,26 @@
       "figure": "questions\\q2\\artifacts\\figures\\q2_ode_parameter_surface.png",
       "data": "questions\\q2\\artifacts\\figure_data\\q2_ode_parameter_surface.csv",
       "metadata": "questions\\q2\\artifacts\\figure_data\\q2_ode_parameter_surface.meta.json"
+    },
+    "q2_typical_trajectories_3d": {
+      "figure": "questions\\q2\\artifacts\\figures\\q2_typical_trajectories_3d.png",
+      "data": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_3d.csv",
+      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_3d.meta.json"
+    },
+    "q2_typical_trajectories_side": {
+      "figure": "questions\\q2\\artifacts\\figures\\q2_typical_trajectories_side.png",
+      "data": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_side.csv",
+      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_side.meta.json"
+    },
+    "q2_typical_trajectories_top": {
+      "figure": "questions\\q2\\artifacts\\figures\\q2_typical_trajectories_top.png",
+      "data": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_top.csv",
+      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_top.meta.json"
+    },
+    "q2_ode_sensitivity": {
+      "figure": "questions\\q2\\artifacts\\figures\\q2_ode_sensitivity.png",
+      "data": "questions\\q2\\artifacts\\figure_data\\q2_ode_sensitivity.csv",
+      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_ode_sensitivity.meta.json"
     }
   }
 }

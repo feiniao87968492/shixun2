@@ -102,6 +102,8 @@ q2:
     model_variants:
       - vacuum
       - drag
+      - constant_lift
+      - spin_factor_lift
     solver:
       method: DOP853
       rtol: 1.0e-7
@@ -109,10 +111,18 @@ q2:
       max_step: 0.02
     parameter_bounds:
       cd: [0.05, 0.60]
+      cl: [0.00, 0.45]
+      lift_scale: [0.00, 4.00]
     drag_calibration:
       representative_count: 36
       grid_size: 10
       calibration_stage: preliminary_drag_only
+    lift_calibration:
+      representative_count: 24
+      grid_size: 6
+      calibration_stage: train_representative_grid
+      lateral_weight: 0.02
+      solver_max_step: 0.05
     sensitivity_relative_changes:
       - -0.20
       - -0.10

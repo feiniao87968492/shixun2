@@ -28,6 +28,8 @@ mph_to_mps = _PREPROCESSING.mph_to_mps
 rpm_to_rad_s = _PREPROCESSING.rpm_to_rad_s
 yd_to_m = _PREPROCESSING.yd_to_m
 
+ODE_MODELS = ["vacuum", "drag", "constant_lift", "spin_factor_lift"]
+
 
 class PhysicalConstants:
     def __init__(
@@ -80,6 +82,23 @@ def initial_velocity_mps(row: pd.Series) -> np.ndarray:
     )
 
 
+def spin_components_rad_s(row: pd.Series, *, side_sign: int = 1) -> tuple[float, float]:
+    spin_rate = rpm_to_rad_s(float(row["spin_rate_rpm"]))
+    axis = math.radians(float(row["spin_axis_deg"]))
+    backspin = spin_rate * math.cos(axis)
+    sidespin = float(side_sign) * spin_rate * math.sin(axis)
+    return float(backspin), float(sidespin)
+
+
+def spin_vector_rad_s(row: pd.Series, *, side_sign: int = 1) -> np.ndarray:
+    """Construct global spin vector. Positive backspin points along local +left axis."""
+    phi = math.radians(float(row["launch_direction_deg"]))
+    e_lateral = np.asarray([-math.sin(phi), math.cos(phi), 0.0], dtype=float)
+    e_vertical = np.asarray([0.0, 0.0, 1.0], dtype=float)
+    backspin, sidespin = spin_components_rad_s(row, side_sign=side_sign)
+    return backspin * e_lateral + sidespin * e_vertical
+
+
 def vacuum_analytic(row: pd.Series, constants: PhysicalConstants) -> dict[str, float]:
     vx, vy, vz = initial_velocity_mps(row)
     g = constants.gravity_m_s2
@@ -98,15 +117,45 @@ def vacuum_analytic(row: pd.Series, constants: PhysicalConstants) -> dict[str, f
     }
 
 
-def _rhs_factory(model: str, constants: PhysicalConstants, *, cd: float) -> Any:
+def _rhs_factory(
+    model: str,
+    row: pd.Series,
+    constants: PhysicalConstants,
+    *,
+    cd: float,
+    cl: float,
+    lift_scale: float,
+    side_sign: int,
+    wind_mps: tuple[float, float, float],
+    spin_decay_s: float | None,
+) -> Any:
     drag_factor = 0.5 * constants.air_density_kg_m3 * constants.area_m2 * cd / constants.mass_kg
+    lift_factor = 0.5 * constants.air_density_kg_m3 * constants.area_m2 / constants.mass_kg
+    wind = np.asarray(wind_mps, dtype=float)
+    omega0 = spin_vector_rad_s(row, side_sign=side_sign)
 
-    def rhs(_t: float, state: np.ndarray) -> np.ndarray:
+    def rhs(t: float, state: np.ndarray) -> np.ndarray:
         velocity = state[3:6]
-        speed = float(np.linalg.norm(velocity))
+        relative_velocity = velocity - wind
+        speed = float(np.linalg.norm(relative_velocity))
         acceleration = np.asarray([0.0, 0.0, -constants.gravity_m_s2], dtype=float)
-        if model == "drag" and speed > 1e-12:
-            acceleration -= drag_factor * speed * velocity
+        if model in {"drag", "constant_lift", "spin_factor_lift"} and speed > 1e-12:
+            acceleration -= drag_factor * speed * relative_velocity
+        if model in {"constant_lift", "spin_factor_lift"} and speed > 1e-12:
+            omega = omega0
+            if spin_decay_s is not None and spin_decay_s > 0:
+                omega = omega0 * math.exp(-float(t) / float(spin_decay_s))
+            cross = np.cross(relative_velocity, omega)
+            cross_norm = float(np.linalg.norm(cross))
+            omega_norm = float(np.linalg.norm(omega))
+            if cross_norm > 1e-12 and omega_norm > 1e-12:
+                direction = cross / cross_norm
+                if model == "constant_lift":
+                    lift_coefficient = float(cl)
+                else:
+                    spin_factor = constants.radius_m * omega_norm / max(speed, 1e-12)
+                    lift_coefficient = float(lift_scale) * spin_factor
+                acceleration += lift_factor * lift_coefficient * speed**2 * direction
         return np.asarray([velocity[0], velocity[1], velocity[2], *acceleration], dtype=float)
 
     return rhs
@@ -127,16 +176,31 @@ def simulate_shot(
     constants: PhysicalConstants,
     solver: dict[str, Any],
     cd: float = 0.0,
+    cl: float = 0.0,
+    lift_scale: float = 0.0,
+    side_sign: int = 1,
+    wind_mps: tuple[float, float, float] = (0.0, 0.0, 0.0),
+    spin_decay_s: float | None = None,
     keep_trajectory: bool = False,
 ) -> tuple[dict[str, Any], pd.DataFrame]:
-    if model not in {"vacuum", "drag"}:
-        raise ValueError(f"q2 first-stage ODE supports vacuum/drag, got {model}")
+    if model not in set(ODE_MODELS):
+        raise ValueError(f"q2 ODE supports {ODE_MODELS}, got {model}")
     initial_state = np.asarray(
         [0.0, 0.0, constants.initial_height_m, *initial_velocity_mps(row)],
         dtype=float,
     )
     sol = solve_ivp(
-        _rhs_factory(model, constants, cd=cd),
+        _rhs_factory(
+            model,
+            row,
+            constants,
+            cd=float(cd),
+            cl=float(cl),
+            lift_scale=float(lift_scale),
+            side_sign=int(side_sign),
+            wind_mps=wind_mps,
+            spin_decay_s=spin_decay_s,
+        ),
         (0.0, 12.0),
         initial_state,
         method=str(solver.get("method", "DOP853")),
@@ -160,7 +224,7 @@ def simulate_shot(
         event_time = float(times[-1]) if len(times) else np.nan
         event_state = states[-1] if len(states) else np.full(6, np.nan)
 
-    x_land, y_land, z_land = event_state[:3]
+    x_land, y_land, _z_land = event_state[:3]
     z_values = states[:, 2] if len(states) else np.asarray([np.nan])
     output = {
         "model": model,
@@ -172,6 +236,9 @@ def simulate_shot(
         "flight_time_s": event_time,
         "solver_success": bool(sol.success),
         "solver_message": str(sol.message),
+        "cd": float(cd),
+        "cl": float(cl),
+        "lift_scale": float(lift_scale),
     }
     if keep_trajectory:
         trajectory = pd.DataFrame(
@@ -190,6 +257,52 @@ def simulate_shot(
     return output, trajectory
 
 
+def _scales(records: pd.DataFrame) -> tuple[float, float, float]:
+    carry_scale = float(records["carry_distance_yd"].std(ddof=1)) or 1.0
+    apex_scale = float(records["apex_height_yd"].std(ddof=1)) or 1.0
+    lateral_scale = float(records.get("lateral_offset_yd", pd.Series([1.0])).std(ddof=1)) or 1.0
+    return carry_scale, apex_scale, lateral_scale
+
+
+def _objective(
+    records: pd.DataFrame,
+    *,
+    model: str,
+    constants: PhysicalConstants,
+    solver: dict[str, Any],
+    cd: float,
+    cl: float = 0.0,
+    lift_scale: float = 0.0,
+    side_sign: int = 1,
+    lateral_weight: float = 0.0,
+) -> tuple[float, int]:
+    carry_scale, apex_scale, lateral_scale = _scales(records)
+    losses = []
+    failures = 0
+    for _, row in records.iterrows():
+        pred, _ = simulate_shot(
+            row,
+            model=model,
+            constants=constants,
+            solver=solver,
+            cd=cd,
+            cl=cl,
+            lift_scale=lift_scale,
+            side_sign=side_sign,
+        )
+        if pred["integration_status"] != "success":
+            failures += 1
+            continue
+        carry_error = (pred["predicted_carry_yd"] - float(row["carry_distance_yd"])) / carry_scale
+        apex_error = (pred["predicted_apex_yd"] - float(row["apex_height_yd"])) / apex_scale
+        lateral_error = 0.0
+        if "lateral_offset_yd" in row:
+            lateral_error = (pred["predicted_lateral_yd"] - float(row["lateral_offset_yd"])) / lateral_scale
+        losses.append(carry_error**2 + apex_error**2 + lateral_weight * lateral_error**2)
+    objective = float(np.mean(losses)) if losses else np.inf
+    return objective, failures
+
+
 def calibrate_drag_cd(
     calibration_records: pd.DataFrame,
     *,
@@ -199,24 +312,21 @@ def calibrate_drag_cd(
     grid_size: int,
 ) -> tuple[float, pd.DataFrame]:
     cd_values = np.linspace(bounds[0], bounds[1], int(grid_size))
-    carry_scale = float(calibration_records["carry_distance_yd"].std(ddof=1))
-    apex_scale = float(calibration_records["apex_height_yd"].std(ddof=1))
     rows = []
     for cd in cd_values:
-        losses = []
-        failures = 0
-        for _, row in calibration_records.iterrows():
-            pred, _ = simulate_shot(row, model="drag", constants=constants, solver=solver, cd=float(cd))
-            if pred["integration_status"] != "success":
-                failures += 1
-                continue
-            carry_error = (pred["predicted_carry_yd"] - float(row["carry_distance_yd"])) / carry_scale
-            apex_error = (pred["predicted_apex_yd"] - float(row["apex_height_yd"])) / apex_scale
-            losses.append(carry_error**2 + apex_error**2)
-        objective = float(np.mean(losses)) if losses else np.inf
+        objective, failures = _objective(
+            calibration_records,
+            model="drag",
+            constants=constants,
+            solver=solver,
+            cd=float(cd),
+        )
         rows.append(
             {
+                "model": "drag",
                 "cd": float(cd),
+                "cl": np.nan,
+                "lift_scale": np.nan,
                 "objective": objective,
                 "calibration_n": int(len(calibration_records)),
                 "failed_count": int(failures),
@@ -227,24 +337,93 @@ def calibrate_drag_cd(
     return float(best["cd"]), surface
 
 
+def calibrate_lift_parameters(
+    calibration_records: pd.DataFrame,
+    *,
+    constants: PhysicalConstants,
+    solver: dict[str, Any],
+    cd_bounds: tuple[float, float],
+    lift_bounds: tuple[float, float],
+    grid_size: int,
+    model: str,
+    side_sign: int,
+    lateral_weight: float,
+) -> tuple[dict[str, float], pd.DataFrame]:
+    if model not in {"constant_lift", "spin_factor_lift"}:
+        raise ValueError(f"Unsupported lift calibration model: {model}")
+    cd_values = np.linspace(cd_bounds[0], cd_bounds[1], int(grid_size))
+    lift_values = np.linspace(lift_bounds[0], lift_bounds[1], int(grid_size))
+    rows = []
+    for cd in cd_values:
+        for lift_value in lift_values:
+            cl = float(lift_value) if model == "constant_lift" else 0.0
+            lift_scale = float(lift_value) if model == "spin_factor_lift" else 0.0
+            objective, failures = _objective(
+                calibration_records,
+                model=model,
+                constants=constants,
+                solver=solver,
+                cd=float(cd),
+                cl=cl,
+                lift_scale=lift_scale,
+                side_sign=side_sign,
+                lateral_weight=float(lateral_weight),
+            )
+            rows.append(
+                {
+                    "model": model,
+                    "cd": float(cd),
+                    "cl": cl if model == "constant_lift" else np.nan,
+                    "lift_scale": lift_scale if model == "spin_factor_lift" else np.nan,
+                    "objective": objective,
+                    "calibration_n": int(len(calibration_records)),
+                    "failed_count": int(failures),
+                }
+            )
+    surface = pd.DataFrame(rows)
+    sort_cols = ["objective", "cd", "cl"] if model == "constant_lift" else ["objective", "cd", "lift_scale"]
+    best = surface.sort_values(sort_cols).iloc[0]
+    params = {
+        "cd": float(best["cd"]),
+        "cl": float(best["cl"]) if model == "constant_lift" else 0.0,
+        "lift_scale": float(best["lift_scale"]) if model == "spin_factor_lift" else 0.0,
+    }
+    return params, surface
+
+
 def evaluate_ode_models(
     test: pd.DataFrame,
     *,
     constants: PhysicalConstants,
     solver: dict[str, Any],
-    cd: float,
+    parameters: dict[str, dict[str, float]],
+    model_variants: list[str] | None = None,
+    side_sign: int = 1,
 ) -> dict[str, pd.DataFrame]:
+    if model_variants is None:
+        model_variants = ODE_MODELS
     prediction_rows = []
     failure_rows = []
-    for model in ["vacuum", "drag"]:
+    for model in model_variants:
         failed_ids = []
+        model_params = parameters.get(model, {})
         for _, row in test.iterrows():
-            pred, _ = simulate_shot(row, model=model, constants=constants, solver=solver, cd=cd)
+            pred, _ = simulate_shot(
+                row,
+                model=model,
+                constants=constants,
+                solver=solver,
+                cd=float(model_params.get("cd", 0.0)),
+                cl=float(model_params.get("cl", 0.0)),
+                lift_scale=float(model_params.get("lift_scale", 0.0)),
+                side_sign=side_sign,
+            )
             if pred["integration_status"] != "success":
                 failed_ids.append(int(row["record_id"]))
             prediction_rows.append(
                 {
                     "record_id": int(row["record_id"]),
+                    "sample_id": int(row["record_id"]),
                     "model": model,
                     "actual_carry_yd": float(row["carry_distance_yd"]),
                     "predicted_carry_yd": pred["predicted_carry_yd"],
@@ -277,13 +456,206 @@ def evaluate_ode_models(
     }
 
 
+def typical_errors_and_trajectories(
+    typical_source: pd.DataFrame,
+    *,
+    constants: PhysicalConstants,
+    solver: dict[str, Any],
+    parameters: dict[str, dict[str, float]],
+    model_variants: list[str],
+    trajectory_model: str,
+    side_sign: int,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    error_rows = []
+    trajectory_rows = []
+    for _, row in typical_source.iterrows():
+        for model in model_variants:
+            params = parameters.get(model, {})
+            keep_trajectory = model == trajectory_model
+            pred, trajectory = simulate_shot(
+                row,
+                model=model,
+                constants=constants,
+                solver=solver,
+                cd=float(params.get("cd", 0.0)),
+                cl=float(params.get("cl", 0.0)),
+                lift_scale=float(params.get("lift_scale", 0.0)),
+                side_sign=side_sign,
+                keep_trajectory=keep_trajectory,
+            )
+            carry_error = pred["predicted_carry_yd"] - float(row["carry_distance_yd"])
+            apex_error = pred["predicted_apex_yd"] - float(row["apex_height_yd"])
+            lateral_error = pred["predicted_lateral_yd"] - float(row["lateral_offset_yd"])
+            error_rows.append(
+                {
+                    "sample_id": int(row["record_id"]),
+                    "record_id": int(row["record_id"]),
+                    "target_group": str(row["target_group"]),
+                    "model": model,
+                    "actual_carry_yd": float(row["carry_distance_yd"]),
+                    "predicted_carry_yd": pred["predicted_carry_yd"],
+                    "carry_absolute_error_yd": abs(carry_error),
+                    "carry_relative_error_pct": abs(carry_error / float(row["carry_distance_yd"])) * 100.0,
+                    "actual_apex_yd": float(row["apex_height_yd"]),
+                    "predicted_apex_yd": pred["predicted_apex_yd"],
+                    "apex_absolute_error_yd": abs(apex_error),
+                    "apex_relative_error_pct": abs(apex_error / float(row["apex_height_yd"])) * 100.0
+                    if abs(float(row["apex_height_yd"])) > 1e-12
+                    else np.nan,
+                    "actual_lateral_yd": float(row["lateral_offset_yd"]),
+                    "predicted_lateral_yd": pred["predicted_lateral_yd"],
+                    "lateral_absolute_error_yd": abs(lateral_error),
+                    "flight_time_s": pred["flight_time_s"],
+                    "integration_status": pred["integration_status"],
+                }
+            )
+            if keep_trajectory:
+                trajectory = trajectory.copy()
+                trajectory.insert(0, "model", model)
+                trajectory.insert(0, "target_group", str(row["target_group"]))
+                trajectory.insert(0, "sample_id", int(row["record_id"]))
+                trajectory_rows.append(trajectory)
+    return pd.DataFrame(error_rows), pd.concat(trajectory_rows, ignore_index=True)
+
+
+def ode_sensitivity(
+    typical_source: pd.DataFrame,
+    *,
+    constants: PhysicalConstants,
+    solver: dict[str, Any],
+    baseline_params: dict[str, float],
+    relative_changes: list[float],
+    side_sign: int,
+) -> pd.DataFrame:
+    baseline = _scenario_means(
+        typical_source,
+        constants=constants,
+        solver=solver,
+        params=baseline_params,
+        side_sign=side_sign,
+    )
+    rows = []
+    for parameter in ["cd", "lift_scale"]:
+        for change in relative_changes:
+            params = dict(baseline_params)
+            params[parameter] = max(0.0, float(params[parameter]) * (1.0 + float(change)))
+            scenario = _scenario_means(
+                typical_source,
+                constants=constants,
+                solver=solver,
+                params=params,
+                side_sign=side_sign,
+            )
+            for metric, baseline_value in baseline.items():
+                rows.append(
+                    {
+                        "sensitivity_type": "parameter",
+                        "parameter": parameter,
+                        "relative_change": float(change),
+                        "metric": metric,
+                        "baseline_value": baseline_value,
+                        "scenario_value": scenario[metric],
+                        "delta": scenario[metric] - baseline_value,
+                    }
+                )
+
+    solver_scenarios = [
+        ("rtol", {**solver, "rtol": max(float(solver.get("rtol", 1e-7)) * 10.0, 1e-12)}),
+        ("atol", {**solver, "atol": max(float(solver.get("atol", 1e-9)) * 10.0, 1e-12)}),
+        ("max_step", {**solver, "max_step": float(solver.get("max_step", 0.02)) * 2.0}),
+        ("method_DOP853", {**solver, "method": "DOP853"}),
+        ("method_RK45", {**solver, "method": "RK45"}),
+    ]
+    for parameter, scenario_solver in solver_scenarios:
+        scenario = _scenario_means(
+            typical_source,
+            constants=constants,
+            solver=scenario_solver,
+            params=baseline_params,
+            side_sign=side_sign,
+        )
+        for metric, baseline_value in baseline.items():
+            rows.append(
+                {
+                    "sensitivity_type": "integration",
+                    "parameter": parameter,
+                    "relative_change": np.nan,
+                    "metric": metric,
+                    "baseline_value": baseline_value,
+                    "scenario_value": scenario[metric],
+                    "delta": scenario[metric] - baseline_value,
+                }
+            )
+
+    assumption_scenarios = [
+        ("small_tailwind_1mps", {"wind_mps": (-1.0, 0.0, 0.0), "spin_decay_s": None}),
+        ("small_headwind_1mps", {"wind_mps": (1.0, 0.0, 0.0), "spin_decay_s": None}),
+        ("spin_decay_6s", {"wind_mps": (0.0, 0.0, 0.0), "spin_decay_s": 6.0}),
+    ]
+    for parameter, kwargs in assumption_scenarios:
+        scenario = _scenario_means(
+            typical_source,
+            constants=constants,
+            solver=solver,
+            params=baseline_params,
+            side_sign=side_sign,
+            **kwargs,
+        )
+        for metric, baseline_value in baseline.items():
+            rows.append(
+                {
+                    "sensitivity_type": "assumption",
+                    "parameter": parameter,
+                    "relative_change": np.nan,
+                    "metric": metric,
+                    "baseline_value": baseline_value,
+                    "scenario_value": scenario[metric],
+                    "delta": scenario[metric] - baseline_value,
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def _scenario_means(
+    records: pd.DataFrame,
+    *,
+    constants: PhysicalConstants,
+    solver: dict[str, Any],
+    params: dict[str, float],
+    side_sign: int,
+    wind_mps: tuple[float, float, float] = (0.0, 0.0, 0.0),
+    spin_decay_s: float | None = None,
+) -> dict[str, float]:
+    outputs = []
+    for _, row in records.iterrows():
+        pred, _ = simulate_shot(
+            row,
+            model="spin_factor_lift",
+            constants=constants,
+            solver=solver,
+            cd=float(params.get("cd", 0.0)),
+            lift_scale=float(params.get("lift_scale", 0.0)),
+            side_sign=side_sign,
+            wind_mps=wind_mps,
+            spin_decay_s=spin_decay_s,
+        )
+        outputs.append(pred)
+    frame = pd.DataFrame(outputs)
+    return {
+        "carry_yd": float(frame["predicted_carry_yd"].mean()),
+        "apex_yd": float(frame["predicted_apex_yd"].mean()),
+        "lateral_yd": float(frame["predicted_lateral_yd"].mean()),
+        "flight_time_s": float(frame["flight_time_s"].mean()),
+    }
+
+
 def _rmse(actual: np.ndarray, predicted: np.ndarray) -> float:
-    return float(math.sqrt(np.mean((predicted - actual) ** 2)))
+    return float(math.sqrt(np.mean((predicted - actual) ** 2))) if len(actual) else np.nan
 
 
 def _mape(actual: np.ndarray, predicted: np.ndarray) -> float:
     mask = np.abs(actual) > 1e-12
-    return float(np.mean(np.abs((predicted[mask] - actual[mask]) / actual[mask])) * 100.0)
+    return float(np.mean(np.abs((predicted[mask] - actual[mask]) / actual[mask])) * 100.0) if mask.any() else np.nan
 
 
 def ode_metrics(predictions: pd.DataFrame) -> pd.DataFrame:
@@ -305,7 +677,7 @@ def ode_metrics(predictions: pd.DataFrame) -> pd.DataFrame:
                 "carry_mape": _mape(carry_actual, carry_pred),
                 "apex_rmse": _rmse(apex_actual, apex_pred),
                 "apex_mape": _mape(apex_actual, apex_pred),
-                "lateral_mae": float(np.mean(np.abs(lateral_pred - lateral_actual))),
+                "lateral_mae": float(np.mean(np.abs(lateral_pred - lateral_actual))) if len(ok) else np.nan,
                 "flight_failure_rate": float(1.0 - len(ok) / len(subset)),
             }
         )
@@ -318,6 +690,9 @@ def validation_checks(
     constants: PhysicalConstants,
     solver: dict[str, Any],
     cd: float,
+    cl: float = 0.20,
+    lift_scale: float = 1.0,
+    side_sign: int = 1,
 ) -> pd.DataFrame:
     vacuum_numeric, _ = simulate_shot(sample_row, model="vacuum", constants=constants, solver=solver)
     vacuum_exact = vacuum_analytic(sample_row, constants)
@@ -327,6 +702,29 @@ def validation_checks(
         abs(vacuum_numeric["flight_time_s"] - vacuum_exact["flight_time_s"]),
     )
     drag_numeric, _ = simulate_shot(sample_row, model="drag", constants=constants, solver=solver, cd=cd)
+
+    lift_probe = sample_row.copy()
+    lift_probe["launch_direction_deg"] = 0.0
+    lift_probe["spin_axis_deg"] = 0.0
+    drag_probe, _ = simulate_shot(lift_probe, model="drag", constants=constants, solver=solver, cd=max(cd, 0.1))
+    lift_probe_out, _ = simulate_shot(
+        lift_probe,
+        model="constant_lift",
+        constants=constants,
+        solver=solver,
+        cd=max(cd, 0.1),
+        cl=max(cl, 0.05),
+        side_sign=side_sign,
+    )
+    spin_probe_out, _ = simulate_shot(
+        lift_probe,
+        model="spin_factor_lift",
+        constants=constants,
+        solver=solver,
+        cd=max(cd, 0.1),
+        lift_scale=max(lift_scale, 0.1),
+        side_sign=side_sign,
+    )
     rows = [
         {"check": "mph_to_mps", "passed": abs(mph_to_mps(1.0) - 0.44704) < 1e-12, "value": mph_to_mps(1.0)},
         {
@@ -349,6 +747,21 @@ def validation_checks(
             "check": "ground_event_success",
             "passed": vacuum_numeric["integration_status"] == "success" and drag_numeric["integration_status"] == "success",
             "value": 1.0,
+        },
+        {
+            "check": "positive_backspin_lifts_up",
+            "passed": lift_probe_out["predicted_apex_yd"] > drag_probe["predicted_apex_yd"],
+            "value": float(lift_probe_out["predicted_apex_yd"] - drag_probe["predicted_apex_yd"]),
+        },
+        {
+            "check": "zero_sidespin_zero_direction_lateral_near_zero",
+            "passed": abs(lift_probe_out["predicted_lateral_yd"]) < 1e-6,
+            "value": float(lift_probe_out["predicted_lateral_yd"]),
+        },
+        {
+            "check": "spin_factor_lift_integrates",
+            "passed": spin_probe_out["integration_status"] == "success",
+            "value": float(spin_probe_out["predicted_apex_yd"]),
         },
     ]
     return pd.DataFrame(rows)

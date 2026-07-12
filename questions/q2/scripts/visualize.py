@@ -77,13 +77,13 @@ def create_visualizations(*, root: Path, dpi: int = 300) -> dict[str, dict[str, 
         plt.close(fig)
 
     ode_metrics = pd.read_csv(tables / "q2_ode_model_comparison.csv")
-    fig, ax = plt.subplots(figsize=(5.6, 4.0))
+    fig, ax = plt.subplots(figsize=(5.8, 4.0))
     x = range(len(ode_metrics))
     ax.bar([value - 0.18 for value in x], ode_metrics["carry_rmse"], width=0.36, label="carry RMSE")
     ax.bar([value + 0.18 for value in x], ode_metrics["apex_rmse"], width=0.36, label="apex RMSE")
-    ax.set_xticks(list(x), ode_metrics["model"])
+    ax.set_xticks(list(x), ode_metrics["model"], rotation=15, ha="right")
     ax.set_ylabel("RMSE (yd)")
-    ax.set_title("ODE first-stage model comparison")
+    ax.set_title("ODE model comparison")
     ax.legend()
     outputs["q2_ode_model_comparison"] = save_figure_bundle(
         fig=fig,
@@ -92,28 +92,125 @@ def create_visualizations(*, root: Path, dpi: int = 300) -> dict[str, dict[str, 
         question_dir=question_dir,
         title="Q2 ODE model comparison",
         source_script="questions/q2/scripts/visualize.py",
-        notes="Vacuum and drag-only ODE models on the fixed test split.",
+        notes="Vacuum, drag, constant-lift, and spin-factor-lift ODE models on the fixed test split.",
         dpi=dpi,
     )
     plt.close(fig)
 
     surface = pd.read_csv(tables / "q2_ode_parameter_surface.csv")
-    fig, ax = plt.subplots(figsize=(5.4, 4.0))
-    ax.plot(surface["cd"], surface["objective"], marker="o")
+    plot_surface = surface[surface["model"] == "constant_lift"].copy()
+    fig, ax = plt.subplots(figsize=(5.4, 4.2))
+    if not plot_surface.empty and "cl" in plot_surface.columns:
+        pivot = plot_surface.pivot_table(index="cl", columns="cd", values="objective", aggfunc="mean")
+        image = ax.imshow(
+            pivot.to_numpy(dtype=float),
+            origin="lower",
+            aspect="auto",
+            extent=[pivot.columns.min(), pivot.columns.max(), pivot.index.min(), pivot.index.max()],
+            cmap="viridis",
+        )
+        fig.colorbar(image, ax=ax, label="Training objective")
+        ax.set_ylabel("C_L")
+    else:
+        ax.plot(surface["cd"], surface["objective"], marker="o")
+        ax.set_ylabel("Training objective")
     ax.set_xlabel("C_D")
-    ax.set_ylabel("Training objective")
-    ax.set_title("Preliminary drag-only parameter scan")
+    ax.set_title("ODE parameter surface")
     outputs["q2_ode_parameter_surface"] = save_figure_bundle(
         fig=fig,
         data=surface,
         stem="q2_ode_parameter_surface",
         question_dir=question_dir,
-        title="Q2 preliminary drag parameter surface",
+        title="Q2 ODE parameter surface",
         source_script="questions/q2/scripts/visualize.py",
-        notes="First-stage one-dimensional C_D scan; not final C_D/C_L calibration.",
+        notes="Train-only representative grid scans for drag, constant lift, and spin-factor lift.",
         dpi=dpi,
     )
     plt.close(fig)
+
+    trajectories_path = tables / "q2_typical_trajectories.csv"
+    if trajectories_path.exists():
+        trajectories = pd.read_csv(trajectories_path)
+        fig = plt.figure(figsize=(6.0, 4.8))
+        ax = fig.add_subplot(111, projection="3d")
+        for label, data in trajectories.groupby("target_group"):
+            ax.plot(data["x_yd"], data["y_yd"], data["z_yd"], label=str(label))
+        ax.set_xlabel("x (yd)")
+        ax.set_ylabel("y (yd)")
+        ax.set_zlabel("z (yd)")
+        ax.set_title("Typical trajectories")
+        ax.legend()
+        outputs["q2_typical_trajectories_3d"] = save_figure_bundle(
+            fig=fig,
+            data=trajectories,
+            stem="q2_typical_trajectories_3d",
+            question_dir=question_dir,
+            title="Q2 typical trajectories 3D",
+            source_script="questions/q2/scripts/visualize.py",
+            notes="Spin-factor-lift trajectories for fixed-test 100/150/200 yd typical records.",
+            dpi=dpi,
+        )
+        plt.close(fig)
+
+        fig, ax = plt.subplots(figsize=(5.8, 4.0))
+        for label, data in trajectories.groupby("target_group"):
+            ax.plot(data["x_yd"], data["z_yd"], label=str(label))
+        ax.set_xlabel("x (yd)")
+        ax.set_ylabel("z (yd)")
+        ax.set_title("Typical trajectories side view")
+        ax.legend()
+        outputs["q2_typical_trajectories_side"] = save_figure_bundle(
+            fig=fig,
+            data=trajectories,
+            stem="q2_typical_trajectories_side",
+            question_dir=question_dir,
+            title="Q2 typical trajectories side view",
+            source_script="questions/q2/scripts/visualize.py",
+            notes="x-z side view for fixed-test 100/150/200 yd typical records.",
+            dpi=dpi,
+        )
+        plt.close(fig)
+
+        fig, ax = plt.subplots(figsize=(5.8, 4.0))
+        for label, data in trajectories.groupby("target_group"):
+            ax.plot(data["x_yd"], data["y_yd"], label=str(label))
+        ax.set_xlabel("x (yd)")
+        ax.set_ylabel("y (yd)")
+        ax.set_title("Typical trajectories top view")
+        ax.legend()
+        outputs["q2_typical_trajectories_top"] = save_figure_bundle(
+            fig=fig,
+            data=trajectories,
+            stem="q2_typical_trajectories_top",
+            question_dir=question_dir,
+            title="Q2 typical trajectories top view",
+            source_script="questions/q2/scripts/visualize.py",
+            notes="x-y top view for fixed-test 100/150/200 yd typical records.",
+            dpi=dpi,
+        )
+        plt.close(fig)
+
+    sensitivity_path = tables / "q2_ode_sensitivity.csv"
+    if sensitivity_path.exists():
+        sensitivity = pd.read_csv(sensitivity_path)
+        data = sensitivity[sensitivity["metric"] == "carry_yd"].copy()
+        fig, ax = plt.subplots(figsize=(7.2, 4.2))
+        labels = data["sensitivity_type"] + ":" + data["parameter"].astype(str)
+        ax.bar(range(len(data)), data["delta"])
+        ax.set_xticks(range(len(data)), labels, rotation=75, ha="right")
+        ax.set_ylabel("Delta carry (yd)")
+        ax.set_title("ODE sensitivity")
+        outputs["q2_ode_sensitivity"] = save_figure_bundle(
+            fig=fig,
+            data=sensitivity,
+            stem="q2_ode_sensitivity",
+            question_dir=question_dir,
+            title="Q2 ODE sensitivity",
+            source_script="questions/q2/scripts/visualize.py",
+            notes="Parameter, numerical integration, wind, and spin-decay perturbations on typical records.",
+            dpi=dpi,
+        )
+        plt.close(fig)
     return outputs
 
 

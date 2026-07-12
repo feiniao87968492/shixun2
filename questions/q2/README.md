@@ -1,36 +1,46 @@
 # q2 - 飞行轨迹预测
 
-- 状态：`first_stage_done`
-- 负责人：建模团队
-- 依赖小问：q1 数据审计、清洗数据和变量口径
-- 正式入口：`python questions/q2/scripts/pipeline.py --config configs/default.yaml`
+- 状态：`done`
+- 入口：`python questions/q2/scripts/pipeline.py --config configs/default.yaml`
+- 验证：`python questions/q2/scripts/validate.py --config configs/default.yaml`
+- 上游：q1 清洗数据与特征审计结果
 
-## 任务目标
+## 目标
 
-建立飞行距离和最高点高度监督预测模型，并逐步建立三维 ODE 轨迹模型。当前只完成第一阶段：固定 70%/30% 划分、监督模型、真空/仅阻力 ODE 和基础验证。
+第二问同时完成两类模型：
 
-## 输入
+- 监督预测模型：预测 `carry_distance_yd` 和 `apex_height_yd`，固定 70%/30% 划分，训练集内选模，测试集只报告最终指标。
+- 三维 ODE 模型：建立 `vacuum`、`drag`、`constant_lift`、`spin_factor_lift` 四层模型，使用训练集代表样本标定参数，并在固定测试集上评估。
 
-- 数据：`data/processed/golf_shots_clean.csv`
-- 上游结果：`q1_feature_summary.csv`、`q1_data_audit.csv`、`q1_invalid_zero_records.csv`
-- 配置：`configs/default.yaml`
-- 物理常数来源：题面 raw OCR 第 9 行；`docs/references.md`
+## 关键结果
 
-## 输出
+- 固定划分：train=514，test=221，random_seed=2026。
+- 监督模型：两个目标均由 `launch_state_model / hist_gradient_boosting` 在训练 CV 中胜出。
+- 测试指标：
+  - carry RMSE=8.337 yd，MAPE=4.986%。
+  - apex RMSE=1.739 yd，MAPE=14.335%。
+- ODE 参数：
+  - drag: `C_D=0.05`，位于下界，仅作为 drag-only 基线。
+  - constant_lift: `C_D=0.27, C_L=0.18`。
+  - spin_factor_lift: `C_D=0.27, k_L=0.8`。
+- ODE 测试集 carry RMSE：
+  - vacuum=32.233 yd
+  - drag=36.465 yd
+  - constant_lift=16.506 yd
+  - spin_factor_lift=29.001 yd
 
-- 结果表：`questions/q2/artifacts/tables/`
+## 主要产物
+
+- 表格：`questions/q2/artifacts/tables/`
 - 图：`questions/q2/artifacts/figures/`
 - 生图数据与元信息：`questions/q2/artifacts/figure_data/`
 - 模型文件：`questions/q2/artifacts/models/q2_carry_model.joblib`、`q2_apex_model.joblib`
+- ODE 参数 JSON：`questions/q2/artifacts/models/q2_ode_parameters.json`
 
-## 第一阶段完成项
+## 复现命令
 
-- [x] q2 配置和 manifest 修正
-- [x] 固定 70%/30% 数据划分并保存样本编号
-- [x] Dummy、线性、Ridge、ExtraTrees、HistGradientBoosting 监督模型
-- [x] 测试集 RMSE/MAPE/MAE/R2/MdAPE 和 Bootstrap 区间
-- [x] 真空和仅阻力 ODE
-- [x] mph/rpm/yd 单位换算与真空解析解验证
-- [x] 图、表、生图数据、meta.json 和模型文件成对保存
-- [ ] 含升力 ODE 和最终 `C_D/C_L` 标定
-- [ ] 100/150/200 yd 典型轨迹与灵敏度分析
+```bash
+python questions/q2/scripts/pipeline.py --config configs/default.yaml
+python questions/q2/scripts/validate.py --config configs/default.yaml
+python -m pytest tests/test_q2_full_task2.py -q
+```

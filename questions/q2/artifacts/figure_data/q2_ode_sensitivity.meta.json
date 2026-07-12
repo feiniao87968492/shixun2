@@ -1,0 +1,17 @@
+{
+  "stem": "q2_ode_sensitivity",
+  "title": "Q2 ODE sensitivity",
+  "source_script": "questions/q2/scripts/visualize.py",
+  "generated_at": "2026-07-12T15:59:10.474898+00:00",
+  "rows": 64,
+  "columns": [
+    "sensitivity_type",
+    "parameter",
+    "relative_change",
+    "metric",
+    "baseline_value",
+    "scenario_value",
+    "delta"
+  ],
+  "notes": "Parameter, numerical integration, wind, and spin-decay perturbations on typical records."
+}

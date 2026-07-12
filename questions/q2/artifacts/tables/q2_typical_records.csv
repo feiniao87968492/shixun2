@@ -1,0 +1,4 @@
+target_distance_yd,target_group,sample_id,record_id,actual_carry_yd,distance_to_target_yd,ball_speed_mph,launch_angle_deg,launch_direction_deg,spin_rate_rpm,spin_axis_deg
+100,100yd,683,683,99.825,0.175,81.6034,20.54,-4.86,6455.23,-5.92
+150,150yd,713,713,150.2187,0.2187,109.8336,11.85,7.48,3134.4099,3.96
+200,200yd,623,623,200.2734,0.2734,128.8475,13.85,12.93,4927.1299,17.12

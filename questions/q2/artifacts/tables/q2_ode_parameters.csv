@@ -1,5 +1,9 @@
 model,parameter,value,lower_bound,upper_bound,calibration_stage,source
-drag,C_D,0.05,0.05,0.6,preliminary_drag_only,training split preliminary grid scan; not final C_D/C_L calibration
+drag,C_D,0.05,0.05,0.6,train_representative_grid,train split representative grid scan; final drag-only baseline
+constant_lift,C_D,0.27,0.05,0.6,train_representative_grid,train split representative grid scan with constant C_L
+constant_lift,C_L,0.18,0.0,0.45,train_representative_grid,train split representative grid scan with constant C_L
+spin_factor_lift,C_D,0.27,0.05,0.6,train_representative_grid,train split representative grid scan with C_L(S)=k_L*S
+spin_factor_lift,k_L,0.8,0.0,4.0,train_representative_grid,train split representative grid scan with C_L(S)=k_L*S
 physics,mass_kg,0.0456,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表
 physics,radius_m,0.021335,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表
 physics,air_density_kg_m3,1.225,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表

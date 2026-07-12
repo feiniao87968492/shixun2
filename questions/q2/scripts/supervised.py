@@ -14,6 +14,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression, RidgeCV
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import KFold
+from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
@@ -265,3 +266,64 @@ def supervised_error_groups(test: pd.DataFrame, predictions: pd.DataFrame, metri
                     }
                 )
     return pd.DataFrame(rows)
+
+
+def run_repeated_split_stability(clean: pd.DataFrame, config: dict[str, Any]) -> pd.DataFrame:
+    """Run repeated 70/30 splits for stability diagnostics only."""
+    seed = int(config["random_seed"])
+    runs = int(config["repeated_split"]["runs"])
+    test_size = float(config["split"]["test_size"])
+    features = list(config["features"]["launch_state"])
+    targets = list(config["targets"])
+    model_names = list(config["supervised"]["models"])
+    records = []
+
+    for run_index in range(runs):
+        run_seed = seed + run_index + 1
+        train_idx, test_idx = train_test_split(
+            clean.index.to_numpy(),
+            test_size=test_size,
+            random_state=run_seed,
+            shuffle=True,
+        )
+        train = clean.iloc[train_idx].reset_index(drop=True)
+        test = clean.iloc[test_idx].reset_index(drop=True)
+        for target in targets:
+            y_test = test[target].to_numpy(dtype=float)
+            run_rows = []
+            for model_index, model_name in enumerate(model_names):
+                model = make_model(model_name, seed=run_seed + model_index)
+                model.fit(train[features], train[target])
+                pred = model.predict(test[features])
+                metrics = regression_metrics(y_test, pred)
+                run_rows.append({"model": model_name, **metrics})
+            best_model = min(run_rows, key=lambda row: row["rmse"])["model"]
+            for row in run_rows:
+                records.append(
+                    {
+                        "run": run_index + 1,
+                        "random_seed": run_seed,
+                        "target": target,
+                        "model": row["model"],
+                        "rmse": row["rmse"],
+                        "mape": row["mape"],
+                        "is_winner": row["model"] == best_model,
+                    }
+                )
+
+    details = pd.DataFrame(records)
+    summary_rows = []
+    for (target, model), subset in details.groupby(["target", "model"]):
+        for metric in ["rmse", "mape"]:
+            summary_rows.append(
+                {
+                    "target": target,
+                    "model": model,
+                    "metric": metric,
+                    "mean": float(subset[metric].mean()),
+                    "std": float(subset[metric].std(ddof=1)),
+                    "runs": int(runs),
+                    "model_win_frequency": float(subset["is_winner"].mean()),
+                }
+            )
+    return pd.DataFrame(summary_rows).sort_values(["target", "metric", "mean"]).reset_index(drop=True)

@@ -1,0 +1,37 @@
+{
+  "side_spin_sign": -1,
+  "trajectory_model": "spin_factor_lift",
+  "model_parameters": {
+    "vacuum": {
+      "cd": 0.0,
+      "cl": 0.0,
+      "lift_scale": 0.0
+    },
+    "drag": {
+      "cd": 0.05,
+      "cl": 0.0,
+      "lift_scale": 0.0
+    },
+    "constant_lift": {
+      "cd": 0.26999999999999996,
+      "cl": 0.18,
+      "lift_scale": 0.0
+    },
+    "spin_factor_lift": {
+      "cd": 0.26999999999999996,
+      "cl": 0.0,
+      "lift_scale": 0.8
+    }
+  },
+  "calibration": {
+    "records": 24,
+    "grid_size": 6,
+    "solver": {
+      "method": "DOP853",
+      "rtol": 1e-07,
+      "atol": 1e-09,
+      "max_step": 0.05
+    },
+    "source": "train split representative records only; fixed test split excluded from calibration"
+  }
+}

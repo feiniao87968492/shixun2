@@ -1,6 +1,6 @@
 question: q2
-status: first_stage_done
-objective: "建立监督预测模型和三维 ODE 轨迹模型；当前完成第一阶段真空/仅阻力基线，不宣称最终 C_D/C_L。"
+status: done
+objective: "建立监督预测模型和三维 ODE 轨迹模型，完成含升力参数标定、典型轨迹和灵敏度分析。"
 
 inputs:
   raw_data:
@@ -26,6 +26,6 @@ outputs:
 quality_gates:
   baseline: true
   validation: true
-  sensitivity: false
+  sensitivity: true
   evidence_chain: true
   reproducible: true

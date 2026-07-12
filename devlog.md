@@ -1,5 +1,31 @@
 # Development Log
 
+## 2026-07-12 - q2 完整监督预测与含升力 ODE 收口
+
+- **目标**：完成 `docs/plans/task2.md` 的完整第二问任务，而不再停留在第 26 节第一阶段停止点。
+- **完成**：
+  - 扩展 `configs/default.yaml`，加入 `constant_lift`、`spin_factor_lift`、`C_L` 与 `k_L/lift_scale` 参数边界。
+  - 重写 q2 ODE 核心，支持自旋向量、常数升力、自旋因子升力、风速扰动和自旋衰减假设。
+  - 使用训练集代表样本进行 train-only 参数粗网格标定，测试集只用于最终评价。
+  - 生成四层 ODE 测试指标、参数曲面、典型 100/150/200 yd 记录、典型误差、轨迹点、3D/侧视/俯视轨迹图、ODE 灵敏度和监督重复划分稳定性。
+  - 扩展 `validate.py` 至 69 项 q2 检查，新增 `tests/test_q2_full_task2.py` 并修正旧第一阶段测试的范围假设。
+  - 更新 q2 文档、全局证据链、图表登记表、论文草稿、计划文件和进度记录。
+- **关键结果**：
+  - 固定划分仍为 train=514、test=221。
+  - 监督模型 carry RMSE=8.337 yd，apex RMSE=1.739 yd。
+  - ODE 参数：drag `C_D=0.05`；constant_lift `C_D=0.27,C_L=0.18`；spin_factor_lift `C_D=0.27,k_L=0.8`。
+  - ODE 测试 carry RMSE：vacuum=32.233 yd，drag=36.465 yd，constant_lift=16.506 yd，spin_factor_lift=29.001 yd。
+  - 典型测试样本：100 yd -> sample_id 683，150 yd -> 713，200 yd -> 623。
+- **验证**：
+  - `python questions\q2\scripts\pipeline.py --config configs/default.yaml` 通过。
+  - `python questions\q2\scripts\validate.py --config configs/default.yaml` 通过 69 项检查。
+  - `python -m pytest tests\test_q2_full_task2.py -q` 通过 4 项测试。
+  - `python -m pytest -q` 通过 27 项测试。
+- **局限**：
+  - `drag` 的 `C_D=0.05` 位于下界，只能作为 drag-only 边界基线。
+  - 含升力参数为当前简化模型的有效参数，仍受无完整风场、全局常数气动参数和简化自旋衰减假设限制。
+- **下一步**：完成最终仓库级验证、提交并推送；随后第三问应复用 q2 已验证接口开展 200 yd 优化。
+
 ## 使用规则
 
 仅记录有决策价值的工作节点。每次记录包含目标、发现、决策、产物、未解决问题和下一步。
