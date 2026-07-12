@@ -4,7 +4,7 @@
 
 | 小问 | 前置依赖 | 共享输入 | 共享输出 | 主要风险 | 当前状态 |
 |---|---|---|---|---|---|
-| q1 | 原始 Excel 数据审计 | `data/raw/problem/附件（实训题2）.xlsx` | 变量相关性、飞行距离重要性排序、数据质量报告 | 缺失字段影响排序；相关性被误写成因果 | planned |
+| q1 | 原始 Excel 数据审计 | `data/raw/problem/附件（实训题2）.xlsx` | 变量相关性、飞行距离重要性排序、数据质量报告 | 缺失字段影响排序；相关性被误写成因果 | done |
 | q2 | q1 数据清洗、变量口径、典型距离选择规则 | 清洗后的建模表、物理参数、q1 变量解释 | 监督预测模型、ODE 参数、典型轨迹、误差表 | ODE 简化导致误差系统偏差；小样本划分不稳定 | planned |
 | q3 | q2 最终预测模型或 ODE 模型 | q2 模型、单位换算、参数边界 | 最优击球参数、目标函数值、最优轨迹、灵敏度表 | 优化陷入局部最优；模型外推到边界不可靠 | planned |
 
@@ -14,7 +14,8 @@
 |---|---|---|---|
 | 路径与配置 | `src/modeling_common/paths.py` | 全部 | initialized |
 | 图表留档 | `src/modeling_common/artifacts.py` | 全部 | initialized |
-| 数据加载与清洗 | `src/modeling_common/data.py` | q1-q3 | planned |
+| 数据加载与清洗 | `questions/q1/scripts/analysis.py` | q1 | done |
+| 通用数据加载与清洗 | `src/modeling_common/data.py` | q2-q3 | planned |
 | 单位换算 | `src/modeling_common/units.py` | q2-q3 | planned |
 | 指标计算 | `src/modeling_common/metrics.py` | q2-q3 | planned |
 

@@ -33,3 +33,35 @@
 - **下一步**：
   - 实现 `src/modeling_common/data.py` 和 q1 数据审计/相关性流水线。
   - 运行 q1 基线后更新证据链、图表登记表和结果文档。
+
+---
+
+## 2026-07-12 — q1 相关性分析与因素排序完成
+
+- **目标**：完成 `docs/plans/task1.md` 中第一问计划，形成可复现的 q1 数据审计、相关性、重要性排序、敏感性分析和图表产物。
+- **完成**：
+  - 新增 `questions/q1/scripts/analysis.py`，实现 raw Excel 读取、清洗、S1/S2/S3 样本口径、两套自旋表示、相关性、Bootstrap、岭回归、ExtraTrees 置换重要性、综合排序、分组重要性和图表生成。
+  - 接通 `questions/q1/scripts/pipeline.py`、`validate.py`、`visualize.py`。
+  - 生成 `data/processed/golf_shots_clean.csv`。
+  - 生成 q1 表格：数据审计、缺失审计、异常标记、Pearson/Spearman/Kendall 相关性、相关系数置信区间、方法重要性、综合排序、分组重要性、敏感性比较、排名稳定性。
+  - 生成 q1 图：Pearson/Spearman 热力图、前四变量关系图、多方法重要性对比图、排名稳定性图；每张图均有同名 CSV 和 meta.json。
+  - 更新 q1 `README.md`、`manifest.yaml`、`results.md`、`experiments.md`、`evidence.md`、`docs/evidence_chain.csv` 和 `docs/figure_table_registry.csv`。
+- **关键发现**：
+  - 球速是最稳定关键因素，Pearson=0.758，Spearman=0.776，Bootstrap 排名区间 1-1。
+  - 综合前五为球速、杆头速度、攻击角、发射角、自旋轴偏角。
+  - 分组重要性排序为速度组、发射姿态组、自旋状态组、水平方向组。
+  - 杆头速度和攻击角有 63/65 条缺失，必须保留口径说明。
+- **决策**：
+  - 主结论表述为统计关联和预测信息，不写成因果结论。
+  - 主排序聚合两套自旋表示的条件贡献，但单个主模型中不同时使用四个自旋变量。
+- **产物**：
+  - `questions/q1/artifacts/tables/q1_feature_ranking.csv`
+  - `questions/q1/artifacts/tables/q1_group_importance.csv`
+  - `questions/q1/artifacts/figures/q1_pearson_heatmap.png`
+  - `questions/q1/artifacts/figures/q1_importance_comparison.png`
+  - `questions/q1/artifacts/figures/q1_rank_stability.png`
+- **未解决问题**：
+  - q2 尚未基于 q1 清洗数据实现监督预测和 ODE 建模。
+  - q3 尚未实现最优击球策略。
+- **下一步**：
+  - 进入 q2：基于 `data/processed/golf_shots_clean.csv` 建立飞行距离和最高点高度预测模型。

@@ -95,3 +95,93 @@
 | What's the goal? | 完成实训题2可复现建模仓库初始化与前期问题拆分 |
 | What have I learned? | See findings.md |
 | What have I done? | 完成仓库结构、raw 归档、题面拆解和 q1-q3 方案文档 |
+
+## Session: 2026-07-12 — task1 q1 实施
+
+### Phase 6: task1 要求识别
+- **Status:** complete
+- Actions taken:
+  - 读取 `docs/plans/task1.md`。
+  - 提取第一问要求：数据审计、S1/S2/S3 样本口径、两套自旋表示、Pearson/Spearman/Kendall、Bootstrap 500、岭回归、非线性置换重要性、5x5 重复交叉验证、综合排序、敏感性、分组重要性、5 张图和完整文档闭环。
+- Files created/modified:
+  - `task_plan.md`
+  - `findings.md`
+  - `progress.md`
+
+### Phase 7: q1 测试先行
+- **Status:** complete
+- Actions taken:
+  - 新增 `tests/test_q1_analysis.py`。
+  - 首次运行测试，确认 4 个测试因缺少 `questions/q1/scripts/analysis.py` 失败。
+  - 实现后测试通过。
+  - 首次完整 pipeline 暴露图表阶段缺少 score 列，补回归测试后修复。
+- Files created/modified:
+  - `tests/test_q1_analysis.py`
+
+### Phase 8: q1 流水线实现
+- **Status:** complete
+- Actions taken:
+  - 新增 `questions/q1/scripts/analysis.py`。
+  - 接通 `questions/q1/scripts/pipeline.py`、`validate.py`、`visualize.py`。
+  - 增加 `scikit-learn` 依赖。
+- Files created/modified:
+  - `questions/q1/scripts/analysis.py`
+  - `questions/q1/scripts/pipeline.py`
+  - `questions/q1/scripts/validate.py`
+  - `questions/q1/scripts/visualize.py`
+  - `requirements.txt`
+
+### Phase 9: q1 产物生成与文档闭环
+- **Status:** complete
+- Actions taken:
+  - 运行 `python questions/q1/scripts/pipeline.py --config configs/default.yaml`。
+  - 生成 `data/processed/golf_shots_clean.csv`。
+  - 生成 q1 全部表格和 5 张图片，每张图片均有同名 CSV 与 meta.json。
+  - 运行 `python questions/q1/scripts/validate.py`，26 个 artifact checks 全部通过。
+  - 更新 q1 文档、全局证据链、图表登记表、论文草稿和开发日志。
+- Files created/modified:
+  - `data/processed/golf_shots_clean.csv`
+  - `questions/q1/artifacts/`
+  - `questions/q1/results.md`
+  - `questions/q1/experiments.md`
+  - `questions/q1/evidence.md`
+  - `docs/evidence_chain.csv`
+  - `docs/figure_table_registry.csv`
+  - `report/paper.md`
+
+### Phase 10: 最终验证与提交
+- **Status:** in_progress
+- Actions taken:
+  - 复跑 `python questions/q1/scripts/pipeline.py --config configs/default.yaml`，q1 产物可复现。
+  - 运行 `python questions/q1/scripts/validate.py`，26 个 artifact checks 通过。
+  - 运行 `python -m pytest -q`，5 个测试通过。
+  - 运行 `python scripts/check_repo.py`，通过；仅 q2/q3 pipeline 未实现 warning。
+  - 运行 `python scripts/snapshot_raw.py --verify`，3 个 raw 文件验证通过。
+- Files created/modified:
+  - `task_plan.md`
+  - `progress.md`
+
+## Task1 Test Results
+| Test | Input | Expected | Actual | Status |
+|------|-------|----------|--------|--------|
+| q1 tests red | `python -m pytest tests\test_q1_analysis.py -q` | Fail because implementation missing | 4 failures: `analysis.py` missing | pass |
+| q1 tests green | `python -m pytest tests\test_q1_analysis.py -q` | Pass | 4 passed | pass |
+| q1 pipeline | `python questions\q1\scripts\pipeline.py --config configs/default.yaml` | Generate q1 artifacts | Completed; top features ball_speed, club_speed, attack_angle, launch_angle, spin_axis | pass |
+| q1 artifact validation | `python questions\q1\scripts\validate.py` | All q1 artifacts exist with data/meta | 26 checks passed | pass |
+| full pytest | `python -m pytest -q` | All tests pass | 5 passed | pass |
+| repo check | `python scripts\check_repo.py` | No errors | Passed with q2/q3 scaffold warnings | pass |
+| raw verify | `python scripts\snapshot_raw.py --verify` | Raw files match manifest | Verified 3 files | pass |
+
+## Task1 Error Log
+| Timestamp | Error | Attempt | Resolution |
+|-----------|-------|---------|------------|
+| 2026-07-12 | q1 pipeline failed at visualization due missing `pearson_score`/`ridge_score` columns | 1 | Added regression test and kept score columns in `aggregate_rankings` |
+
+## Task1 Reboot Check
+| Question | Answer |
+|----------|--------|
+| Where am I? | Phase 10: final verification and commit |
+| Where am I going? | Run full verification, commit, push |
+| What's the goal? | Complete `docs/plans/task1.md` |
+| What have I learned? | See findings.md |
+| What have I done? | q1 workflow implemented, artifacts generated, docs updated |

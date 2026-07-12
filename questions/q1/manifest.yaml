@@ -1,5 +1,5 @@
 question: q1
-status: planned
+status: done
 objective: "完成输入输出相关性分析，并给出飞行距离影响因素排序"
 
 inputs:
@@ -21,8 +21,8 @@ outputs:
   models: questions/q1/artifacts/models
 
 quality_gates:
-  baseline: false
-  validation: false
-  sensitivity: false
-  evidence_chain: false
-  reproducible: false
+  baseline: true
+  validation: true
+  sensitivity: true
+  evidence_chain: true
+  reproducible: true

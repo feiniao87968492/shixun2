@@ -1,61 +1,66 @@
-# Task Plan: 实训题2数学建模仓库初始化
+# Task Plan: q1 第一问计划完成
 
 ## Goal
-把当前“2026年实训题2 高尔夫球飞行轨迹预测与最优击球策略建模”整理成可复现、可审计的数学建模仓库，并完成前期题目拆解与分问题方案骨架。
+完成 `docs/plans/task1.md` 中第一问计划：数据审计、相关性、重要性排序、稳定性分析、图表产物、证据链和文档闭环。
 
 ## Current Phase
-Phase 5
+Phase 10
 
 ## Phases
 
-### Phase 1: 安全检查与题面识别
-- [x] 检查目标目录、Git 状态和已有文件
-- [x] 识别题面、附件和实际小问数量
-- [x] 记录发现
+### Phase 1: 仓库初始化和前期拆分
+- [x] 建立标准仓库结构
+- [x] 完成题面拆解和 q1-q3 方案骨架
+- [x] 提交并推送初始化仓库
 - **Status:** complete
 
-### Phase 2: 仓库结构初始化
-- [x] 运行仓库初始化脚本
-- [x] 保留已有题面资料，不覆盖原文件
-- [x] 建立标准目录、问题文档和脚本骨架
+### Phase 6: task1 要求识别
+- [x] 读取 `docs/plans/task1.md`
+- [x] 识别表格、图片、验证、文档与完成标准
 - **Status:** complete
 
-### Phase 3: 原始数据归档与快照
-- [x] 将 PDF、OCR 文本和 Excel 附件纳入 data/raw
-- [x] 生成 raw data 哈希清单
-- [x] 初步审计 Excel 字段和样本规模
+### Phase 7: q1 测试先行
+- [x] 为数据加载、样本口径、相关性、聚合排序写失败测试
+- [x] 看到测试因缺少 `analysis.py` 失败
+- [x] 修复后测试通过
 - **Status:** complete
 
-### Phase 4: 前期问题拆分
-- [x] 完成 docs/problem_statement.md
-- [x] 完成 docs/symbols.md
-- [x] 完成 docs/assumptions.md
-- [x] 完成 docs/data_dictionary.md
-- [x] 完成 docs/project_plan.md
-- [x] 完成 q1-q3 approach.md
+### Phase 8: q1 流水线实现
+- [x] 实现 `questions/q1/scripts/analysis.py`
+- [x] 接通 `pipeline.py`、`validate.py`、`visualize.py`
+- [x] 增加 `scikit-learn` 依赖
 - **Status:** complete
 
-### Phase 5: 验证与提交
-- [x] 运行 scripts/check_repo.py
-- [x] 运行 snapshot_raw verify
-- [x] 初始化 Git 并审查 status
-- [x] 创建初始化提交
+### Phase 9: q1 产物生成与文档闭环
+- [x] 运行 q1 pipeline 生成表格、图、图数据和 meta
+- [x] 运行 q1 validate 检查 26 个产物
+- [x] 更新 q1 results/experiments/evidence/manifest
+- [x] 更新全局 evidence_chain 和 figure_table_registry
 - **Status:** complete
+
+### Phase 10: 最终验证与提交
+- [x] 运行单元测试
+- [x] 运行 q1 pipeline/validate
+- [x] 运行仓库自检和 raw snapshot verify
+- [ ] 提交并推送
+- **Status:** in_progress
 
 ## Key Questions
-1. 实际小问数量是多少？答案：3 个主问题，含 q1 的 2 个子任务、q2 的 3 个子任务、q3 的 2 个子任务。
-2. 原始数据是否已经存在？答案：存在 PDF、OCR Markdown 和 Excel 附件，已复制归档到 data/raw/problem。
-3. 项目主要计算环境是什么？答案：Python 为主，必要时可用 MATLAB 交叉验证；正式入口按 questions/qN/scripts/pipeline.py。
+1. task1 是否要求完整实现而非文档计划？答案：是，要求生成 q1 表格、图片、稳定性分析、证据链和结果文档。
+2. 自旋变量如何避免重复表达？答案：主模型分别使用“自旋速率+自旋轴偏角”和“后旋+侧旋”两套表示，聚合条件贡献，不在单个模型中同时使用四个自旋变量。
+3. 缺失值如何处理？答案：S1 不用杆头速度/攻击角，S2 完整样本，S3 中位数插补加缺失指示变量。
 
 ## Decisions Made
 | Decision | Rationale |
 |----------|-----------|
-| 仓库根目录使用当前 `实训2` 目录 | 用户在该目录发起请求，当前目录尚无 Git，适合作为项目根 |
-| 小问数量设置为 3 | 题面明确分为问题一、问题二、问题三 |
-| 原始题面资料复制到 `data/raw/problem/` | 保留已有资料目录，同时满足原始数据只读归档约定 |
-| 原始资料目录加入 `.gitignore` | 避免把重复 raw package 纳入 Git，仓库用 raw manifest 追踪本地文件一致性 |
+| q1 分析核心放在 `questions/q1/scripts/analysis.py` | 第一问逻辑较专用，先避免过早抽象到全局模块；q2/q3 可复用 processed 数据 |
+| q1 非线性重要性使用 ExtraTrees + 验证集置换重要性 | 满足 task1 对非线性预测贡献和非纯度重要性的要求 |
+| Bootstrap 设置为 500 次 | 满足 task1 对相关系数不确定性和排名区间的要求 |
+| 交叉验证设置为 5 折 x 5 次 | 满足 task1 对重复交叉验证的要求 |
+| 主结论只写统计关联和预测信息 | 避免把观测数据相关性写成因果 |
 
 ## Errors Encountered
 | Error | Attempt | Resolution |
 |-------|---------|------------|
+| q1 pipeline 首次运行图表阶段 KeyError: score columns missing | 1 | 增加回归测试，保留 aggregate ranking 的四个 score 列 |
 | PowerShell 中 `python -c` 嵌入 `\n` 导致 SyntaxError | 1-2 | 改为不含换行的单行列表表达式 |

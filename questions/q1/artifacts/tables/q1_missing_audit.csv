@@ -1,0 +1,15 @@
+column,role,missing_count,missing_rate,handling
+record_id,id,0,0.0,"sample id, excluded from models"
+ball_speed_mph,input,0,0.0,required field; no imputation planned if complete
+launch_angle_deg,input,0,0.0,required field; no imputation planned if complete
+launch_direction_deg,input,0,0.0,required field; no imputation planned if complete
+spin_rate_rpm,input,0,0.0,required field; no imputation planned if complete
+spin_axis_deg,input,0,0.0,required field; no imputation planned if complete
+backspin_rpm,input,0,0.0,required field; no imputation planned if complete
+sidespin_rpm,input,0,0.0,required field; no imputation planned if complete
+club_speed_mph,input,63,0.08571428571428572,median imputation with missing indicator; complete-case sensitivity
+attack_angle_deg,input,65,0.08843537414965986,median imputation with missing indicator; complete-case sensitivity
+carry_distance_yd,output,0,0.0,required field; no imputation planned if complete
+max_height_yd,output,0,0.0,required field; no imputation planned if complete
+total_distance_yd,output,0,0.0,required field; no imputation planned if complete
+lateral_offset_yd,output,0,0.0,required field; no imputation planned if complete

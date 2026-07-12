@@ -1,0 +1,17 @@
+{
+  "stem": "q1_pearson_heatmap",
+  "title": "Pearson input-output correlations",
+  "source_script": "questions/q1/scripts/visualize.py",
+  "generated_at": "2026-07-12T10:01:05.182055+00:00",
+  "rows": 36,
+  "columns": [
+    "feature",
+    "feature_label",
+    "output",
+    "output_label",
+    "correlation",
+    "abs_correlation",
+    "n"
+  ],
+  "notes": "Correlation heatmap source data is in long form."
+}

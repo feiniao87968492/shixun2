@@ -11,8 +11,9 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from modeling_common.paths import project_root  # noqa: E402
+from analysis import run_analysis  # noqa: E402
 
-IMPLEMENTED = False
+IMPLEMENTED = True
 
 
 def parse_args() -> argparse.Namespace:
@@ -45,14 +46,11 @@ def main() -> int:
         print(f"config={root / args.config}")
         return 0
 
-    if not IMPLEMENTED:
-        print(
-            "q1 pipeline is a scaffold. Fill approach.md first, implement the pipeline, "
-            "then set IMPLEMENTED = True."
-        )
-        return 2
-
-    # TODO: replace with the real reproducible pipeline.
+    result = run_analysis(root=root, config_path=args.config)
+    top = result["tables"]["q1_feature_ranking"].head(5)
+    print("[ok] q1 pipeline completed")
+    print(f"question_dir={question_dir}")
+    print("top_features=" + ", ".join(top["feature"].tolist()))
     return 0
 
 

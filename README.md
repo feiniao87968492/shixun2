@@ -4,7 +4,7 @@
 - 小问数量：3
 - 初始化时间：2026-07-12T16:10:49+08:00
 - 文档语言：zh-CN
-- 当前状态：`initialized`
+- 当前状态：`q1_done`
 
 ## 项目目标
 
@@ -50,7 +50,7 @@ tests/                    基础测试
 
 | 小问 | 状态 | 主要目标 | 入口 |
 |---|---|---|---|
-| q1 | planned | 相关性分析与飞行距离影响因素排序 | `python questions/q1/scripts/pipeline.py --dry-run` |
+| q1 | done | 相关性分析与飞行距离影响因素排序 | `python questions/q1/scripts/pipeline.py --config configs/default.yaml` |
 | q2 | planned | 监督预测、三维 ODE 轨迹建模与典型记录误差分析 | `python questions/q2/scripts/pipeline.py --dry-run` |
 | q3 | planned | 以 200 yd 目标为约束的最优击球参数搜索与轨迹绘制 | `python questions/q3/scripts/pipeline.py --dry-run` |
 

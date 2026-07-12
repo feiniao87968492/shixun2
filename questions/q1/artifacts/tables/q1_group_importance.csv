@@ -1,0 +1,6 @@
+group,sample_view,features,original_rmse,permuted_rmse,group_importance,rank
+speed_group,S3_imputed,ball_speed_mph;club_speed_mph,8.406734581463532,47.422276246248295,39.01554166478476,1
+launch_attitude_group,S3_imputed,launch_angle_deg;attack_angle_deg,8.406734581463533,27.949536313297607,19.542801731834075,2
+spin_state_group_B,S3_spin_components,backspin_rpm;sidespin_rpm,8.320253550100148,11.825208529927213,3.5049549798270654,3
+spin_state_group_A,S3_imputed,spin_rate_rpm;spin_axis_deg,8.406734581463535,11.899497136548753,3.4927625550852177,4
+horizontal_direction_group,S3_imputed,launch_direction_deg,8.406734581463532,8.55499874094789,0.14826415948435745,5

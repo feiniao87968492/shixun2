@@ -1,44 +1,44 @@
 # Findings & Decisions
 
 ## Requirements
-- 使用 `math-modeling-repo-init` 初始化当前数学建模项目仓库。
-- 建立 Git、标准目录、问题文档、分问题脚本骨架和证据链文件。
-- 完成前期题目拆解：题意重述、符号单位、假设、数据字典、项目计划、各小问方案。
-- 保留和归档已有题面与附件，不覆盖已有文件。
+- 完成 `docs/plans/task1.md` 第一问计划。
+- 生成 q1 数据审计、缺失审计、异常标记和 processed 数据。
+- 生成 Pearson/Spearman/Kendall 相关性、相关系数 Bootstrap 区间。
+- 生成岭回归、非线性置换重要性、综合排序、排名稳定性、敏感性比较和分组重要性。
+- 生成 5 张图，且每张图必须有同名 CSV 和 `.meta.json`。
+- 更新 q1 文档、证据链、图表登记表、论文草稿和开发日志。
 
 ## Research Findings
 - 当前目录：`D:\Users\zty\数学建模\赛题集\实训2`。
-- 当前目录原本未初始化 Git。
-- 已有资料位于 `2026年实训题2/`，包含 PDF、OCR Markdown 和 Excel 附件。
-- 题目标题：`2026年实训题2 高尔夫球飞行轨迹预测与最优击球策略建模`。
-- 题目共有 3 个主问题：
-  - q1：输入参数与输出结果相关性、飞行距离影响因素排序。
-  - q2：预测模型建立与验证、三维 ODE 轨迹绘制、典型记录误差分析。
-  - q3：200 yd 目标下的最优击球参数优化与轨迹绘制。
-- OCR/题面附件说明提到约 30 条有效记录，但实际 Excel 读取结果为 735 条；后续以 Excel 实际记录为准，并在论文中避免照搬 OCR 的数据规模描述。
-- Excel `高尔夫球实测数据` 工作表第 3 行为表头，字段包括序号、球速、发射角、发射方向、自旋速率、自旋轴偏角、后旋、侧旋、杆头速度、攻击角、飞行距离、最高点高度、总距离、横向偏移。
+- `docs/plans/task1.md` 要求第一问分为相关性分析和飞行距离影响因素排序两个子任务。
+- 实际 Excel 读取结果为 735 条记录；`高尔夫球实测数据` 工作表第 3 行为表头。
 - 缺失情况：`杆头速度(mph)` 缺失 63 条，`攻击角(度)` 缺失 65 条，其余核心字段未发现缺失。
+- q1 pipeline 结果：球速是飞行距离最稳定关键因素，Pearson=0.758，Spearman=0.776，Bootstrap 排名区间 1-1。
+- q1 综合排序前五：球速、杆头速度、攻击角、发射角、自旋轴偏角。
+- q1 分组重要性：速度组第一，发射姿态组第二，自旋状态组中等，水平方向组最弱。
+- q1 artifact 验证：`python questions/q1/scripts/validate.py` 通过 26 个检查。
 
 ## Technical Decisions
 | Decision | Rationale |
 |----------|-----------|
-| 使用 skill 自带 `init_modeling_repo.py --force --no-git` | 目标目录非空，先补齐结构，再手动整理 raw data 与提交范围 |
-| 问题数设为 3 | 题面按“问题一/二/三”组织，子任务归入对应 qN |
-| 原始资料复制到 `data/raw/problem/` | 满足原始数据只读与快照要求，同时避免移动用户原始资料目录 |
-| 原始资料目录加入 `.gitignore` | 已复制到 raw 目录，避免重复资料进入 Git |
-| q3 主目标使用首次落点飞行距离与横向偏移 | 题面要求落点接近洞口，总距离只作为辅助诊断 |
+| q1 分析核心放在 `questions/q1/scripts/analysis.py` | 第一问逻辑较专用，避免过早抽象；q2/q3 复用 `data/processed/golf_shots_clean.csv` |
+| 使用 S1/S2/S3 三种样本口径 | 满足 task1 对缺失处理稳定性比较的要求 |
+| 使用两套自旋表示分别建模 | 避免自旋变量重复表达和共线性 |
+| 使用 ExtraTrees + 验证集置换重要性 | 捕捉非线性贡献且避免使用树模型纯度重要性 |
+| 主结论表述为“统计关联/预测信息” | 避免相关性被误写成因果 |
 
 ## Issues Encountered
 | Issue | Resolution |
 |-------|------------|
-| PowerShell `python -c` 嵌入换行触发 SyntaxError | 改为单行 Python 表达式并成功读取 Excel 字段 |
+| q1 pipeline 首次运行在图表阶段缺少 score 列 | 增加回归测试并修复 `aggregate_rankings` 输出契约 |
+| PowerShell `python -c` 嵌入换行触发 SyntaxError | 改为单行 Python 表达式 |
 
 ## Resources
-- Skill: `C:\Users\zty\.codex\skills\math-modeling-repo-init\SKILL.md`
-- Init script: `C:\Users\zty\.codex\skills\math-modeling-repo-init\scripts\init_modeling_repo.py`
-- Problem OCR: `2026年实训题2/2026年实训题2  高尔夫球飞行轨迹预测与最优击球策略建模.pdf_by_PaddleOCR-VL-1.6.md`
-- Data attachment: `2026年实训题2/附件（实训题2）.xlsx`
-- Raw manifest: `data/raw_manifest.csv`
+- q1 plan: `docs/plans/task1.md`
+- q1 analysis: `questions/q1/scripts/analysis.py`
+- q1 ranking: `questions/q1/artifacts/tables/q1_feature_ranking.csv`
+- q1 validation checks: `questions/q1/artifacts/tables/q1_validation_checks.csv`
+- q1 paper draft: `report/paper.md`
 
 ## Visual/Browser Findings
-- No browser or image findings.
+- q1 生成的 Pearson/Spearman 热力图、前四变量关系图、多方法重要性图和排名稳定性图均非空且可读。

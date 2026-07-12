@@ -1,0 +1,37 @@
+feature,feature_label,output,output_label,correlation,abs_correlation,n
+ball_speed_mph,Ball speed,carry_distance_yd,Carry distance,0.7579103025997319,0.7579103025997319,735
+ball_speed_mph,Ball speed,max_height_yd,Max height,0.1486922442610652,0.1486922442610652,735
+ball_speed_mph,Ball speed,total_distance_yd,Total distance,0.9057513520760947,0.9057513520760947,735
+ball_speed_mph,Ball speed,lateral_offset_yd,Lateral offset,0.019555807997567627,0.019555807997567627,735
+launch_angle_deg,Launch angle,carry_distance_yd,Carry distance,0.08592634386193315,0.08592634386193315,735
+launch_angle_deg,Launch angle,max_height_yd,Max height,0.7351772090774434,0.7351772090774434,735
+launch_angle_deg,Launch angle,total_distance_yd,Total distance,-0.27538906865908036,0.27538906865908036,735
+launch_angle_deg,Launch angle,lateral_offset_yd,Lateral offset,0.1198852668740734,0.1198852668740734,735
+launch_direction_deg,Launch direction,carry_distance_yd,Carry distance,0.015630702699373066,0.015630702699373066,735
+launch_direction_deg,Launch direction,max_height_yd,Max height,0.06775097566928101,0.06775097566928101,735
+launch_direction_deg,Launch direction,total_distance_yd,Total distance,-0.0679657743123443,0.0679657743123443,735
+launch_direction_deg,Launch direction,lateral_offset_yd,Lateral offset,0.7605676328888237,0.7605676328888237,735
+spin_rate_rpm,Spin rate,carry_distance_yd,Carry distance,0.008780433880802786,0.008780433880802786,735
+spin_rate_rpm,Spin rate,max_height_yd,Max height,0.4467105198756216,0.4467105198756216,735
+spin_rate_rpm,Spin rate,total_distance_yd,Total distance,-0.3574191532613843,0.3574191532613843,735
+spin_rate_rpm,Spin rate,lateral_offset_yd,Lateral offset,0.174685618158628,0.174685618158628,735
+spin_axis_deg,Spin axis,carry_distance_yd,Carry distance,0.1192054505464074,0.1192054505464074,735
+spin_axis_deg,Spin axis,max_height_yd,Max height,0.14960309715459333,0.14960309715459333,735
+spin_axis_deg,Spin axis,total_distance_yd,Total distance,-0.04548149758615443,0.04548149758615443,735
+spin_axis_deg,Spin axis,lateral_offset_yd,Lateral offset,0.7073201724710595,0.7073201724710595,735
+backspin_rpm,Backspin,carry_distance_yd,Carry distance,0.058028371899715034,0.058028371899715034,735
+backspin_rpm,Backspin,max_height_yd,Max height,0.48660413311798506,0.48660413311798506,735
+backspin_rpm,Backspin,total_distance_yd,Total distance,-0.3158995455925692,0.3158995455925692,735
+backspin_rpm,Backspin,lateral_offset_yd,Lateral offset,0.15664581572276176,0.15664581572276176,735
+sidespin_rpm,Sidespin,carry_distance_yd,Carry distance,-0.10039827598110758,0.10039827598110758,735
+sidespin_rpm,Sidespin,max_height_yd,Max height,-0.09982353375611827,0.09982353375611827,735
+sidespin_rpm,Sidespin,total_distance_yd,Total distance,0.022371321652871694,0.022371321652871694,735
+sidespin_rpm,Sidespin,lateral_offset_yd,Lateral offset,-0.7766646743408117,0.7766646743408117,735
+club_speed_mph,Club speed,carry_distance_yd,Carry distance,0.4693474310528045,0.4693474310528045,672
+club_speed_mph,Club speed,max_height_yd,Max height,0.14104444360197224,0.14104444360197224,672
+club_speed_mph,Club speed,total_distance_yd,Total distance,0.5714193059881397,0.5714193059881397,672
+club_speed_mph,Club speed,lateral_offset_yd,Lateral offset,0.027926638259842283,0.027926638259842283,672
+attack_angle_deg,Attack angle,carry_distance_yd,Carry distance,0.15645387486562728,0.15645387486562728,670
+attack_angle_deg,Attack angle,max_height_yd,Max height,0.10490634528591561,0.10490634528591561,670
+attack_angle_deg,Attack angle,total_distance_yd,Total distance,0.24209781114899104,0.24209781114899104,670
+attack_angle_deg,Attack angle,lateral_offset_yd,Lateral offset,0.06729159790553892,0.06729159790553892,670
