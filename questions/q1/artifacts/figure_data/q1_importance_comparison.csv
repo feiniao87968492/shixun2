@@ -1,5 +1,5 @@
 feature,feature_label,method,score
-ball_speed_mph,Ball speed,pearson_score,1.0
+ball_speed_mph,Ball speed,pearson_score,1
 club_speed_mph,Club speed,pearson_score,0.875
 attack_angle_deg,Attack angle,pearson_score,0.75
 launch_angle_deg,Launch angle,pearson_score,0.375
@@ -7,17 +7,17 @@ spin_axis_deg,Spin axis,pearson_score,0.625
 sidespin_rpm,Sidespin,pearson_score,0.5
 backspin_rpm,Backspin,pearson_score,0.25
 launch_direction_deg,Launch direction,pearson_score,0.125
-spin_rate_rpm,Spin rate,pearson_score,0.0
-ball_speed_mph,Ball speed,spearman_score,1.0
+spin_rate_rpm,Spin rate,pearson_score,0
+ball_speed_mph,Ball speed,spearman_score,1
 club_speed_mph,Club speed,spearman_score,0.875
 attack_angle_deg,Attack angle,spearman_score,0.75
-launch_angle_deg,Launch angle,spearman_score,0.0
+launch_angle_deg,Launch angle,spearman_score,0
 spin_axis_deg,Spin axis,spearman_score,0.5
 sidespin_rpm,Sidespin,spearman_score,0.625
 backspin_rpm,Backspin,spearman_score,0.375
 launch_direction_deg,Launch direction,spearman_score,0.25
 spin_rate_rpm,Spin rate,spearman_score,0.125
-ball_speed_mph,Ball speed,ridge_score,1.0
+ball_speed_mph,Ball speed,ridge_score,1
 club_speed_mph,Club speed,ridge_score,0.625
 attack_angle_deg,Attack angle,ridge_score,0.5
 launch_angle_deg,Launch angle,ridge_score,0.875
@@ -25,10 +25,10 @@ spin_axis_deg,Spin axis,ridge_score,0.75
 sidespin_rpm,Sidespin,ridge_score,0.125
 backspin_rpm,Backspin,ridge_score,0.375
 launch_direction_deg,Launch direction,ridge_score,0.25
-spin_rate_rpm,Spin rate,ridge_score,0.0
-ball_speed_mph,Ball speed,permutation_score,1.0
+spin_rate_rpm,Spin rate,ridge_score,0
+ball_speed_mph,Ball speed,permutation_score,1
 club_speed_mph,Club speed,permutation_score,0.25
-attack_angle_deg,Attack angle,permutation_score,0.0
+attack_angle_deg,Attack angle,permutation_score,0
 launch_angle_deg,Launch angle,permutation_score,0.875
 spin_axis_deg,Spin axis,permutation_score,0.625
 sidespin_rpm,Sidespin,permutation_score,0.375

@@ -157,9 +157,15 @@
   - 运行 `python -m pytest -q`，5 个测试通过。
   - 运行 `python scripts/check_repo.py`，通过；仅 q2/q3 pipeline 未实现 warning。
   - 运行 `python scripts/snapshot_raw.py --verify`，3 个 raw 文件验证通过。
+  - 发现复跑后 artifact CSV 存在 1e-15 量级浮点文本抖动。
+  - 新增 `tests/test_artifacts.py`，先观察失败，再将公共 CSV 写出固定为 12 位有效数字。
+  - 继续扩展 artifact 测试为字节级 LF 换行断言，修复 Windows 下 CSV/meta JSON 重写为 CRLF 导致的 `git diff --check` trailing whitespace。
+  - 复跑 q1 pipeline、q1 validate、全量 pytest、仓库自检和 raw verify 均通过。
 - Files created/modified:
   - `task_plan.md`
   - `progress.md`
+  - `src/modeling_common/artifacts.py`
+  - `tests/test_artifacts.py`
 
 ## Task1 Test Results
 | Test | Input | Expected | Actual | Status |
@@ -169,6 +175,9 @@
 | q1 pipeline | `python questions\q1\scripts\pipeline.py --config configs/default.yaml` | Generate q1 artifacts | Completed; top features ball_speed, club_speed, attack_angle, launch_angle, spin_axis | pass |
 | q1 artifact validation | `python questions\q1\scripts\validate.py` | All q1 artifacts exist with data/meta | 26 checks passed | pass |
 | full pytest | `python -m pytest -q` | All tests pass | 5 passed | pass |
+| artifact format regression | `python -m pytest tests\test_artifacts.py -q` | Stable CSV float precision and LF newlines | 1 passed after RED failures | pass |
+| full pytest after artifact fix | `python -m pytest -q` | All tests pass | 6 passed | pass |
+| diff whitespace check | `git diff --check` | No whitespace errors | No output | pass |
 | repo check | `python scripts\check_repo.py` | No errors | Passed with q2/q3 scaffold warnings | pass |
 | raw verify | `python scripts\snapshot_raw.py --verify` | Raw files match manifest | Verified 3 files | pass |
 
@@ -176,6 +185,9 @@
 | Timestamp | Error | Attempt | Resolution |
 |-----------|-------|---------|------------|
 | 2026-07-12 | q1 pipeline failed at visualization due missing `pearson_score`/`ridge_score` columns | 1 | Added regression test and kept score columns in `aggregate_rankings` |
+| 2026-07-12 | q1 pipeline exceeded 180-second tool timeout | 1 | Reran with 900-second timeout; script completed successfully |
+| 2026-07-12 | q1 generated CSV artifacts changed only in last-bit float text formatting after rerun | 1 | Added failing artifact precision test, fixed `save_table` and `save_figure_bundle` with stable float format |
+| 2026-07-12 | Generated CSV/meta artifacts used CRLF on Windows, causing `git diff --check` trailing whitespace reports | 1 | Added byte-level LF assertions and fixed artifact writers to use LF |
 
 ## Task1 Reboot Check
 | Question | Answer |

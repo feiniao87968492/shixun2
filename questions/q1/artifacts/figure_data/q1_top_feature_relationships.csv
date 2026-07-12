@@ -902,8 +902,8 @@ x,carry_distance_yd,feature,feature_label
 86.8602,169.0289,club_speed_mph,Club speed
 84.2654,148.7314,club_speed_mph,Club speed
 82.0061,71.8941,club_speed_mph,Club speed
-0.0,152.8106,club_speed_mph,Club speed
-0.0,162.9812,club_speed_mph,Club speed
+0,152.8106,club_speed_mph,Club speed
+0,162.9812,club_speed_mph,Club speed
 78.5165,168.1649,club_speed_mph,Club speed
 90.9091,161.8438,club_speed_mph,Club speed
 86.8602,145.2975,club_speed_mph,Club speed
@@ -984,7 +984,7 @@ x,carry_distance_yd,feature,feature_label
 82.2074,132.196,club_speed_mph,Club speed
 84.8917,157.36,club_speed_mph,Club speed
 86.5471,147.6925,club_speed_mph,Club speed
-0.0,125.9296,club_speed_mph,Club speed
+0,125.9296,club_speed_mph,Club speed
 74.7137,126.7826,club_speed_mph,Club speed
 77.5322,153.0512,club_speed_mph,Club speed
 70.7767,106.2227,club_speed_mph,Club speed
@@ -1533,7 +1533,7 @@ x,carry_distance_yd,feature,feature_label
 -4.46,154.8119,attack_angle_deg,Attack angle
 -2.11,174.4204,attack_angle_deg,Attack angle
 2.95,135.8377,attack_angle_deg,Attack angle
--4.0,165.1903,attack_angle_deg,Attack angle
+-4,165.1903,attack_angle_deg,Attack angle
 -4.15,119.8928,attack_angle_deg,Attack angle
 -4.52,96.8723,attack_angle_deg,Attack angle
 -4.54,166.5901,attack_angle_deg,Attack angle
@@ -1574,8 +1574,8 @@ x,carry_distance_yd,feature,feature_label
 -2.59,169.0289,attack_angle_deg,Attack angle
 -4.03,148.7314,attack_angle_deg,Attack angle
 -4.41,71.8941,attack_angle_deg,Attack angle
-0.0,152.8106,attack_angle_deg,Attack angle
-0.0,162.9812,attack_angle_deg,Attack angle
+0,152.8106,attack_angle_deg,Attack angle
+0,162.9812,attack_angle_deg,Attack angle
 5.17,168.1649,attack_angle_deg,Attack angle
 -2.71,161.8438,attack_angle_deg,Attack angle
 -4.48,145.2975,attack_angle_deg,Attack angle
@@ -1611,7 +1611,7 @@ x,carry_distance_yd,feature,feature_label
 -0.4,142.7931,attack_angle_deg,Attack angle
 -0.98,161.822,attack_angle_deg,Attack angle
 1.67,130.818,attack_angle_deg,Attack angle
--3.0,123.8517,attack_angle_deg,Attack angle
+-3,123.8517,attack_angle_deg,Attack angle
 1.96,163.7249,attack_angle_deg,Attack angle
 -2.89,87.5656,attack_angle_deg,Attack angle
 -3.08,143.5258,attack_angle_deg,Attack angle
@@ -1636,8 +1636,8 @@ x,carry_distance_yd,feature,feature_label
 -3.11,136.0346,attack_angle_deg,Attack angle
 -7.68,153.423,attack_angle_deg,Attack angle
 3.92,101.8482,attack_angle_deg,Attack angle
--6.0,97.08,attack_angle_deg,Attack angle
-11.0,112.9593,attack_angle_deg,Attack angle
+-6,97.08,attack_angle_deg,Attack angle
+11,112.9593,attack_angle_deg,Attack angle
 -0.92,101.2467,attack_angle_deg,Attack angle
 -3.94,44.3351,attack_angle_deg,Attack angle
 -3.75,145.6256,attack_angle_deg,Attack angle
@@ -1655,7 +1655,7 @@ x,carry_distance_yd,feature,feature_label
 -7.13,132.196,attack_angle_deg,Attack angle
 -5.69,157.36,attack_angle_deg,Attack angle
 -3.84,147.6925,attack_angle_deg,Attack angle
-0.0,125.9296,attack_angle_deg,Attack angle
+0,125.9296,attack_angle_deg,Attack angle
 -4.27,126.7826,attack_angle_deg,Attack angle
 -4.12,153.0512,attack_angle_deg,Attack angle
 3.19,106.2227,attack_angle_deg,Attack angle
@@ -1821,7 +1821,7 @@ x,carry_distance_yd,feature,feature_label
 -0.81,118.0446,attack_angle_deg,Attack angle
 -3.64,113.9436,attack_angle_deg,Attack angle
 6.96,80.4899,attack_angle_deg,Attack angle
--5.0,125.6124,attack_angle_deg,Attack angle
+-5,125.6124,attack_angle_deg,Attack angle
 -4.63,113.9982,attack_angle_deg,Attack angle
 -2.32,119.4444,attack_angle_deg,Attack angle
 -0.8,137.675,attack_angle_deg,Attack angle
@@ -1870,7 +1870,7 @@ x,carry_distance_yd,feature,feature_label
 -3.7,115.5731,attack_angle_deg,Attack angle
 -5.42,121.3801,attack_angle_deg,Attack angle
 -2.07,105.818,attack_angle_deg,Attack angle
--4.0,100.6343,attack_angle_deg,Attack angle
+-4,100.6343,attack_angle_deg,Attack angle
 -4.66,121.7629,attack_angle_deg,Attack angle
 -4.7,137.9265,attack_angle_deg,Attack angle
 -6.04,120.199,attack_angle_deg,Attack angle
@@ -1938,12 +1938,12 @@ x,carry_distance_yd,feature,feature_label
 0.03,185.9252,attack_angle_deg,Attack angle
 -2.36,150.2078,attack_angle_deg,Attack angle
 -2.14,172.6925,attack_angle_deg,Attack angle
--1.0,202.1216,attack_angle_deg,Attack angle
+-1,202.1216,attack_angle_deg,Attack angle
 6.27,128.3793,attack_angle_deg,Attack angle
 3.71,185.0284,attack_angle_deg,Attack angle
 0.65,191.5245,attack_angle_deg,Attack angle
 3.12,222.2878,attack_angle_deg,Attack angle
-1.0,227.7997,attack_angle_deg,Attack angle
+1,227.7997,attack_angle_deg,Attack angle
 1.08,206.8351,attack_angle_deg,Attack angle
 1.24,193.3399,attack_angle_deg,Attack angle
 -6.83,118.8539,attack_angle_deg,Attack angle
@@ -2001,7 +2001,7 @@ x,carry_distance_yd,feature,feature_label
 -4.99,143.7445,attack_angle_deg,Attack angle
 -2.69,132.2835,attack_angle_deg,Attack angle
 -2.32,160.7612,attack_angle_deg,Attack angle
--3.0,72.7581,attack_angle_deg,Attack angle
+-3,72.7581,attack_angle_deg,Attack angle
 -0.83,126.5748,attack_angle_deg,Attack angle
 -4.77,125.9842,attack_angle_deg,Attack angle
 -5.7,144.3023,attack_angle_deg,Attack angle
@@ -2296,7 +2296,7 @@ x,carry_distance_yd,feature,feature_label
 13.59,161.4939,launch_angle_deg,Launch angle
 11.24,160.4221,launch_angle_deg,Launch angle
 14.41,141.6776,launch_angle_deg,Launch angle
-12.0,181.8679,launch_angle_deg,Launch angle
+12,181.8679,launch_angle_deg,Launch angle
 13.22,169.0289,launch_angle_deg,Launch angle
 11.39,148.7314,launch_angle_deg,Launch angle
 2.72,71.8941,launch_angle_deg,Launch angle
@@ -2407,7 +2407,7 @@ x,carry_distance_yd,feature,feature_label
 11.12,81.7913,launch_angle_deg,Launch angle
 12.62,91.5792,launch_angle_deg,Launch angle
 13.33,79.4619,launch_angle_deg,Launch angle
-23.0,124.4313,launch_angle_deg,Launch angle
+23,124.4313,launch_angle_deg,Launch angle
 3.99,57.8959,launch_angle_deg,Launch angle
 19.05,127.8543,launch_angle_deg,Launch angle
 19.36,96.916,launch_angle_deg,Launch angle
@@ -2437,7 +2437,7 @@ x,carry_distance_yd,feature,feature_label
 16.64,165.584,launch_angle_deg,Launch angle
 5.41,99.6391,launch_angle_deg,Launch angle
 12.94,49.3329,launch_angle_deg,Launch angle
-17.0,167.3884,launch_angle_deg,Launch angle
+17,167.3884,launch_angle_deg,Launch angle
 17.06,154.6369,launch_angle_deg,Launch angle
 15.15,146.3145,launch_angle_deg,Launch angle
 13.47,149.5297,launch_angle_deg,Launch angle
@@ -2463,7 +2463,7 @@ x,carry_distance_yd,feature,feature_label
 21.1,121.0411,launch_angle_deg,Launch angle
 19.74,115.7152,launch_angle_deg,Launch angle
 20.34,115.4528,launch_angle_deg,Launch angle
-20.0,121.4458,launch_angle_deg,Launch angle
+20,121.4458,launch_angle_deg,Launch angle
 20.08,137.8062,launch_angle_deg,Launch angle
 19.8,147.0582,launch_angle_deg,Launch angle
 14.3,108.9567,launch_angle_deg,Launch angle
@@ -2584,7 +2584,7 @@ x,carry_distance_yd,feature,feature_label
 14.8,118.3946,launch_angle_deg,Launch angle
 12.4,104.6807,launch_angle_deg,Launch angle
 11.31,172.1019,launch_angle_deg,Launch angle
-13.0,101.6732,launch_angle_deg,Launch angle
+13,101.6732,launch_angle_deg,Launch angle
 13.21,114.8731,launch_angle_deg,Launch angle
 9.74,145.2537,launch_angle_deg,Launch angle
 11.15,113.353,launch_angle_deg,Launch angle
@@ -2626,7 +2626,7 @@ x,carry_distance_yd,feature,feature_label
 14.68,137.3141,launch_angle_deg,Launch angle
 7.07,168.2524,launch_angle_deg,Launch angle
 17.2,194.3788,launch_angle_deg,Launch angle
-18.0,192.1807,launch_angle_deg,Launch angle
+18,192.1807,launch_angle_deg,Launch angle
 13.95,147.8565,launch_angle_deg,Launch angle
 12.28,213.9217,launch_angle_deg,Launch angle
 17.49,190.245,launch_angle_deg,Launch angle

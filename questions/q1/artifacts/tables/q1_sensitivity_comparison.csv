@@ -1,7 +1,7 @@
 scenario,n,feature_count,top3,top5,spearman_with_main_rank,notes
-S1_core,735,5,ball_speed_mph;spin_axis_deg;launch_angle_deg,ball_speed_mph;spin_axis_deg;launch_angle_deg;launch_direction_deg;spin_rate_rpm,0.44566881162492444,No club speed or attack angle.
-S2_complete,670,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.8275862068965517,Complete-case primary variables.
-S3_imputed,735,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_angle_deg,0.8965517241379312,Median imputation plus missing indicators.
-S3_spin_components,735,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;sidespin_rpm;backspin_rpm,0.7413793103448276,Backspin and sidespin representation.
-trim_1pct,559,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.8275862068965517,Rows outside 1%-99% range removed.
-winsorized_1pct,735,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.8275862068965517,Continuous variables clipped to 1%-99%.
+S1_core,735,5,ball_speed_mph;spin_axis_deg;launch_angle_deg,ball_speed_mph;spin_axis_deg;launch_angle_deg;launch_direction_deg;spin_rate_rpm,0.445668811625,No club speed or attack angle.
+S2_complete,670,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.827586206897,Complete-case primary variables.
+S3_imputed,735,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_angle_deg,0.896551724138,Median imputation plus missing indicators.
+S3_spin_components,735,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;sidespin_rpm;backspin_rpm,0.741379310345,Backspin and sidespin representation.
+trim_1pct,559,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.827586206897,Rows outside 1%-99% range removed.
+winsorized_1pct,735,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.827586206897,Continuous variables clipped to 1%-99%.

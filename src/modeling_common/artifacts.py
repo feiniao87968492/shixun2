@@ -8,6 +8,9 @@ from typing import Any
 import pandas as pd
 from matplotlib.figure import Figure
 
+CSV_FLOAT_FORMAT = "%.12g"
+CSV_LINE_TERMINATOR = "\n"
+
 
 def _as_dataframe(data: Any) -> pd.DataFrame:
     if isinstance(data, pd.DataFrame):
@@ -50,7 +53,12 @@ def save_figure_bundle(
     metadata_path = data_dir / f"{stem}.meta.json"
 
     fig.savefig(figure_path, dpi=dpi, bbox_inches="tight")
-    frame.to_csv(data_path, index=False)
+    frame.to_csv(
+        data_path,
+        index=False,
+        float_format=CSV_FLOAT_FORMAT,
+        lineterminator=CSV_LINE_TERMINATOR,
+    )
     metadata = {
         "stem": stem,
         "title": title,
@@ -60,7 +68,8 @@ def save_figure_bundle(
         "columns": list(map(str, frame.columns)),
         "notes": notes,
     }
-    metadata_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
+    with metadata_path.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(metadata, ensure_ascii=False, indent=2))
     return {"figure": figure_path, "data": data_path, "metadata": metadata_path}
 
 
@@ -80,7 +89,12 @@ def save_table(
     table_dir = Path(question_dir) / "artifacts" / "tables"
     table_dir.mkdir(parents=True, exist_ok=True)
     csv_path = table_dir / f"{stem}.csv"
-    frame.to_csv(csv_path, index=index)
+    frame.to_csv(
+        csv_path,
+        index=index,
+        float_format=CSV_FLOAT_FORMAT,
+        lineterminator=CSV_LINE_TERMINATOR,
+    )
     outputs = {"csv": csv_path}
     if save_xlsx:
         xlsx_path = table_dir / f"{stem}.xlsx"

@@ -64,3 +64,6 @@ Phase 10
 |-------|---------|------------|
 | q1 pipeline 首次运行图表阶段 KeyError: score columns missing | 1 | 增加回归测试，保留 aggregate ranking 的四个 score 列 |
 | PowerShell 中 `python -c` 嵌入 `\n` 导致 SyntaxError | 1-2 | 改为不含换行的单行列表表达式 |
+| q1 pipeline 在 180 秒工具窗口内超时 | 1 | 确认为耗时窗口不足，使用 900 秒窗口复跑通过，实际约 192-203 秒 |
+| q1 artifact 重跑后出现 1e-15 量级浮点 CSV diff | 1 | 增加 artifact 浮点格式测试，公共 CSV 写出固定为 12 位有效数字 |
+| q1 artifact 在 Windows 下重写为 CRLF 导致 `git diff --check` trailing whitespace | 1 | 扩展 artifact 测试为字节级 LF 断言，公共 CSV 和 meta JSON 写出统一 LF |
