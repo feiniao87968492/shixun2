@@ -1,0 +1,9 @@
+artifact_id,question,type,title,purpose,script,data_file,artifact_file,report_location,status,notes
+Q1-T01,q1,table,输入输出相关性矩阵,展示各输入与飞行距离/最高点/横向偏移等输出的关联强度,questions/q1/scripts/pipeline.py,questions/q1/artifacts/tables/q1_correlation_matrix.csv,questions/q1/artifacts/tables/q1_correlation_matrix.csv,论文第1问,planned,
+Q1-T02,q1,table,飞行距离影响因素排序,回答关键因素和次要因素,questions/q1/scripts/pipeline.py,questions/q1/artifacts/tables/q1_feature_importance.csv,questions/q1/artifacts/tables/q1_feature_importance.csv,论文第1问,planned,
+Q1-F01,q1,figure,相关性热力图,直观展示输入输出关联结构,questions/q1/scripts/visualize.py,questions/q1/artifacts/figure_data/q1_correlation_heatmap.csv,questions/q1/artifacts/figures/q1_correlation_heatmap.png,论文第1问,planned,
+Q2-T01,q2,table,监督预测模型性能,报告飞行距离和最高点高度的 RMSE/MAPE,questions/q2/scripts/pipeline.py,questions/q2/artifacts/tables/q2_supervised_metrics.csv,questions/q2/artifacts/tables/q2_supervised_metrics.csv,论文第2问,planned,
+Q2-T02,q2,table,ODE 典型记录误差,比较 100/150/200 yd 典型记录实测与预测,questions/q2/scripts/pipeline.py,questions/q2/artifacts/tables/q2_ode_typical_errors.csv,questions/q2/artifacts/tables/q2_ode_typical_errors.csv,论文第2问,planned,
+Q2-F01,q2,figure,典型击球三维轨迹图,展示约 100/150/200 yd 三条轨迹,questions/q2/scripts/visualize.py,questions/q2/artifacts/figure_data/q2_typical_trajectories.csv,questions/q2/artifacts/figures/q2_typical_trajectories.png,论文第2问,planned,
+Q3-T01,q3,table,最优击球参数表,给出球速/发射角/自旋速率/自旋轴偏角和落点误差,questions/q3/scripts/pipeline.py,questions/q3/artifacts/tables/q3_optimal_parameters.csv,questions/q3/artifacts/tables/q3_optimal_parameters.csv,论文第3问,planned,
+Q3-F01,q3,figure,最优参数三维轨迹图,展示最优击球策略下轨迹和落点,questions/q3/scripts/visualize.py,questions/q3/artifacts/figure_data/q3_optimal_trajectory.csv,questions/q3/artifacts/figures/q3_optimal_trajectory.png,论文第3问,planned,

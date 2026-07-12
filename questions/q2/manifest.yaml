@@ -1,0 +1,29 @@
+question: q2
+status: planned
+objective: "建立监督预测模型和三维 ODE 轨迹模型，完成典型记录误差分析"
+
+inputs:
+  raw_data:
+    - data/raw/problem/附件（实训题2）.xlsx
+  processed_data:
+    - data/processed/golf_shots_clean.csv
+  upstream_artifacts:
+    - questions/q1/artifacts/tables/q1_feature_importance.csv
+
+entrypoints:
+  pipeline: questions/q2/scripts/pipeline.py
+  validation: questions/q2/scripts/validate.py
+  visualization: questions/q2/scripts/visualize.py
+
+outputs:
+  tables: questions/q2/artifacts/tables
+  figures: questions/q2/artifacts/figures
+  figure_data: questions/q2/artifacts/figure_data
+  models: questions/q2/artifacts/models
+
+quality_gates:
+  baseline: false
+  validation: false
+  sensitivity: false
+  evidence_chain: false
+  reproducible: false

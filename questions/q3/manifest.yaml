@@ -1,0 +1,30 @@
+question: q3
+status: planned
+objective: "在 200 yd 目标下求解最优击球参数并生成最优三维轨迹"
+
+inputs:
+  raw_data:
+    - data/raw/problem/附件（实训题2）.xlsx
+  processed_data:
+    - data/processed/golf_shots_clean.csv
+  upstream_artifacts:
+    - questions/q2/artifacts/models/q2_prediction_model.joblib
+    - questions/q2/artifacts/tables/q2_ode_parameters.csv
+
+entrypoints:
+  pipeline: questions/q3/scripts/pipeline.py
+  validation: questions/q3/scripts/validate.py
+  visualization: questions/q3/scripts/visualize.py
+
+outputs:
+  tables: questions/q3/artifacts/tables
+  figures: questions/q3/artifacts/figures
+  figure_data: questions/q3/artifacts/figure_data
+  models: questions/q3/artifacts/models
+
+quality_gates:
+  baseline: false
+  validation: false
+  sensitivity: false
+  evidence_chain: false
+  reproducible: false
