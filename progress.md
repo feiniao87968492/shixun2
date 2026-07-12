@@ -206,7 +206,7 @@
 ## Session: 2026-07-12 — q1 review1 completion audit
 
 ### Phase 11: review1 整改补齐
-- **Status:** in_progress, final commit/push pending
+- **Status:** complete
 - Actions taken:
   - 确认远端已成功推送到 `origin/main`，当前远端提交为 `756a0aa fix(q1): complete review1 reproducibility audit`。
   - 读取 `questions/q1/review1.md`、`task_plan.md`、`progress.md` 和 `findings.md`，从当前工作树重新审计完成标准。
@@ -218,6 +218,8 @@
   - 运行 standalone 绘图入口，确认 q1 图表可由 `visualize.py` 独立再生成。
   - 按 review1 验收顺序运行 pipeline、validate、pipeline，并比较关键 CSV hash；`q1_feature_summary.csv`、`q1_correlation_confidence_intervals.csv`、`q1_permutation_importance.csv`、`q1_model_performance.csv` hash 前后完全一致。
   - 运行全量 pytest、仓库检查、raw snapshot verify 和 whitespace check。
+  - 提交 `36fbd51 chore(q1): close review1 audit gaps` 并推送到 `origin/main`。
+  - 补记 Phase 11 状态为 complete。
 - Files modified:
   - `questions/q1/scripts/visualize.py`
   - `tests/test_q1_review1.py`
@@ -243,5 +245,5 @@
 | repo check | `python scripts\check_repo.py` | No errors | Passed with q2/q3 scaffold warnings | pass |
 | raw verify | `python scripts\snapshot_raw.py --verify` | Raw files match manifest | Verified 3 raw files | pass |
 
-### Pending
-- Commit and push the Phase 11 completion-audit patch.
+### Completion
+- Phase 11 review1 completion-audit patch has been committed and pushed.

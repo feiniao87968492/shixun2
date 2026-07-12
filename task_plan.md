@@ -57,8 +57,8 @@ Phase 11
 - [x] 补齐 `docs/data_dictionary.md`、`docs/assumptions.md`、`docs/symbols.md`、`devlog.md` 与计划文件中的 review1 口径
 - [x] 修正 `questions/q1/scripts/visualize.py` standalone 入口的 review1 表依赖
 - [x] 运行最终完整验证
-- [ ] 提交并推送补齐改动
-- **Status:** in_progress, final commit/push pending
+- [x] 提交并推送补齐改动
+- **Status:** complete
 
 ## Key Questions
 1. task1 是否要求完整实现而非文档计划？答案：是，要求生成 q1 表格、图片、稳定性分析、证据链和结果文档。
