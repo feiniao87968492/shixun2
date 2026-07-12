@@ -42,8 +42,10 @@ Phase 10
 - [x] 运行单元测试
 - [x] 运行 q1 pipeline/validate
 - [x] 运行仓库自检和 raw snapshot verify
-- [ ] 提交并推送
-- **Status:** in_progress
+- [x] 提交本地 task1 结果
+- [x] 提交 artifact 序列化稳定性修复
+- [ ] 推送到远端 `origin/main`（当前环境无法连接 `github.com:443`）
+- **Status:** complete for task1 modeling deliverables; remote sync pending on network recovery
 
 ## Key Questions
 1. task1 是否要求完整实现而非文档计划？答案：是，要求生成 q1 表格、图片、稳定性分析、证据链和结果文档。
@@ -67,3 +69,4 @@ Phase 10
 | q1 pipeline 在 180 秒工具窗口内超时 | 1 | 确认为耗时窗口不足，使用 900 秒窗口复跑通过，实际约 192-203 秒 |
 | q1 artifact 重跑后出现 1e-15 量级浮点 CSV diff | 1 | 增加 artifact 浮点格式测试，公共 CSV 写出固定为 12 位有效数字 |
 | q1 artifact 在 Windows 下重写为 CRLF 导致 `git diff --check` trailing whitespace | 1 | 扩展 artifact 测试为字节级 LF 断言，公共 CSV 和 meta JSON 写出统一 LF |
+| `git push origin main` 无法连接 GitHub | 4 | 普通 push、授权 push、`curl -I https://github.com`、HTTP/1.1 回退均失败；本地提交保留，待网络恢复后执行 `git push origin main` |

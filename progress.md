@@ -161,6 +161,9 @@
   - 新增 `tests/test_artifacts.py`，先观察失败，再将公共 CSV 写出固定为 12 位有效数字。
   - 继续扩展 artifact 测试为字节级 LF 换行断言，修复 Windows 下 CSV/meta JSON 重写为 CRLF 导致的 `git diff --check` trailing whitespace。
   - 复跑 q1 pipeline、q1 validate、全量 pytest、仓库自检和 raw verify 均通过。
+  - 创建本地提交 `2d48c97 feat(q1): complete factor analysis workflow`。
+  - 创建本地提交 `4e4e967 test: stabilize modeling artifact serialization`。
+  - 多次尝试 `git push origin main`，均因当前环境无法连接 `github.com:443` 失败；本地分支保留 ahead 状态，待网络恢复后推送。
 - Files created/modified:
   - `task_plan.md`
   - `progress.md`
@@ -180,6 +183,7 @@
 | diff whitespace check | `git diff --check` | No whitespace errors | No output | pass |
 | repo check | `python scripts\check_repo.py` | No errors | Passed with q2/q3 scaffold warnings | pass |
 | raw verify | `python scripts\snapshot_raw.py --verify` | Raw files match manifest | Verified 3 files | pass |
+| remote push | `git push origin main` | Push local commits to GitHub | Failed: connection reset / cannot connect to github.com:443 | blocked |
 
 ## Task1 Error Log
 | Timestamp | Error | Attempt | Resolution |
@@ -188,6 +192,7 @@
 | 2026-07-12 | q1 pipeline exceeded 180-second tool timeout | 1 | Reran with 900-second timeout; script completed successfully |
 | 2026-07-12 | q1 generated CSV artifacts changed only in last-bit float text formatting after rerun | 1 | Added failing artifact precision test, fixed `save_table` and `save_figure_bundle` with stable float format |
 | 2026-07-12 | Generated CSV/meta artifacts used CRLF on Windows, causing `git diff --check` trailing whitespace reports | 1 | Added byte-level LF assertions and fixed artifact writers to use LF |
+| 2026-07-12 | GitHub push failed because current environment cannot connect to `github.com:443` | 4 | Verified no proxy config; `curl.exe -I https://github.com` and HTTP/1.1 git push also failed. Keep local commits and retry after network recovery |
 
 ## Task1 Reboot Check
 | Question | Answer |
