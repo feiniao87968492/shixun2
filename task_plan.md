@@ -29,7 +29,7 @@ Phase 13 - q2 first-stage closeout
 - [x] Update q2 docs, evidence chain, figure/table registry, README, paper draft, devlog, findings, and progress.
 - [x] Run q2 pipeline and targeted q2 validation.
 - [x] Run full repository validation.
-- [ ] Commit and push q2 first-stage work.
+- [x] Commit and push q2 first-stage work.
 
 ## Key Results
 

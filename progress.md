@@ -45,10 +45,13 @@
 - Ran `python questions\q2\scripts\validate.py --config configs/default.yaml`: 45 checks passed.
 - Updated q2 docs, evidence chain, figure/table registry, README, paper draft, devlog, task plan, findings, and progress.
 
-## Pending
+## Commit and Push
 
-- Stage only allowed files.
-- Commit and push q2 first-stage work to `origin/main`.
+- Staged only allowed files; raw/PDF/Excel guard produced no matches.
+- Created commit `faaf93d feat(q2): add first-stage supervised and ode baseline`.
+- HTTPS push failed because command-line TCP to `github.com:443` was reset, while GitHub API/SSH were reachable.
+- Pushed successfully through one-time SSH URL: `git@github.com:feiniao87968492/shixun2.git`.
+- Synced `refs/remotes/origin/main` to `faaf93d`.
 
 ## Final Verification Before Commit
 
