@@ -2,7 +2,7 @@
   "stem": "q1_rank_stability",
   "title": "Bootstrap rank stability",
   "source_script": "questions/q1/scripts/visualize.py",
-  "generated_at": "2026-07-12T10:31:35.219914+00:00",
+  "generated_at": "2026-07-12T11:47:36.509350+00:00",
   "rows": 9,
   "columns": [
     "feature",
@@ -14,7 +14,7 @@
     "top5_frequency",
     "iterations",
     "feature_label",
-    "final_rank"
+    "marginal_rank"
   ],
   "notes": "Intervals use marginal Pearson/Spearman bootstrap ranking."
 }

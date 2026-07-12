@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -18,14 +19,22 @@ from modeling_common.artifacts import save_table  # noqa: E402
 from modeling_common.paths import project_root  # noqa: E402
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="validate q1 generated artifacts and numeric checks")
+    parser.add_argument("--config", default="configs/default.yaml")
+    return parser.parse_args()
+
+
 def main() -> int:
+    args = parse_args()
+    del args
     root = project_root()
     checks = validate_outputs(root)
     save_table(checks, stem="q1_validation_checks", question_dir=root / "questions" / "q1")
     failed = checks[~checks["passed"]]
     if not failed.empty:
-        print(f"[error] q1 validation failed: {len(failed)} missing/empty artifacts")
-        print(failed[["kind", "path"]].to_string(index=False))
+        print(f"[error] q1 validation failed: {len(failed)} checks")
+        print(failed[["check", "kind", "path", "details"]].to_string(index=False))
         return 1
     print(f"[ok] q1 validation passed: {len(checks)} artifact checks")
     return 0

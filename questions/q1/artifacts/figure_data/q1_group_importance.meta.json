@@ -1,0 +1,18 @@
+{
+  "stem": "q1_group_importance",
+  "title": "Group permutation importance",
+  "source_script": "questions/q1/scripts/visualize.py",
+  "generated_at": "2026-07-12T11:47:37.784207+00:00",
+  "rows": 5,
+  "columns": [
+    "group",
+    "sample_view",
+    "features",
+    "original_rmse",
+    "permuted_rmse",
+    "importance_mean",
+    "importance_std",
+    "rank"
+  ],
+  "notes": "Groups are permuted as blocks on validation samples."
+}

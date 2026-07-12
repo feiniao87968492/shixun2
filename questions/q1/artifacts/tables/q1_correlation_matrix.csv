@@ -27,14 +27,14 @@ sidespin_rpm,Sidespin,carry_distance_yd,Carry distance,-0.100398275981,0.1003982
 sidespin_rpm,Sidespin,max_height_yd,Max height,-0.0998235337561,0.0998235337561,735,pearson
 sidespin_rpm,Sidespin,total_distance_yd,Total distance,0.0223713216529,0.0223713216529,735,pearson
 sidespin_rpm,Sidespin,lateral_offset_yd,Lateral offset,-0.776664674341,0.776664674341,735,pearson
-club_speed_mph,Club speed,carry_distance_yd,Carry distance,0.469347431053,0.469347431053,672,pearson
-club_speed_mph,Club speed,max_height_yd,Max height,0.141044443602,0.141044443602,672,pearson
-club_speed_mph,Club speed,total_distance_yd,Total distance,0.571419305988,0.571419305988,672,pearson
-club_speed_mph,Club speed,lateral_offset_yd,Lateral offset,0.0279266382598,0.0279266382598,672,pearson
-attack_angle_deg,Attack angle,carry_distance_yd,Carry distance,0.156453874866,0.156453874866,670,pearson
-attack_angle_deg,Attack angle,max_height_yd,Max height,0.104906345286,0.104906345286,670,pearson
-attack_angle_deg,Attack angle,total_distance_yd,Total distance,0.242097811149,0.242097811149,670,pearson
-attack_angle_deg,Attack angle,lateral_offset_yd,Lateral offset,0.0672915979055,0.0672915979055,670,pearson
+club_speed_mph,Club speed,carry_distance_yd,Carry distance,0.581347382095,0.581347382095,669,pearson
+club_speed_mph,Club speed,max_height_yd,Max height,0.153777921851,0.153777921851,669,pearson
+club_speed_mph,Club speed,total_distance_yd,Total distance,0.700648174257,0.700648174257,669,pearson
+club_speed_mph,Club speed,lateral_offset_yd,Lateral offset,0.0792066565175,0.0792066565175,669,pearson
+attack_angle_deg,Attack angle,carry_distance_yd,Carry distance,0.156081000238,0.156081000238,667,pearson
+attack_angle_deg,Attack angle,max_height_yd,Max height,0.106235742561,0.106235742561,667,pearson
+attack_angle_deg,Attack angle,total_distance_yd,Total distance,0.242088423174,0.242088423174,667,pearson
+attack_angle_deg,Attack angle,lateral_offset_yd,Lateral offset,0.0647311915814,0.0647311915814,667,pearson
 ball_speed_mph,Ball speed,carry_distance_yd,Carry distance,0.776022859843,0.776022859843,735,spearman
 ball_speed_mph,Ball speed,max_height_yd,Max height,0.123375433981,0.123375433981,735,spearman
 ball_speed_mph,Ball speed,total_distance_yd,Total distance,0.920316817694,0.920316817694,735,spearman
@@ -63,11 +63,11 @@ sidespin_rpm,Sidespin,carry_distance_yd,Carry distance,-0.140975766456,0.1409757
 sidespin_rpm,Sidespin,max_height_yd,Max height,-0.135699589554,0.135699589554,735,spearman
 sidespin_rpm,Sidespin,total_distance_yd,Total distance,-0.00793539434771,0.00793539434771,735,spearman
 sidespin_rpm,Sidespin,lateral_offset_yd,Lateral offset,-0.815005113564,0.815005113564,735,spearman
-club_speed_mph,Club speed,carry_distance_yd,Carry distance,0.582869236511,0.582869236511,672,spearman
-club_speed_mph,Club speed,max_height_yd,Max height,0.0837253663745,0.0837253663745,672,spearman
-club_speed_mph,Club speed,total_distance_yd,Total distance,0.714451847915,0.714451847915,672,spearman
-club_speed_mph,Club speed,lateral_offset_yd,Lateral offset,0.0396474615976,0.0396474615976,672,spearman
-attack_angle_deg,Attack angle,carry_distance_yd,Carry distance,0.206765256697,0.206765256697,670,spearman
-attack_angle_deg,Attack angle,max_height_yd,Max height,0.0545880314069,0.0545880314069,670,spearman
-attack_angle_deg,Attack angle,total_distance_yd,Total distance,0.326959861055,0.326959861055,670,spearman
-attack_angle_deg,Attack angle,lateral_offset_yd,Lateral offset,0.0554205476866,0.0554205476866,670,spearman
+club_speed_mph,Club speed,carry_distance_yd,Carry distance,0.589009934919,0.589009934919,669,spearman
+club_speed_mph,Club speed,max_height_yd,Max height,0.0814085533432,0.0814085533432,669,spearman
+club_speed_mph,Club speed,total_distance_yd,Total distance,0.720688016264,0.720688016264,669,spearman
+club_speed_mph,Club speed,lateral_offset_yd,Lateral offset,0.0473813800264,0.0473813800264,669,spearman
+attack_angle_deg,Attack angle,carry_distance_yd,Carry distance,0.20633818305,0.20633818305,667,spearman
+attack_angle_deg,Attack angle,max_height_yd,Max height,0.0569096931624,0.0569096931624,667,spearman
+attack_angle_deg,Attack angle,total_distance_yd,Total distance,0.327402093282,0.327402093282,667,spearman
+attack_angle_deg,Attack angle,lateral_offset_yd,Lateral offset,0.0507906567291,0.0507906567291,667,spearman

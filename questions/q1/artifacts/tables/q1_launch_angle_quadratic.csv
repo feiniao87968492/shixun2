@@ -1,0 +1,3 @@
+model,features,n,rmse_mean,rmse_std,mae_mean,mae_std,r2_mean,r2_std,beta0_quadratic_full_sample,beta1_quadratic_full_sample,beta2_quadratic_full_sample,theta_star_deg,theta_star_in_observed_range
+linear_launch_angle,launch_angle_deg,735,37.2432322338,1.58786748928,30.3509010781,1.32977267411,-0.00337967057203,0.0185798613655,79.3987981404,8.02023209264,-0.224112796242,17.893293527,True
+quadratic_launch_angle,launch_angle_deg;launch_angle_deg_squared,735,34.6445992075,1.3870269612,28.1740751424,1.10212265843,0.130121742407,0.0541252207748,79.3987981404,8.02023209264,-0.224112796242,17.893293527,True

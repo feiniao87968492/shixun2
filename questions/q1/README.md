@@ -17,10 +17,20 @@
 
 ## 输出
 
-- 核心数值或决策：球速是最稳定关键因素；速度组重要性最高，发射姿态组次之，自旋状态组中等，水平方向组最弱。
+- 核心数值或决策：球速是唯一稳定首要因素；杆头速度边际相关较强但与球速信息重叠；发射角属于结构性非线性因素；攻击角不再写作稳定关键因素，而是独立贡献有限且不稳定。
+- 数据清洗变化：`record_id=225,226,308` 的杆头速度和攻击角异常 0 值已修正为缺失，修正后缺失数为 66/68。
 - 结果表：`artifacts/tables/`
 - 图：`artifacts/figures/`
 - 生图数据：`artifacts/figure_data/`
+- 运行元数据：`artifacts/run_metadata.json`
+
+## 关键产物
+
+- `q1_feature_summary.csv`：边际关联、条件线性贡献、非线性贡献和稳定性分类。
+- `q1_invalid_zero_records.csv`：异常零值修正记录。
+- `q1_speed_overlap_models.csv`：球速/杆头速度信息重叠对照。
+- `q1_launch_angle_quadratic.csv`：发射角线性与二次项模型对照。
+- `q1_raw_importance_comparison.png`、`q1_group_importance.png`、`q1_sensitivity_comparison.png`：新增 review1 图表。
 
 ## 完成条件
 

@@ -22,24 +22,35 @@
     "ball_speed_mph",
     "club_speed_mph",
     "attack_angle_deg",
-    "launch_angle_deg",
+    "sidespin_rpm",
     "spin_axis_deg"
   ],
   "tables": {
     "q1_data_audit": "questions\\q1\\artifacts\\tables\\q1_data_audit.csv",
     "q1_missing_audit": "questions\\q1\\artifacts\\tables\\q1_missing_audit.csv",
+    "q1_invalid_zero_records": "questions\\q1\\artifacts\\tables\\q1_invalid_zero_records.csv",
+    "q1_outlier_audit": "questions\\q1\\artifacts\\tables\\q1_outlier_audit.csv",
     "q1_outlier_flags": "questions\\q1\\artifacts\\tables\\q1_outlier_flags.csv",
     "q1_pearson_correlation": "questions\\q1\\artifacts\\tables\\q1_pearson_correlation.csv",
     "q1_spearman_correlation": "questions\\q1\\artifacts\\tables\\q1_spearman_correlation.csv",
     "q1_kendall_correlation": "questions\\q1\\artifacts\\tables\\q1_kendall_correlation.csv",
     "q1_correlation_matrix": "questions\\q1\\artifacts\\tables\\q1_correlation_matrix.csv",
     "q1_correlation_confidence_intervals": "questions\\q1\\artifacts\\tables\\q1_correlation_confidence_intervals.csv",
+    "q1_correlation_confidence_intervals_long": "questions\\q1\\artifacts\\tables\\q1_correlation_confidence_intervals_long.csv",
     "q1_model_cv_scores": "questions\\q1\\artifacts\\tables\\q1_model_cv_scores.csv",
+    "q1_model_performance": "questions\\q1\\artifacts\\tables\\q1_model_performance.csv",
+    "q1_ridge_coefficients": "questions\\q1\\artifacts\\tables\\q1_ridge_coefficients.csv",
+    "q1_permutation_importance": "questions\\q1\\artifacts\\tables\\q1_permutation_importance.csv",
     "q1_method_importance": "questions\\q1\\artifacts\\tables\\q1_method_importance.csv",
+    "q1_feature_summary": "questions\\q1\\artifacts\\tables\\q1_feature_summary.csv",
     "q1_feature_ranking": "questions\\q1\\artifacts\\tables\\q1_feature_ranking.csv",
     "q1_feature_importance": "questions\\q1\\artifacts\\tables\\q1_feature_importance.csv",
     "q1_group_importance": "questions\\q1\\artifacts\\tables\\q1_group_importance.csv",
     "q1_sensitivity_comparison": "questions\\q1\\artifacts\\tables\\q1_sensitivity_comparison.csv",
+    "q1_spin_representation_comparison": "questions\\q1\\artifacts\\tables\\q1_spin_representation_comparison.csv",
+    "q1_sample_definition_comparison": "questions\\q1\\artifacts\\tables\\q1_sample_definition_comparison.csv",
+    "q1_speed_overlap_models": "questions\\q1\\artifacts\\tables\\q1_speed_overlap_models.csv",
+    "q1_launch_angle_quadratic": "questions\\q1\\artifacts\\tables\\q1_launch_angle_quadratic.csv",
     "q1_rank_stability": "questions\\q1\\artifacts\\tables\\q1_rank_stability.csv"
   },
   "figures": {
@@ -58,6 +69,11 @@
       "data": "questions\\q1\\artifacts\\figure_data\\q1_top_feature_relationships.csv",
       "metadata": "questions\\q1\\artifacts\\figure_data\\q1_top_feature_relationships.meta.json"
     },
+    "q1_raw_importance_comparison": {
+      "figure": "questions\\q1\\artifacts\\figures\\q1_raw_importance_comparison.png",
+      "data": "questions\\q1\\artifacts\\figure_data\\q1_raw_importance_comparison.csv",
+      "metadata": "questions\\q1\\artifacts\\figure_data\\q1_raw_importance_comparison.meta.json"
+    },
     "q1_importance_comparison": {
       "figure": "questions\\q1\\artifacts\\figures\\q1_importance_comparison.png",
       "data": "questions\\q1\\artifacts\\figure_data\\q1_importance_comparison.csv",
@@ -67,6 +83,16 @@
       "figure": "questions\\q1\\artifacts\\figures\\q1_rank_stability.png",
       "data": "questions\\q1\\artifacts\\figure_data\\q1_rank_stability.csv",
       "metadata": "questions\\q1\\artifacts\\figure_data\\q1_rank_stability.meta.json"
+    },
+    "q1_group_importance": {
+      "figure": "questions\\q1\\artifacts\\figures\\q1_group_importance.png",
+      "data": "questions\\q1\\artifacts\\figure_data\\q1_group_importance.csv",
+      "metadata": "questions\\q1\\artifacts\\figure_data\\q1_group_importance.meta.json"
+    },
+    "q1_sensitivity_comparison": {
+      "figure": "questions\\q1\\artifacts\\figures\\q1_sensitivity_comparison.png",
+      "data": "questions\\q1\\artifacts\\figure_data\\q1_sensitivity_comparison.csv",
+      "metadata": "questions\\q1\\artifacts\\figure_data\\q1_sensitivity_comparison.meta.json"
     }
   }
 }

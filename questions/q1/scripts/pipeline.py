@@ -47,7 +47,7 @@ def main() -> int:
         return 0
 
     result = run_analysis(root=root, config_path=args.config)
-    top = result["tables"]["q1_feature_ranking"].head(5)
+    top = result["tables"]["q1_feature_summary"].head(5)
     print("[ok] q1 pipeline completed")
     print(f"question_dir={question_dir}")
     print("top_features=" + ", ".join(top["feature"].tolist()))

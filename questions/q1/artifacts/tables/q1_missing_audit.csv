@@ -7,8 +7,8 @@ spin_rate_rpm,input,0,0,required field; no imputation planned if complete
 spin_axis_deg,input,0,0,required field; no imputation planned if complete
 backspin_rpm,input,0,0,required field; no imputation planned if complete
 sidespin_rpm,input,0,0,required field; no imputation planned if complete
-club_speed_mph,input,63,0.0857142857143,median imputation with missing indicator; complete-case sensitivity
-attack_angle_deg,input,65,0.0884353741497,median imputation with missing indicator; complete-case sensitivity
+club_speed_mph,input,66,0.0897959183673,median imputation with missing indicator; complete-case sensitivity
+attack_angle_deg,input,68,0.0925170068027,median imputation with missing indicator; complete-case sensitivity
 carry_distance_yd,output,0,0,required field; no imputation planned if complete
 max_height_yd,output,0,0,required field; no imputation planned if complete
 total_distance_yd,output,0,0,required field; no imputation planned if complete

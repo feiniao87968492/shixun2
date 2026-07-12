@@ -19,6 +19,12 @@ outputs:
   figures: questions/q1/artifacts/figures
   figure_data: questions/q1/artifacts/figure_data
   models: questions/q1/artifacts/models
+  run_metadata: questions/q1/artifacts/run_metadata.json
+  key_tables:
+    - questions/q1/artifacts/tables/q1_feature_summary.csv
+    - questions/q1/artifacts/tables/q1_invalid_zero_records.csv
+    - questions/q1/artifacts/tables/q1_speed_overlap_models.csv
+    - questions/q1/artifacts/tables/q1_launch_angle_quadratic.csv
 
 quality_gates:
   baseline: true

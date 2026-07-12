@@ -1,8 +1,8 @@
 {
   "stem": "q1_importance_comparison",
-  "title": "Method importance comparison",
+  "title": "Legacy method score comparison",
   "source_script": "questions/q1/scripts/visualize.py",
-  "generated_at": "2026-07-12T10:31:34.562369+00:00",
+  "generated_at": "2026-07-12T11:47:35.222097+00:00",
   "rows": 36,
   "columns": [
     "feature",
@@ -10,5 +10,5 @@
     "method",
     "score"
   ],
-  "notes": "Scores are rank-normalized per method."
+  "notes": "Compatibility figure; final interpretation uses q1_feature_summary.csv."
 }

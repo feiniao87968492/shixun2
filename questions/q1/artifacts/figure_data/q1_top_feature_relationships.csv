@@ -902,8 +902,6 @@ x,carry_distance_yd,feature,feature_label
 86.8602,169.0289,club_speed_mph,Club speed
 84.2654,148.7314,club_speed_mph,Club speed
 82.0061,71.8941,club_speed_mph,Club speed
-0,152.8106,club_speed_mph,Club speed
-0,162.9812,club_speed_mph,Club speed
 78.5165,168.1649,club_speed_mph,Club speed
 90.9091,161.8438,club_speed_mph,Club speed
 86.8602,145.2975,club_speed_mph,Club speed
@@ -984,7 +982,6 @@ x,carry_distance_yd,feature,feature_label
 82.2074,132.196,club_speed_mph,Club speed
 84.8917,157.36,club_speed_mph,Club speed
 86.5471,147.6925,club_speed_mph,Club speed
-0,125.9296,club_speed_mph,Club speed
 74.7137,126.7826,club_speed_mph,Club speed
 77.5322,153.0512,club_speed_mph,Club speed
 70.7767,106.2227,club_speed_mph,Club speed
@@ -1574,8 +1571,6 @@ x,carry_distance_yd,feature,feature_label
 -2.59,169.0289,attack_angle_deg,Attack angle
 -4.03,148.7314,attack_angle_deg,Attack angle
 -4.41,71.8941,attack_angle_deg,Attack angle
-0,152.8106,attack_angle_deg,Attack angle
-0,162.9812,attack_angle_deg,Attack angle
 5.17,168.1649,attack_angle_deg,Attack angle
 -2.71,161.8438,attack_angle_deg,Attack angle
 -4.48,145.2975,attack_angle_deg,Attack angle
@@ -1655,7 +1650,6 @@ x,carry_distance_yd,feature,feature_label
 -7.13,132.196,attack_angle_deg,Attack angle
 -5.69,157.36,attack_angle_deg,Attack angle
 -3.84,147.6925,attack_angle_deg,Attack angle
-0,125.9296,attack_angle_deg,Attack angle
 -4.27,126.7826,attack_angle_deg,Attack angle
 -4.12,153.0512,attack_angle_deg,Attack angle
 3.19,106.2227,attack_angle_deg,Attack angle
@@ -2076,738 +2070,738 @@ x,carry_distance_yd,feature,feature_label
 -1.22,97.9221,attack_angle_deg,Attack angle
 -3.98,128.423,attack_angle_deg,Attack angle
 -2.44,168.0665,attack_angle_deg,Attack angle
-6.62,106.6601,launch_angle_deg,Launch angle
-9.44,145.713,launch_angle_deg,Launch angle
-11.59,185.444,launch_angle_deg,Launch angle
-15.76,185.269,launch_angle_deg,Launch angle
-10.5,181.157,launch_angle_deg,Launch angle
-5.46,164.5888,launch_angle_deg,Launch angle
-1.85,65.4418,launch_angle_deg,Launch angle
-11.52,195.0241,launch_angle_deg,Launch angle
-12.51,212.8609,launch_angle_deg,Launch angle
-13.97,212.1938,launch_angle_deg,Launch angle
-12.02,205.2931,launch_angle_deg,Launch angle
-11.5,223.0643,launch_angle_deg,Launch angle
-8.69,221.5551,launch_angle_deg,Launch angle
-3.5,145.9208,launch_angle_deg,Launch angle
-15.13,162.0079,launch_angle_deg,Launch angle
-14.05,197.3753,launch_angle_deg,Launch angle
-8.7,196.8067,launch_angle_deg,Launch angle
-16.39,183.049,launch_angle_deg,Launch angle
-5.68,167.7822,launch_angle_deg,Launch angle
-16.54,181.9007,launch_angle_deg,Launch angle
-20.48,177.6137,launch_angle_deg,Launch angle
-13.44,199.136,launch_angle_deg,Launch angle
-11.04,190.07,launch_angle_deg,Launch angle
-13.22,194.4991,launch_angle_deg,Launch angle
-15.35,184.2301,launch_angle_deg,Launch angle
-14.78,200.9733,launch_angle_deg,Launch angle
-14.4,183.3333,launch_angle_deg,Launch angle
-11.94,213.7358,launch_angle_deg,Launch angle
-30.82,102.1654,launch_angle_deg,Launch angle
-27.57,96.1286,launch_angle_deg,Launch angle
-24.54,136.4173,launch_angle_deg,Launch angle
-21.67,117.7056,launch_angle_deg,Launch angle
-26.24,128.4449,launch_angle_deg,Launch angle
-24.7,116.0105,launch_angle_deg,Launch angle
-15.66,165.1793,launch_angle_deg,Launch angle
-16.41,170.4287,launch_angle_deg,Launch angle
-8.69,153.8167,launch_angle_deg,Launch angle
-12.69,178.8605,launch_angle_deg,Launch angle
-15.9,181.2117,launch_angle_deg,Launch angle
-6.82,165.5074,launch_angle_deg,Launch angle
-8.75,182.4147,launch_angle_deg,Launch angle
-7.26,140.0153,launch_angle_deg,Launch angle
-15.66,108.563,launch_angle_deg,Launch angle
-7.78,157.4584,launch_angle_deg,Launch angle
-14.6,193.143,launch_angle_deg,Launch angle
-16.26,189.5013,launch_angle_deg,Launch angle
-17.18,178.4121,launch_angle_deg,Launch angle
-19.53,182.3709,launch_angle_deg,Launch angle
-16.64,171.063,launch_angle_deg,Launch angle
-11.71,148.0862,launch_angle_deg,Launch angle
-19.99,175.4374,launch_angle_deg,Launch angle
-18.05,152.7668,launch_angle_deg,Launch angle
-15.33,158.8473,launch_angle_deg,Launch angle
-17.35,178.4996,launch_angle_deg,Launch angle
-19.1,156.6929,launch_angle_deg,Launch angle
-17.76,174.5297,launch_angle_deg,Launch angle
-16.9,102.3622,launch_angle_deg,Launch angle
-19.15,150.9186,launch_angle_deg,Launch angle
-6.03,59.9847,launch_angle_deg,Launch angle
-20.68,158.738,launch_angle_deg,Launch angle
-21.49,135.8815,launch_angle_deg,Launch angle
-21.1,166.6776,launch_angle_deg,Launch angle
-10.68,134.6785,launch_angle_deg,Launch angle
-19.13,142.6728,launch_angle_deg,Launch angle
-19.35,157.0101,launch_angle_deg,Launch angle
-18.88,177.8215,launch_angle_deg,Launch angle
-19.4,166.0761,launch_angle_deg,Launch angle
-14.86,185.6846,launch_angle_deg,Launch angle
-16.66,185.5096,launch_angle_deg,Launch angle
-18.75,168.1102,launch_angle_deg,Launch angle
-15.11,176.3123,launch_angle_deg,Launch angle
-16.72,157.7209,launch_angle_deg,Launch angle
-10.27,195.2975,launch_angle_deg,Launch angle
-14.28,215.7152,launch_angle_deg,Launch angle
-15.03,217.2353,launch_angle_deg,Launch angle
-15.47,194.1273,launch_angle_deg,Launch angle
-7.8,171.7192,launch_angle_deg,Launch angle
-15.39,219.3898,launch_angle_deg,Launch angle
-13.76,107.4584,launch_angle_deg,Launch angle
-18.27,188.7139,launch_angle_deg,Launch angle
-19.03,219.7944,launch_angle_deg,Launch angle
-23.23,188.6155,launch_angle_deg,Launch angle
-41.82,104.8775,launch_angle_deg,Launch angle
-15.28,220.0569,launch_angle_deg,Launch angle
-20.83,185.0831,launch_angle_deg,Launch angle
-24.51,155.4462,launch_angle_deg,Launch angle
-19.19,188.528,launch_angle_deg,Launch angle
-23.17,98.5017,launch_angle_deg,Launch angle
-17.72,122.769,launch_angle_deg,Launch angle
-17.72,116.8854,launch_angle_deg,Launch angle
-21.01,116.2839,launch_angle_deg,Launch angle
-19.29,140.7699,launch_angle_deg,Launch angle
-21.61,130.3915,launch_angle_deg,Launch angle
-4.54,74.6829,launch_angle_deg,Launch angle
-23.47,129.3963,launch_angle_deg,Launch angle
-22.86,122.5722,launch_angle_deg,Launch angle
-14.18,93.4164,launch_angle_deg,Launch angle
-22.33,103.9042,launch_angle_deg,Launch angle
-21.09,119.3023,launch_angle_deg,Launch angle
-21.22,121.6207,launch_angle_deg,Launch angle
-19.43,125.0109,launch_angle_deg,Launch angle
-25.94,129.1667,launch_angle_deg,Launch angle
-23.41,132.4256,launch_angle_deg,Launch angle
-7.54,103.0293,launch_angle_deg,Launch angle
-24.81,131.157,launch_angle_deg,Launch angle
-13.52,127.2857,launch_angle_deg,Launch angle
-12.93,177.8871,launch_angle_deg,Launch angle
-13.07,184.416,launch_angle_deg,Launch angle
-15.91,172.4519,launch_angle_deg,Launch angle
-10.07,152.0779,launch_angle_deg,Launch angle
-12.83,138.189,launch_angle_deg,Launch angle
-12.96,177.4934,launch_angle_deg,Launch angle
-3.46,80.8508,launch_angle_deg,Launch angle
-6.62,143.2087,launch_angle_deg,Launch angle
-7.97,161.3517,launch_angle_deg,Launch angle
-13.35,133.0271,launch_angle_deg,Launch angle
-11.55,175.6015,launch_angle_deg,Launch angle
-11.88,124.1251,launch_angle_deg,Launch angle
-7.92,137.6531,launch_angle_deg,Launch angle
-6.29,140.1356,launch_angle_deg,Launch angle
-8.84,154.3417,launch_angle_deg,Launch angle
-7.4,99.7703,launch_angle_deg,Launch angle
-16.09,146.7192,launch_angle_deg,Launch angle
-12.28,194.5866,launch_angle_deg,Launch angle
-9.09,177.57,launch_angle_deg,Launch angle
-12.86,174.6282,launch_angle_deg,Launch angle
-12.43,107.2944,launch_angle_deg,Launch angle
-2.52,81.332,launch_angle_deg,Launch angle
-11.62,122.0144,launch_angle_deg,Launch angle
-8.46,89.9606,launch_angle_deg,Launch angle
-2.35,95.8771,launch_angle_deg,Launch angle
-9.23,105.129,launch_angle_deg,Launch angle
-22.93,169.6522,launch_angle_deg,Launch angle
-9.27,115.4965,launch_angle_deg,Launch angle
-20.3,151.8045,launch_angle_deg,Launch angle
-24.35,150.514,launch_angle_deg,Launch angle
-38.2,97.43,launch_angle_deg,Launch angle
-6.95,99.9891,launch_angle_deg,Launch angle
-15.26,151.3123,launch_angle_deg,Launch angle
-25.75,105.6758,launch_angle_deg,Launch angle
-24.94,130.3806,launch_angle_deg,Launch angle
-26.48,110.0066,launch_angle_deg,Launch angle
-31.58,120.1225,launch_angle_deg,Launch angle
-28.09,102.7778,launch_angle_deg,Launch angle
-26.66,99.0814,launch_angle_deg,Launch angle
-27.57,133.8692,launch_angle_deg,Launch angle
-19.08,119.6194,launch_angle_deg,Launch angle
-16.94,100.2625,launch_angle_deg,Launch angle
-15.75,122.5722,launch_angle_deg,Launch angle
-15.53,90.7262,launch_angle_deg,Launch angle
-15.27,167.64,launch_angle_deg,Launch angle
-15.62,170.5709,launch_angle_deg,Launch angle
-14.88,175.3609,launch_angle_deg,Launch angle
-19.62,120.6037,launch_angle_deg,Launch angle
-13.72,141.6776,launch_angle_deg,Launch angle
-21.94,129.8119,launch_angle_deg,Launch angle
-24.44,124.0048,launch_angle_deg,Launch angle
-24.39,137.839,launch_angle_deg,Launch angle
-21.85,120.5709,launch_angle_deg,Launch angle
-15.51,111.9641,launch_angle_deg,Launch angle
-16.42,99.6172,launch_angle_deg,Launch angle
-14.54,152.9746,launch_angle_deg,Launch angle
-17.38,129.7353,launch_angle_deg,Launch angle
-17.48,177.1654,launch_angle_deg,Launch angle
-4.1,39.1404,launch_angle_deg,Launch angle
-17.37,138.8561,launch_angle_deg,Launch angle
-19.38,120.5818,launch_angle_deg,Launch angle
-14.15,92.2244,launch_angle_deg,Launch angle
-13.94,182.3819,launch_angle_deg,Launch angle
-17.59,128.259,launch_angle_deg,Launch angle
-4.74,73.5674,launch_angle_deg,Launch angle
-6.81,101.5092,launch_angle_deg,Launch angle
-8.57,95.8443,launch_angle_deg,Launch angle
-20.88,132.3272,launch_angle_deg,Launch angle
-7.23,131.157,launch_angle_deg,Launch angle
-11.27,174.3876,launch_angle_deg,Launch angle
-11.81,162.6969,launch_angle_deg,Launch angle
-19.02,156.9882,launch_angle_deg,Launch angle
-7.03,117.1697,launch_angle_deg,Launch angle
-2.68,62.5547,launch_angle_deg,Launch angle
-8.51,154.8119,launch_angle_deg,Launch angle
-15.98,174.4204,launch_angle_deg,Launch angle
-13.07,135.8377,launch_angle_deg,Launch angle
-14.74,165.1903,launch_angle_deg,Launch angle
-13.06,119.8928,launch_angle_deg,Launch angle
-7.83,96.8723,launch_angle_deg,Launch angle
-12.16,166.5901,launch_angle_deg,Launch angle
-12.39,136.5376,launch_angle_deg,Launch angle
-10.7,100.7437,launch_angle_deg,Launch angle
-13.84,143.0993,launch_angle_deg,Launch angle
-14.49,151.7498,launch_angle_deg,Launch angle
-12.77,93.4602,launch_angle_deg,Launch angle
-5.99,116.7979,launch_angle_deg,Launch angle
-16.13,142.2135,launch_angle_deg,Launch angle
-13.41,130.129,launch_angle_deg,Launch angle
-21.18,146.3801,launch_angle_deg,Launch angle
-19.05,166.1308,launch_angle_deg,Launch angle
-18.31,156.4523,launch_angle_deg,Launch angle
-16.31,146.413,launch_angle_deg,Launch angle
-21.1,154.1667,launch_angle_deg,Launch angle
-21.88,141.7213,launch_angle_deg,Launch angle
-21.51,126.192,launch_angle_deg,Launch angle
-22.69,146.3145,launch_angle_deg,Launch angle
-21.91,117.5416,launch_angle_deg,Launch angle
-15.27,111.4064,launch_angle_deg,Launch angle
-11.98,133.2349,launch_angle_deg,Launch angle
-15.3,155.6868,launch_angle_deg,Launch angle
-15.75,133.4864,launch_angle_deg,Launch angle
-16.45,94.9913,launch_angle_deg,Launch angle
-13.13,153.598,launch_angle_deg,Launch angle
-18.88,135.3018,launch_angle_deg,Launch angle
-18.94,144.3241,launch_angle_deg,Launch angle
-12.94,146.0193,launch_angle_deg,Launch angle
-16.79,158.6177,launch_angle_deg,Launch angle
-16.03,157.8303,launch_angle_deg,Launch angle
-12.08,159.416,launch_angle_deg,Launch angle
-12.65,159.1317,launch_angle_deg,Launch angle
-13.59,161.4939,launch_angle_deg,Launch angle
-11.24,160.4221,launch_angle_deg,Launch angle
-14.41,141.6776,launch_angle_deg,Launch angle
-12,181.8679,launch_angle_deg,Launch angle
-13.22,169.0289,launch_angle_deg,Launch angle
-11.39,148.7314,launch_angle_deg,Launch angle
-2.72,71.8941,launch_angle_deg,Launch angle
-14.16,152.8106,launch_angle_deg,Launch angle
-13.64,162.9812,launch_angle_deg,Launch angle
-10.62,150.1531,launch_angle_deg,Launch angle
-13.37,168.1649,launch_angle_deg,Launch angle
-9.03,161.8438,launch_angle_deg,Launch angle
-14.52,145.2975,launch_angle_deg,Launch angle
-13.95,162.8062,launch_angle_deg,Launch angle
-8.67,114.3919,launch_angle_deg,Launch angle
-15.03,153.6308,launch_angle_deg,Launch angle
-11.17,175.7437,launch_angle_deg,Launch angle
-3.28,68.7773,launch_angle_deg,Launch angle
-3.33,44.7288,launch_angle_deg,Launch angle
-4.59,58.5192,launch_angle_deg,Launch angle
-12.46,182.699,launch_angle_deg,Launch angle
-10.08,141.1308,launch_angle_deg,Launch angle
-6.64,153.5761,launch_angle_deg,Launch angle
-7.52,120.1444,launch_angle_deg,Launch angle
-17.39,176.8373,launch_angle_deg,Launch angle
-28.13,142.2572,launch_angle_deg,Launch angle
-12.73,123.4252,launch_angle_deg,Launch angle
-20.45,182.2178,launch_angle_deg,Launch angle
-15.95,161.0018,launch_angle_deg,Launch angle
-13.54,162.4563,launch_angle_deg,Launch angle
-14.53,172.0254,launch_angle_deg,Launch angle
-10.56,162.85,launch_angle_deg,Launch angle
-9.02,172.0363,launch_angle_deg,Launch angle
-5.1,93.2524,launch_angle_deg,Launch angle
-19.37,103.6527,launch_angle_deg,Launch angle
-22.02,160.0722,launch_angle_deg,Launch angle
-10.9,161.1439,launch_angle_deg,Launch angle
-2.62,56.682,launch_angle_deg,Launch angle
-25.51,148.8626,launch_angle_deg,Launch angle
-10.16,151.717,launch_angle_deg,Launch angle
-15.79,130.0416,launch_angle_deg,Launch angle
-32.29,116.7323,launch_angle_deg,Launch angle
-7.82,142.7931,launch_angle_deg,Launch angle
-15.05,161.822,launch_angle_deg,Launch angle
-35.25,130.818,launch_angle_deg,Launch angle
-27.39,123.8517,launch_angle_deg,Launch angle
-14.44,163.7249,launch_angle_deg,Launch angle
-20.18,87.5656,launch_angle_deg,Launch angle
-19.49,143.5258,launch_angle_deg,Launch angle
-18.95,126.2139,launch_angle_deg,Launch angle
-20.4,122.091,launch_angle_deg,Launch angle
-13.68,127.4606,launch_angle_deg,Launch angle
-17.14,162.5328,launch_angle_deg,Launch angle
-12.46,152.3731,launch_angle_deg,Launch angle
-11.94,99.0267,launch_angle_deg,Launch angle
-12.56,94.5429,launch_angle_deg,Launch angle
-12.58,146.1177,launch_angle_deg,Launch angle
-14.06,169.7835,launch_angle_deg,Launch angle
-8.21,83.213,launch_angle_deg,Launch angle
-10.54,52.8981,launch_angle_deg,Launch angle
-8.3,91.5245,launch_angle_deg,Launch angle
-18.11,95.7787,launch_angle_deg,Launch angle
-6.02,130.3696,launch_angle_deg,Launch angle
-16.43,84.8425,launch_angle_deg,Launch angle
-11.37,142.4103,launch_angle_deg,Launch angle
-16.74,117.64,launch_angle_deg,Launch angle
-9.25,141.3167,launch_angle_deg,Launch angle
-19.65,135.6518,launch_angle_deg,Launch angle
-21.01,136.0346,launch_angle_deg,Launch angle
-11.55,153.423,launch_angle_deg,Launch angle
-13.57,101.8482,launch_angle_deg,Launch angle
-16.37,97.08,launch_angle_deg,Launch angle
-15.15,112.9593,launch_angle_deg,Launch angle
-12.83,101.2467,launch_angle_deg,Launch angle
-4.41,44.3351,launch_angle_deg,Launch angle
-9.13,145.6256,launch_angle_deg,Launch angle
-16.16,149.3657,launch_angle_deg,Launch angle
-10.3,121.3801,launch_angle_deg,Launch angle
-10.5,147.7034,launch_angle_deg,Launch angle
-3.94,54.1885,launch_angle_deg,Launch angle
-17.11,75.6999,launch_angle_deg,Launch angle
-13.55,128.8605,launch_angle_deg,Launch angle
-16.78,136.5157,launch_angle_deg,Launch angle
-12.4,151.8263,launch_angle_deg,Launch angle
-13.55,155.8618,launch_angle_deg,Launch angle
-8.69,79.2432,launch_angle_deg,Launch angle
-11.31,92.7275,launch_angle_deg,Launch angle
-7.82,132.196,launch_angle_deg,Launch angle
-13.06,157.36,launch_angle_deg,Launch angle
-14.24,147.6925,launch_angle_deg,Launch angle
-9.18,125.9296,launch_angle_deg,Launch angle
-11.06,154.4619,launch_angle_deg,Launch angle
-19.81,126.7826,launch_angle_deg,Launch angle
-16.03,153.0512,launch_angle_deg,Launch angle
-20.56,106.2227,launch_angle_deg,Launch angle
-2.11,78.1387,launch_angle_deg,Launch angle
-19.51,160.7174,launch_angle_deg,Launch angle
-16.66,166.9182,launch_angle_deg,Launch angle
-18.87,120.0459,launch_angle_deg,Launch angle
-15.77,151.6295,launch_angle_deg,Launch angle
-18.49,149.5188,launch_angle_deg,Launch angle
-17.79,174.0485,launch_angle_deg,Launch angle
-18.36,134.9409,launch_angle_deg,Launch angle
-19.07,175.0219,launch_angle_deg,Launch angle
-18.91,132.185,launch_angle_deg,Launch angle
-12.8,101.9576,launch_angle_deg,Launch angle
-19.47,131.7695,launch_angle_deg,Launch angle
-6.79,70.7021,launch_angle_deg,Launch angle
-20.33,133.0271,launch_angle_deg,Launch angle
-19.94,120.1444,launch_angle_deg,Launch angle
-9.88,55.8071,launch_angle_deg,Launch angle
-11.12,81.7913,launch_angle_deg,Launch angle
-12.62,91.5792,launch_angle_deg,Launch angle
-13.33,79.4619,launch_angle_deg,Launch angle
-23,124.4313,launch_angle_deg,Launch angle
-3.99,57.8959,launch_angle_deg,Launch angle
-19.05,127.8543,launch_angle_deg,Launch angle
-19.36,96.916,launch_angle_deg,Launch angle
-18.23,146.1505,launch_angle_deg,Launch angle
-20.37,123.9064,launch_angle_deg,Launch angle
-20.41,141.1527,launch_angle_deg,Launch angle
-18.86,149.5625,launch_angle_deg,Launch angle
-14.81,136.1439,launch_angle_deg,Launch angle
-19.43,147.6269,launch_angle_deg,Launch angle
-19.8,156.1899,launch_angle_deg,Launch angle
-15.67,117.2025,launch_angle_deg,Launch angle
-16.76,137.9046,launch_angle_deg,Launch angle
-22.94,95.1334,launch_angle_deg,Launch angle
-24.33,110.6955,launch_angle_deg,Launch angle
-28.82,111.7126,launch_angle_deg,Launch angle
-25.92,109.416,launch_angle_deg,Launch angle
-11.45,105.3696,launch_angle_deg,Launch angle
-22.2,103.0402,launch_angle_deg,Launch angle
-12.12,136.2533,launch_angle_deg,Launch angle
-13.03,148.2502,launch_angle_deg,Launch angle
-16.4,119.871,launch_angle_deg,Launch angle
-9.13,116.273,launch_angle_deg,Launch angle
-7.49,114.5451,launch_angle_deg,Launch angle
-14.53,92.465,launch_angle_deg,Launch angle
-7.28,84.1973,launch_angle_deg,Launch angle
-19.5,95.7349,launch_angle_deg,Launch angle
-16.64,165.584,launch_angle_deg,Launch angle
-5.41,99.6391,launch_angle_deg,Launch angle
-12.94,49.3329,launch_angle_deg,Launch angle
-17,167.3884,launch_angle_deg,Launch angle
-17.06,154.6369,launch_angle_deg,Launch angle
-15.15,146.3145,launch_angle_deg,Launch angle
-13.47,149.5297,launch_angle_deg,Launch angle
-17.82,102.231,launch_angle_deg,Launch angle
-4.26,67.0166,launch_angle_deg,Launch angle
-17.14,126.3342,launch_angle_deg,Launch angle
-17.92,143.0118,launch_angle_deg,Launch angle
-14.37,151.2686,launch_angle_deg,Launch angle
-13.05,155.5884,launch_angle_deg,Launch angle
-13.98,165.7262,launch_angle_deg,Launch angle
-16.65,158.7708,launch_angle_deg,Launch angle
-19.59,152.8434,launch_angle_deg,Launch angle
-17.01,164.8185,launch_angle_deg,Launch angle
-22.07,184.6894,launch_angle_deg,Launch angle
-16.54,145.6037,launch_angle_deg,Launch angle
-10.89,184.5691,launch_angle_deg,Launch angle
-18.86,211.4939,launch_angle_deg,Launch angle
-15.93,170.8661,launch_angle_deg,Launch angle
-8.43,169.7616,launch_angle_deg,Launch angle
-4.6,140.1028,launch_angle_deg,Launch angle
-11.57,157.5131,launch_angle_deg,Launch angle
-18.45,117.3228,launch_angle_deg,Launch angle
-21.1,121.0411,launch_angle_deg,Launch angle
-19.74,115.7152,launch_angle_deg,Launch angle
-20.34,115.4528,launch_angle_deg,Launch angle
-20,121.4458,launch_angle_deg,Launch angle
-20.08,137.8062,launch_angle_deg,Launch angle
-19.8,147.0582,launch_angle_deg,Launch angle
-14.3,108.9567,launch_angle_deg,Launch angle
-15.78,164.8075,launch_angle_deg,Launch angle
-20.02,127.2966,launch_angle_deg,Launch angle
-18.38,127.3731,launch_angle_deg,Launch angle
-21.2,115.8246,launch_angle_deg,Launch angle
-9.75,96.0302,launch_angle_deg,Launch angle
-18.14,150.8311,launch_angle_deg,Launch angle
-19.18,114.9825,launch_angle_deg,Launch angle
-16.8,132.8412,launch_angle_deg,Launch angle
-18.42,149.6172,launch_angle_deg,Launch angle
-19.86,129.4838,launch_angle_deg,Launch angle
-19.89,133.0271,launch_angle_deg,Launch angle
-19.97,143.7445,launch_angle_deg,Launch angle
-3.58,36.3845,launch_angle_deg,Launch angle
-18.8,111.0564,launch_angle_deg,Launch angle
-18.72,122.8237,launch_angle_deg,Launch angle
-11.27,186.7782,launch_angle_deg,Launch angle
-16.47,186.7345,launch_angle_deg,Launch angle
-14.27,144.0507,launch_angle_deg,Launch angle
-18.3,182.2725,launch_angle_deg,Launch angle
-14.63,206.5398,launch_angle_deg,Launch angle
-28.2,126.4326,launch_angle_deg,Launch angle
-32.26,113.7248,launch_angle_deg,Launch angle
-40.84,80.5993,launch_angle_deg,Launch angle
-5.32,61.0346,launch_angle_deg,Launch angle
-13.85,116.5245,launch_angle_deg,Launch angle
-13.49,104.6697,launch_angle_deg,Launch angle
-11.14,128.6527,launch_angle_deg,Launch angle
-5.52,162.4563,launch_angle_deg,Launch angle
-4.02,76.6842,launch_angle_deg,Launch angle
-6.82,165.4856,launch_angle_deg,Launch angle
-6.04,63.4952,launch_angle_deg,Launch angle
-6.04,129.3526,launch_angle_deg,Launch angle
-5.8,116.5901,launch_angle_deg,Launch angle
-11.54,192.4103,launch_angle_deg,Launch angle
-17.02,158.4755,launch_angle_deg,Launch angle
-2.98,87.9484,launch_angle_deg,Launch angle
-14.97,166.7104,launch_angle_deg,Launch angle
-10.9,185.8815,launch_angle_deg,Launch angle
-10.41,161.1439,launch_angle_deg,Launch angle
-3.97,43.657,launch_angle_deg,Launch angle
-13.7,201.7498,launch_angle_deg,Launch angle
-10.92,179.8994,launch_angle_deg,Launch angle
-11.72,181.3976,launch_angle_deg,Launch angle
-5.9,116.8526,launch_angle_deg,Launch angle
-12.19,177.395,launch_angle_deg,Launch angle
-17.87,128.1387,launch_angle_deg,Launch angle
-17.9,126.9248,launch_angle_deg,Launch angle
-21.3,124.7703,launch_angle_deg,Launch angle
-20.63,114.3263,launch_angle_deg,Launch angle
-20.32,141.1308,launch_angle_deg,Launch angle
-17.57,147.9331,launch_angle_deg,Launch angle
-18.7,150.1859,launch_angle_deg,Launch angle
-23.14,145.0241,launch_angle_deg,Launch angle
-21.68,152.6247,launch_angle_deg,Launch angle
-8.6,125.2734,launch_angle_deg,Launch angle
-14.8,170.6584,launch_angle_deg,Launch angle
-16.94,171.9598,launch_angle_deg,Launch angle
-19.12,165.4965,launch_angle_deg,Launch angle
-15.88,181.2008,launch_angle_deg,Launch angle
-17.65,143.4711,launch_angle_deg,Launch angle
-14.99,179.4182,launch_angle_deg,Launch angle
-16.39,160.1925,launch_angle_deg,Launch angle
-16.16,182.2835,launch_angle_deg,Launch angle
-13.14,146.3145,launch_angle_deg,Launch angle
-9.81,139.7419,launch_angle_deg,Launch angle
-13.32,132.0538,launch_angle_deg,Launch angle
-5.42,156.846,launch_angle_deg,Launch angle
-4.45,169.6304,launch_angle_deg,Launch angle
-10.45,179.2323,launch_angle_deg,Launch angle
-7.69,163.2218,launch_angle_deg,Launch angle
-15.26,176.2795,launch_angle_deg,Launch angle
-15.23,165.4746,launch_angle_deg,Launch angle
-13.13,157.3819,launch_angle_deg,Launch angle
-15.69,108.5521,launch_angle_deg,Launch angle
-10.67,160.4221,launch_angle_deg,Launch angle
-13.32,162.4672,launch_angle_deg,Launch angle
-15.46,146.4348,launch_angle_deg,Launch angle
-16.96,144.7288,launch_angle_deg,Launch angle
-14.38,137.4235,launch_angle_deg,Launch angle
-13.28,163.2874,launch_angle_deg,Launch angle
-26.13,121.3911,launch_angle_deg,Launch angle
-25.07,118.0446,launch_angle_deg,Launch angle
-24.37,113.9436,launch_angle_deg,Launch angle
-25.18,80.4899,launch_angle_deg,Launch angle
-24.38,125.6124,launch_angle_deg,Launch angle
-17.28,113.9982,launch_angle_deg,Launch angle
-24.09,119.4444,launch_angle_deg,Launch angle
-25.11,137.675,launch_angle_deg,Launch angle
-14.72,112.7625,launch_angle_deg,Launch angle
-14.71,138.8451,launch_angle_deg,Launch angle
-16.47,151.3998,launch_angle_deg,Launch angle
-15.29,140.6277,launch_angle_deg,Launch angle
-11.16,171.5114,launch_angle_deg,Launch angle
-15.15,131.1789,launch_angle_deg,Launch angle
-11.88,186.5595,launch_angle_deg,Launch angle
-3.36,79.1557,launch_angle_deg,Launch angle
-18.4,95.2537,launch_angle_deg,Launch angle
-26.51,115.2887,launch_angle_deg,Launch angle
-24.57,111.472,launch_angle_deg,Launch angle
-24.95,121.9926,launch_angle_deg,Launch angle
-2.9,75.2625,launch_angle_deg,Launch angle
-15.28,118.0556,launch_angle_deg,Launch angle
-21.03,123.7314,launch_angle_deg,Launch angle
-14.59,142.4869,launch_angle_deg,Launch angle
-15.24,152.2528,launch_angle_deg,Launch angle
-16.6,118.0227,launch_angle_deg,Launch angle
-15.58,95.1662,launch_angle_deg,Launch angle
-11.83,139.6544,launch_angle_deg,Launch angle
-16.35,150.5359,launch_angle_deg,Launch angle
-13.3,169.9366,launch_angle_deg,Launch angle
-16.84,166.5792,launch_angle_deg,Launch angle
-16.97,139.2388,launch_angle_deg,Launch angle
-14.34,161.5704,launch_angle_deg,Launch angle
-8.3,168.9414,launch_angle_deg,Launch angle
-14.8,118.3946,launch_angle_deg,Launch angle
-12.4,104.6807,launch_angle_deg,Launch angle
-11.31,172.1019,launch_angle_deg,Launch angle
-13,101.6732,launch_angle_deg,Launch angle
-13.21,114.8731,launch_angle_deg,Launch angle
-9.74,145.2537,launch_angle_deg,Launch angle
-11.15,113.353,launch_angle_deg,Launch angle
-8.22,169.2695,launch_angle_deg,Launch angle
-10.69,136.2861,launch_angle_deg,Launch angle
-7.16,183.7708,launch_angle_deg,Launch angle
-7.34,182.7428,launch_angle_deg,Launch angle
-9.25,121.3583,launch_angle_deg,Launch angle
-4.82,153.259,launch_angle_deg,Launch angle
-14.33,135.444,launch_angle_deg,Launch angle
-10.41,167.5197,launch_angle_deg,Launch angle
-9.23,120.713,launch_angle_deg,Launch angle
-13.52,102.4825,launch_angle_deg,Launch angle
-27.41,115.5731,launch_angle_deg,Launch angle
-27.15,121.3801,launch_angle_deg,Launch angle
-29.32,105.818,launch_angle_deg,Launch angle
-28.68,100.6343,launch_angle_deg,Launch angle
-27.92,121.7629,launch_angle_deg,Launch angle
-22.01,137.9265,launch_angle_deg,Launch angle
-21.76,120.199,launch_angle_deg,Launch angle
-24.33,134.6785,launch_angle_deg,Launch angle
-24.33,148.1955,launch_angle_deg,Launch angle
-21.88,140.2668,launch_angle_deg,Launch angle
-23.59,139.1842,launch_angle_deg,Launch angle
-23.3,147.0363,launch_angle_deg,Launch angle
-19.16,140.8246,launch_angle_deg,Launch angle
-19.5,130.5227,launch_angle_deg,Launch angle
-15.49,102.7559,launch_angle_deg,Launch angle
-12.31,209.0332,launch_angle_deg,Launch angle
-15.61,92.3556,launch_angle_deg,Launch angle
-14.74,199.9344,launch_angle_deg,Launch angle
-16.73,123.5018,launch_angle_deg,Launch angle
-17.69,117.7493,launch_angle_deg,Launch angle
-19.58,151.5967,launch_angle_deg,Launch angle
-19.89,155.479,launch_angle_deg,Launch angle
-21.85,146.9598,launch_angle_deg,Launch angle
-22.64,148.119,launch_angle_deg,Launch angle
-7.43,177.3513,launch_angle_deg,Launch angle
-14.68,137.3141,launch_angle_deg,Launch angle
-7.07,168.2524,launch_angle_deg,Launch angle
-17.2,194.3788,launch_angle_deg,Launch angle
-18,192.1807,launch_angle_deg,Launch angle
-13.95,147.8565,launch_angle_deg,Launch angle
-12.28,213.9217,launch_angle_deg,Launch angle
-17.49,190.245,launch_angle_deg,Launch angle
-20.09,222.2988,launch_angle_deg,Launch angle
-26.07,165.0044,launch_angle_deg,Launch angle
-37.56,125.6234,launch_angle_deg,Launch angle
-22.06,195.035,launch_angle_deg,Launch angle
-14.81,236.0127,launch_angle_deg,Launch angle
-24.82,177.9418,launch_angle_deg,Launch angle
-24.9,179.2542,launch_angle_deg,Launch angle
-19.84,223.8517,launch_angle_deg,Launch angle
-24.84,180.4681,launch_angle_deg,Launch angle
-35.38,131.9116,launch_angle_deg,Launch angle
-16.43,172.0801,launch_angle_deg,Launch angle
-10.68,197.5722,launch_angle_deg,Launch angle
-15.04,124.9563,launch_angle_deg,Launch angle
-9.39,175.2843,launch_angle_deg,Launch angle
-14.98,120.4615,launch_angle_deg,Launch angle
-5.07,146.0302,launch_angle_deg,Launch angle
-14.8,152.4388,launch_angle_deg,Launch angle
-16.34,162.664,launch_angle_deg,Launch angle
-15.22,161.8657,launch_angle_deg,Launch angle
-13.72,182.0319,launch_angle_deg,Launch angle
-10.61,115.7152,launch_angle_deg,Launch angle
-20.15,147.9878,launch_angle_deg,Launch angle
-21.32,158.9129,launch_angle_deg,Launch angle
-16.39,216.7104,launch_angle_deg,Launch angle
-26.81,126.3889,launch_angle_deg,Launch angle
-13.01,200.35,launch_angle_deg,Launch angle
-18.86,130.818,launch_angle_deg,Launch angle
-17.97,228.1277,launch_angle_deg,Launch angle
-16.8,137.2047,launch_angle_deg,Launch angle
-33.7,126.6514,launch_angle_deg,Launch angle
-13.85,167.5087,launch_angle_deg,Launch angle
-13.05,186.8876,launch_angle_deg,Launch angle
-17.28,165.2012,launch_angle_deg,Launch angle
-14.55,149.1907,launch_angle_deg,Launch angle
-17.03,112.8718,launch_angle_deg,Launch angle
-10.06,199.9453,launch_angle_deg,Launch angle
-15.7,190.9011,launch_angle_deg,Launch angle
-15.86,189.8731,launch_angle_deg,Launch angle
-15.89,131.4195,launch_angle_deg,Launch angle
-14.51,185.9252,launch_angle_deg,Launch angle
-15.45,150.2078,launch_angle_deg,Launch angle
-15.85,172.6925,launch_angle_deg,Launch angle
-13.82,202.1216,launch_angle_deg,Launch angle
-14.94,128.3793,launch_angle_deg,Launch angle
-22.7,185.0284,launch_angle_deg,Launch angle
-20.57,191.5245,launch_angle_deg,Launch angle
-14.37,222.2878,launch_angle_deg,Launch angle
-15.67,227.7997,launch_angle_deg,Launch angle
-19.15,206.8351,launch_angle_deg,Launch angle
-23.1,193.3399,launch_angle_deg,Launch angle
-28.22,118.8539,launch_angle_deg,Launch angle
-14.77,102.9309,launch_angle_deg,Launch angle
-14.15,100.4921,launch_angle_deg,Launch angle
-15.8,151.7935,launch_angle_deg,Launch angle
-13.54,198.4033,launch_angle_deg,Launch angle
-9.09,167.2244,launch_angle_deg,Launch angle
-13.45,184.077,launch_angle_deg,Launch angle
-16.81,205.5884,launch_angle_deg,Launch angle
-16.66,186.2533,launch_angle_deg,Launch angle
-16.5,197.1675,launch_angle_deg,Launch angle
-18.46,235.8377,launch_angle_deg,Launch angle
-13.74,212.4891,launch_angle_deg,Launch angle
-15.48,164.9278,launch_angle_deg,Launch angle
-19.93,205.6759,launch_angle_deg,Launch angle
-17.8,250.5468,launch_angle_deg,Launch angle
-19.57,209.6238,launch_angle_deg,Launch angle
-18.63,238.6374,launch_angle_deg,Launch angle
-13.29,211.6251,launch_angle_deg,Launch angle
-13.85,200.2734,launch_angle_deg,Launch angle
-10.34,106.168,launch_angle_deg,Launch angle
-8.76,184.8753,launch_angle_deg,Launch angle
-9.56,200.3281,launch_angle_deg,Launch angle
-12.25,209.2192,launch_angle_deg,Launch angle
-12.88,220.9536,launch_angle_deg,Launch angle
-18.48,164.9169,launch_angle_deg,Launch angle
-18.63,167.7822,launch_angle_deg,Launch angle
-11.75,190.4418,launch_angle_deg,Launch angle
-4.36,123.633,launch_angle_deg,Launch angle
-13.8,90.3325,launch_angle_deg,Launch angle
-14.57,74.1907,launch_angle_deg,Launch angle
-15.7,98.3158,launch_angle_deg,Launch angle
-4.67,72.9659,launch_angle_deg,Launch angle
-13.64,144.871,launch_angle_deg,Launch angle
-12.65,145.0459,launch_angle_deg,Launch angle
-13.68,160.105,launch_angle_deg,Launch angle
-18.7,158.3771,launch_angle_deg,Launch angle
-21.33,136.6689,launch_angle_deg,Launch angle
-15.9,127.0888,launch_angle_deg,Launch angle
-12.85,164.5779,launch_angle_deg,Launch angle
-17.46,160.3237,launch_angle_deg,Launch angle
-16.08,156.8023,launch_angle_deg,Launch angle
-15.18,177.4169,launch_angle_deg,Launch angle
-12.31,168.1649,launch_angle_deg,Launch angle
-13.13,150.2625,launch_angle_deg,Launch angle
-16.54,166.1855,launch_angle_deg,Launch angle
-13.65,140.8246,launch_angle_deg,Launch angle
-16.48,172.8237,launch_angle_deg,Launch angle
-18.13,135.0394,launch_angle_deg,Launch angle
-5.35,72.1347,launch_angle_deg,Launch angle
-15.55,145.5053,launch_angle_deg,Launch angle
-19.58,164.3701,launch_angle_deg,Launch angle
-19.84,159.077,launch_angle_deg,Launch angle
-3.98,63.5389,launch_angle_deg,Launch angle
-16.02,143.7445,launch_angle_deg,Launch angle
-18.02,132.2835,launch_angle_deg,Launch angle
-18.26,160.7612,launch_angle_deg,Launch angle
-6.64,72.7581,launch_angle_deg,Launch angle
-16.98,126.5748,launch_angle_deg,Launch angle
-12.2,125.9842,launch_angle_deg,Launch angle
-15.31,144.3023,launch_angle_deg,Launch angle
-6.55,40.0044,launch_angle_deg,Launch angle
-14.59,105.993,launch_angle_deg,Launch angle
-5.36,54.1229,launch_angle_deg,Launch angle
-12.88,131.7695,launch_angle_deg,Launch angle
-13.11,165.2559,launch_angle_deg,Launch angle
-13.1,144.2585,launch_angle_deg,Launch angle
-4.52,78.8823,launch_angle_deg,Launch angle
-15.97,168.1649,launch_angle_deg,Launch angle
-7.8,126.6842,launch_angle_deg,Launch angle
-12.77,159.0661,launch_angle_deg,Launch angle
-14.09,187.5984,launch_angle_deg,Launch angle
-5.52,121.3801,launch_angle_deg,Launch angle
-16.86,172.9549,launch_angle_deg,Launch angle
-19.92,176.9904,launch_angle_deg,Launch angle
-18.02,199.7813,launch_angle_deg,Launch angle
-9.42,195.1334,launch_angle_deg,Launch angle
-14.65,85.619,launch_angle_deg,Launch angle
-7.37,59.0879,launch_angle_deg,Launch angle
-20.54,99.825,launch_angle_deg,Launch angle
-23.68,95.035,launch_angle_deg,Launch angle
-22.88,98.3486,launch_angle_deg,Launch angle
-21.17,91.9182,launch_angle_deg,Launch angle
-22.74,108.4208,launch_angle_deg,Launch angle
-22.39,79.287,launch_angle_deg,Launch angle
-19.87,122.4191,launch_angle_deg,Launch angle
-24.32,97.4847,launch_angle_deg,Launch angle
-22.81,99.8141,launch_angle_deg,Launch angle
-23.78,114.4576,launch_angle_deg,Launch angle
-20.92,121.3692,launch_angle_deg,Launch angle
-21.99,115.1247,launch_angle_deg,Launch angle
-21.53,108.399,launch_angle_deg,Launch angle
-18.41,122.2222,launch_angle_deg,Launch angle
-17.3,133.9239,launch_angle_deg,Launch angle
-19.68,126.192,launch_angle_deg,Launch angle
-18.8,128.8714,launch_angle_deg,Launch angle
-17.65,120.4396,launch_angle_deg,Launch angle
-21.46,118.5039,launch_angle_deg,Launch angle
-14.93,77.231,launch_angle_deg,Launch angle
-12.69,159.6675,launch_angle_deg,Launch angle
-13.85,105.643,launch_angle_deg,Launch angle
-15.42,118.2415,launch_angle_deg,Launch angle
-12.8,166.3823,launch_angle_deg,Launch angle
-20.74,101.0389,launch_angle_deg,Launch angle
-13.08,170.8661,launch_angle_deg,Launch angle
-13.54,74.0376,launch_angle_deg,Launch angle
-11.41,143.6899,launch_angle_deg,Launch angle
-9.14,115.5621,launch_angle_deg,Launch angle
-8.12,141.1855,launch_angle_deg,Launch angle
-11.85,150.2187,launch_angle_deg,Launch angle
-7.21,84.8972,launch_angle_deg,Launch angle
-12.63,109.3723,launch_angle_deg,Launch angle
-11.42,156.7367,launch_angle_deg,Launch angle
-11.49,136.0783,launch_angle_deg,Launch angle
-10.63,78.423,launch_angle_deg,Launch angle
-6.56,92.0494,launch_angle_deg,Launch angle
-4.95,124.836,launch_angle_deg,Launch angle
-9.85,138.0796,launch_angle_deg,Launch angle
-9.6,118.2633,launch_angle_deg,Launch angle
-10.68,117.0713,launch_angle_deg,Launch angle
-10.45,68.1102,launch_angle_deg,Launch angle
-13.31,120.9427,launch_angle_deg,Launch angle
-12.16,121.402,launch_angle_deg,Launch angle
-10.62,182.5678,launch_angle_deg,Launch angle
-7.24,165.4199,launch_angle_deg,Launch angle
-10.42,160.3784,launch_angle_deg,Launch angle
-12.47,173.1299,launch_angle_deg,Launch angle
-3.06,101.6842,launch_angle_deg,Launch angle
-8.86,79.7135,launch_angle_deg,Launch angle
-8.76,97.9221,launch_angle_deg,Launch angle
-5.35,128.423,launch_angle_deg,Launch angle
-9.67,168.0665,launch_angle_deg,Launch angle
+910.2672,106.6601,sidespin_rpm,Sidespin
+-673.8158,145.713,sidespin_rpm,Sidespin
+79.727,185.444,sidespin_rpm,Sidespin
+-220.2411,185.269,sidespin_rpm,Sidespin
+-412.0745,181.157,sidespin_rpm,Sidespin
+-575.0147,164.5888,sidespin_rpm,Sidespin
+-485.3228,65.4418,sidespin_rpm,Sidespin
+531.9434,195.0241,sidespin_rpm,Sidespin
+-602.002,212.8609,sidespin_rpm,Sidespin
+-854.2036,212.1938,sidespin_rpm,Sidespin
+-1985.8944,205.2931,sidespin_rpm,Sidespin
+-21.5791,223.0643,sidespin_rpm,Sidespin
+-378.4014,221.5551,sidespin_rpm,Sidespin
+763.8023,145.9208,sidespin_rpm,Sidespin
+-114.5661,162.0079,sidespin_rpm,Sidespin
+-275.1639,197.3753,sidespin_rpm,Sidespin
+430.4096,196.8067,sidespin_rpm,Sidespin
+875.8189,183.049,sidespin_rpm,Sidespin
+-410.874,167.7822,sidespin_rpm,Sidespin
+-973.1326,181.9007,sidespin_rpm,Sidespin
+-840.2416,177.6137,sidespin_rpm,Sidespin
+-1394.8214,199.136,sidespin_rpm,Sidespin
+-2146.1646,190.07,sidespin_rpm,Sidespin
+-1213.0031,194.4991,sidespin_rpm,Sidespin
+-3212.7671,184.2301,sidespin_rpm,Sidespin
+-1298.1035,200.9733,sidespin_rpm,Sidespin
+-1282.6544,183.3333,sidespin_rpm,Sidespin
+-453.0633,213.7358,sidespin_rpm,Sidespin
+-643.9457,102.1654,sidespin_rpm,Sidespin
+311.9671,96.1286,sidespin_rpm,Sidespin
+879.1208,136.4173,sidespin_rpm,Sidespin
+1475.5914,117.7056,sidespin_rpm,Sidespin
+-213.9249,128.4449,sidespin_rpm,Sidespin
+-718.7356,116.0105,sidespin_rpm,Sidespin
+-1263.662,165.1793,sidespin_rpm,Sidespin
+-990.1064,170.4287,sidespin_rpm,Sidespin
+-2877.3855,153.8167,sidespin_rpm,Sidespin
+-2251.3804,178.8605,sidespin_rpm,Sidespin
+-1619.4579,181.2117,sidespin_rpm,Sidespin
+-2118.5156,165.5074,sidespin_rpm,Sidespin
+-2155.3606,182.4147,sidespin_rpm,Sidespin
+-2718.5198,140.0153,sidespin_rpm,Sidespin
+1571.478,108.563,sidespin_rpm,Sidespin
+-2343.9197,157.4584,sidespin_rpm,Sidespin
+24.347,193.143,sidespin_rpm,Sidespin
+489.3274,189.5013,sidespin_rpm,Sidespin
+-1703.1868,178.4121,sidespin_rpm,Sidespin
+-1575.8121,182.3709,sidespin_rpm,Sidespin
+-3425.5232,171.063,sidespin_rpm,Sidespin
+-1916.9861,148.0862,sidespin_rpm,Sidespin
+-1524.0537,175.4374,sidespin_rpm,Sidespin
+-2979.3555,152.7668,sidespin_rpm,Sidespin
+-2520.6538,158.8473,sidespin_rpm,Sidespin
+-1122.4911,178.4996,sidespin_rpm,Sidespin
+-4763.9453,156.6929,sidespin_rpm,Sidespin
+-2688.9924,174.5297,sidespin_rpm,Sidespin
+-3371.6855,102.3622,sidespin_rpm,Sidespin
+-69.9045,150.9186,sidespin_rpm,Sidespin
+-2789.0908,59.9847,sidespin_rpm,Sidespin
+704.0913,158.738,sidespin_rpm,Sidespin
+559.4561,135.8815,sidespin_rpm,Sidespin
+-275.7251,166.6776,sidespin_rpm,Sidespin
+-373.1226,134.6785,sidespin_rpm,Sidespin
+1130.2251,142.6728,sidespin_rpm,Sidespin
+-30.6677,157.0101,sidespin_rpm,Sidespin
+318.0149,177.8215,sidespin_rpm,Sidespin
+-977.4906,166.0761,sidespin_rpm,Sidespin
+-187.467,185.6846,sidespin_rpm,Sidespin
+-571.3673,185.5096,sidespin_rpm,Sidespin
+-1712.1812,168.1102,sidespin_rpm,Sidespin
+-332.3714,176.3123,sidespin_rpm,Sidespin
+-3036.1133,157.7209,sidespin_rpm,Sidespin
+-304.9278,195.2975,sidespin_rpm,Sidespin
+-782.4415,215.7152,sidespin_rpm,Sidespin
+-952.5234,217.2353,sidespin_rpm,Sidespin
+-1025.3918,194.1273,sidespin_rpm,Sidespin
+-820.9672,171.7192,sidespin_rpm,Sidespin
+-1220.9406,219.3898,sidespin_rpm,Sidespin
+2590.8513,107.4584,sidespin_rpm,Sidespin
+-205.2012,188.7139,sidespin_rpm,Sidespin
+-166.9182,219.7944,sidespin_rpm,Sidespin
+107.9881,188.6155,sidespin_rpm,Sidespin
+2378.3398,104.8775,sidespin_rpm,Sidespin
+154.7968,220.0569,sidespin_rpm,Sidespin
+-591.1513,185.0831,sidespin_rpm,Sidespin
+-1402.3688,155.4462,sidespin_rpm,Sidespin
+-1247.5649,188.528,sidespin_rpm,Sidespin
+949.3136,98.5017,sidespin_rpm,Sidespin
+1423.6526,122.769,sidespin_rpm,Sidespin
+2371.8928,116.8854,sidespin_rpm,Sidespin
+905.4277,116.2839,sidespin_rpm,Sidespin
+2740.8352,140.7699,sidespin_rpm,Sidespin
+1293.6768,130.3915,sidespin_rpm,Sidespin
+263.064,74.6829,sidespin_rpm,Sidespin
+557.0801,129.3963,sidespin_rpm,Sidespin
+1706.4006,122.5722,sidespin_rpm,Sidespin
+41.0296,93.4164,sidespin_rpm,Sidespin
+-453.2554,103.9042,sidespin_rpm,Sidespin
+-332.4735,119.3023,sidespin_rpm,Sidespin
+979.6881,121.6207,sidespin_rpm,Sidespin
+983.8624,125.0109,sidespin_rpm,Sidespin
+295.4487,129.1667,sidespin_rpm,Sidespin
+-904.0621,132.4256,sidespin_rpm,Sidespin
+-49.9015,103.0293,sidespin_rpm,Sidespin
+-605.7651,131.157,sidespin_rpm,Sidespin
+419.1378,127.2857,sidespin_rpm,Sidespin
+-371.1986,177.8871,sidespin_rpm,Sidespin
+-38.8484,184.416,sidespin_rpm,Sidespin
+592.1345,172.4519,sidespin_rpm,Sidespin
+1307.72,152.0779,sidespin_rpm,Sidespin
+1856.3125,138.189,sidespin_rpm,Sidespin
+189.8944,177.4934,sidespin_rpm,Sidespin
+1070.6477,80.8508,sidespin_rpm,Sidespin
+1105.6826,143.2087,sidespin_rpm,Sidespin
+1265.9518,161.3517,sidespin_rpm,Sidespin
+2281.4187,133.0271,sidespin_rpm,Sidespin
+1339.6084,175.6015,sidespin_rpm,Sidespin
+2652.51,124.1251,sidespin_rpm,Sidespin
+2443.3391,137.6531,sidespin_rpm,Sidespin
+2311.1216,140.1356,sidespin_rpm,Sidespin
+1674.2541,154.3417,sidespin_rpm,Sidespin
+-2371.0093,99.7703,sidespin_rpm,Sidespin
+404.0425,146.7192,sidespin_rpm,Sidespin
+310.3844,194.5866,sidespin_rpm,Sidespin
+1011.8379,177.57,sidespin_rpm,Sidespin
+375.8436,174.6282,sidespin_rpm,Sidespin
+-514.3615,107.2944,sidespin_rpm,Sidespin
+522.3059,81.332,sidespin_rpm,Sidespin
+1431.3052,122.0144,sidespin_rpm,Sidespin
+1193.2057,89.9606,sidespin_rpm,Sidespin
+876.4202,95.8771,sidespin_rpm,Sidespin
+539.3258,105.129,sidespin_rpm,Sidespin
+1906.292,169.6522,sidespin_rpm,Sidespin
+723.0507,115.4965,sidespin_rpm,Sidespin
+-360.3405,151.8045,sidespin_rpm,Sidespin
+1808.021,150.514,sidespin_rpm,Sidespin
+1046.0342,97.43,sidespin_rpm,Sidespin
+1319.8431,99.9891,sidespin_rpm,Sidespin
+2031.8453,151.3123,sidespin_rpm,Sidespin
+6.6928,105.6758,sidespin_rpm,Sidespin
+1110.3185,130.3806,sidespin_rpm,Sidespin
+27.8764,110.0066,sidespin_rpm,Sidespin
+-379.8281,120.1225,sidespin_rpm,Sidespin
+-159.9643,102.7778,sidespin_rpm,Sidespin
+800.6099,99.0814,sidespin_rpm,Sidespin
+-254.1766,133.8692,sidespin_rpm,Sidespin
+-954.6767,119.6194,sidespin_rpm,Sidespin
+-577.4713,100.2625,sidespin_rpm,Sidespin
+1069.1023,122.5722,sidespin_rpm,Sidespin
+1637.551,90.7262,sidespin_rpm,Sidespin
+1200.783,167.64,sidespin_rpm,Sidespin
+276.4904,170.5709,sidespin_rpm,Sidespin
+1488.9763,175.3609,sidespin_rpm,Sidespin
+852.7796,120.6037,sidespin_rpm,Sidespin
+177.5007,141.6776,sidespin_rpm,Sidespin
+-502.2185,129.8119,sidespin_rpm,Sidespin
+-1924.5325,124.0048,sidespin_rpm,Sidespin
+-2308.8118,137.839,sidespin_rpm,Sidespin
+-567.3117,120.5709,sidespin_rpm,Sidespin
+99.859,111.9641,sidespin_rpm,Sidespin
+194.5543,99.6172,sidespin_rpm,Sidespin
+-169.2264,152.9746,sidespin_rpm,Sidespin
+-1076.1584,129.7353,sidespin_rpm,Sidespin
+-1587.2048,177.1654,sidespin_rpm,Sidespin
+-1706.1128,39.1404,sidespin_rpm,Sidespin
+-686.9849,138.8561,sidespin_rpm,Sidespin
+1773.8104,120.5818,sidespin_rpm,Sidespin
+1663.2946,92.2244,sidespin_rpm,Sidespin
+-499.3137,182.3819,sidespin_rpm,Sidespin
+68.2683,128.259,sidespin_rpm,Sidespin
+-411.3967,73.5674,sidespin_rpm,Sidespin
+144.1587,101.5092,sidespin_rpm,Sidespin
+760.8921,95.8443,sidespin_rpm,Sidespin
+2667.7966,132.3272,sidespin_rpm,Sidespin
+-317.7376,131.157,sidespin_rpm,Sidespin
+-828.5956,174.3876,sidespin_rpm,Sidespin
+-602.5499,162.6969,sidespin_rpm,Sidespin
+-2114.8965,156.9882,sidespin_rpm,Sidespin
+131.0365,117.1697,sidespin_rpm,Sidespin
+-415.9791,62.5547,sidespin_rpm,Sidespin
+-930.0613,154.8119,sidespin_rpm,Sidespin
+-1445.1963,174.4204,sidespin_rpm,Sidespin
+1104.3605,135.8377,sidespin_rpm,Sidespin
+-392.3856,165.1903,sidespin_rpm,Sidespin
+299.7036,119.8928,sidespin_rpm,Sidespin
+272.6709,96.8723,sidespin_rpm,Sidespin
+244.3152,166.5901,sidespin_rpm,Sidespin
+-890.7264,136.5376,sidespin_rpm,Sidespin
+243.6626,100.7437,sidespin_rpm,Sidespin
+-1659.0985,143.0993,sidespin_rpm,Sidespin
+-1000.705,151.7498,sidespin_rpm,Sidespin
+-487.1891,93.4602,sidespin_rpm,Sidespin
+-185.9022,116.7979,sidespin_rpm,Sidespin
+-223.8227,142.2135,sidespin_rpm,Sidespin
+2586.5791,130.129,sidespin_rpm,Sidespin
+-1644.709,146.3801,sidespin_rpm,Sidespin
+560.1257,166.1308,sidespin_rpm,Sidespin
+-516.3526,156.4523,sidespin_rpm,Sidespin
+-985.1554,146.413,sidespin_rpm,Sidespin
+835.5881,154.1667,sidespin_rpm,Sidespin
+-1021.6672,141.7213,sidespin_rpm,Sidespin
+-2250.3687,126.192,sidespin_rpm,Sidespin
+-889.9738,146.3145,sidespin_rpm,Sidespin
+474.8408,117.5416,sidespin_rpm,Sidespin
+1498.9811,111.4064,sidespin_rpm,Sidespin
+-66.1862,133.2349,sidespin_rpm,Sidespin
+-602.9887,155.6868,sidespin_rpm,Sidespin
+116.1924,133.4864,sidespin_rpm,Sidespin
+-196.4113,94.9913,sidespin_rpm,Sidespin
+587.5118,153.598,sidespin_rpm,Sidespin
+-1065.5396,135.3018,sidespin_rpm,Sidespin
+-1173.6199,144.3241,sidespin_rpm,Sidespin
+-704.9471,146.0193,sidespin_rpm,Sidespin
+-908.2761,158.6177,sidespin_rpm,Sidespin
+-217.6435,157.8303,sidespin_rpm,Sidespin
+-1226.5624,159.416,sidespin_rpm,Sidespin
+-989.1357,159.1317,sidespin_rpm,Sidespin
+-200.2591,161.4939,sidespin_rpm,Sidespin
+-959.6109,160.4221,sidespin_rpm,Sidespin
+-647.8056,141.6776,sidespin_rpm,Sidespin
+317.0732,181.8679,sidespin_rpm,Sidespin
+-1244.7477,169.0289,sidespin_rpm,Sidespin
+-710.2133,148.7314,sidespin_rpm,Sidespin
+-438.2308,71.8941,sidespin_rpm,Sidespin
+-2464.3547,152.8106,sidespin_rpm,Sidespin
+-856.8749,162.9812,sidespin_rpm,Sidespin
+-169.3728,150.1531,sidespin_rpm,Sidespin
+925.3752,168.1649,sidespin_rpm,Sidespin
+-2085.6667,161.8438,sidespin_rpm,Sidespin
+-2425.8481,145.2975,sidespin_rpm,Sidespin
+-2225.5186,162.8062,sidespin_rpm,Sidespin
+-1203.0559,114.3919,sidespin_rpm,Sidespin
+-2196.9851,153.6308,sidespin_rpm,Sidespin
+-962.7968,175.7437,sidespin_rpm,Sidespin
+-620.2427,68.7773,sidespin_rpm,Sidespin
+734.0945,44.7288,sidespin_rpm,Sidespin
+876.096,58.5192,sidespin_rpm,Sidespin
+-332.4748,182.699,sidespin_rpm,Sidespin
+-164.1928,141.1308,sidespin_rpm,Sidespin
+617.3154,153.5761,sidespin_rpm,Sidespin
+262.1211,120.1444,sidespin_rpm,Sidespin
+-1135.3035,176.8373,sidespin_rpm,Sidespin
+2338.6111,142.2572,sidespin_rpm,Sidespin
+1353.3658,123.4252,sidespin_rpm,Sidespin
+349.5112,182.2178,sidespin_rpm,Sidespin
+892.4603,161.0018,sidespin_rpm,Sidespin
+417.5113,162.4563,sidespin_rpm,Sidespin
+-1484.9056,172.0254,sidespin_rpm,Sidespin
+-125.8515,162.85,sidespin_rpm,Sidespin
+-1198.8154,172.0363,sidespin_rpm,Sidespin
+-860.2577,93.2524,sidespin_rpm,Sidespin
+-2122.3206,103.6527,sidespin_rpm,Sidespin
+-651.1472,160.0722,sidespin_rpm,Sidespin
+-907.2859,161.1439,sidespin_rpm,Sidespin
+-335.7435,56.682,sidespin_rpm,Sidespin
+-1301.9856,148.8626,sidespin_rpm,Sidespin
+-174.2225,151.717,sidespin_rpm,Sidespin
+-548.2451,130.0416,sidespin_rpm,Sidespin
+1050.271,116.7323,sidespin_rpm,Sidespin
+-313.0136,142.7931,sidespin_rpm,Sidespin
+-489.9792,161.822,sidespin_rpm,Sidespin
+677.6492,130.818,sidespin_rpm,Sidespin
+983.4989,123.8517,sidespin_rpm,Sidespin
+-137.1291,163.7249,sidespin_rpm,Sidespin
+-1683.4012,87.5656,sidespin_rpm,Sidespin
+-1631.2904,143.5258,sidespin_rpm,Sidespin
+-2837.5325,126.2139,sidespin_rpm,Sidespin
+-296.5915,122.091,sidespin_rpm,Sidespin
+-1789.3177,127.4606,sidespin_rpm,Sidespin
+-402.8667,162.5328,sidespin_rpm,Sidespin
+191.4666,152.3731,sidespin_rpm,Sidespin
+139.2457,99.0267,sidespin_rpm,Sidespin
+718.2081,94.5429,sidespin_rpm,Sidespin
+-1919.5736,146.1177,sidespin_rpm,Sidespin
+-446.3621,169.7835,sidespin_rpm,Sidespin
+1470.7118,83.213,sidespin_rpm,Sidespin
+1611.999,52.8981,sidespin_rpm,Sidespin
+1578.5546,91.5245,sidespin_rpm,Sidespin
+-1106.1401,95.7787,sidespin_rpm,Sidespin
+-658.0117,130.3696,sidespin_rpm,Sidespin
+-1996.6727,84.8425,sidespin_rpm,Sidespin
+-892.2463,142.4103,sidespin_rpm,Sidespin
+-1436.4147,117.64,sidespin_rpm,Sidespin
+581.5492,141.3167,sidespin_rpm,Sidespin
+-972.8367,135.6518,sidespin_rpm,Sidespin
+-297.2687,136.0346,sidespin_rpm,Sidespin
+-1888.1899,153.423,sidespin_rpm,Sidespin
+-337.7441,101.8482,sidespin_rpm,Sidespin
+-1066.3743,97.08,sidespin_rpm,Sidespin
+-466.5745,112.9593,sidespin_rpm,Sidespin
+1150.7839,101.2467,sidespin_rpm,Sidespin
+-943.0328,44.3351,sidespin_rpm,Sidespin
+745.7961,145.6256,sidespin_rpm,Sidespin
+-373.7905,149.3657,sidespin_rpm,Sidespin
+1049.5424,121.3801,sidespin_rpm,Sidespin
+-121.1309,147.7034,sidespin_rpm,Sidespin
+-999.6318,54.1885,sidespin_rpm,Sidespin
+-1311.4495,75.6999,sidespin_rpm,Sidespin
+-3594.3801,128.8605,sidespin_rpm,Sidespin
+-908.2341,136.5157,sidespin_rpm,Sidespin
+-1728.2068,151.8263,sidespin_rpm,Sidespin
+-1935.853,155.8618,sidespin_rpm,Sidespin
+-753.8266,79.2432,sidespin_rpm,Sidespin
+3217.4814,92.7275,sidespin_rpm,Sidespin
+-1800.2917,132.196,sidespin_rpm,Sidespin
+-1608.8948,157.36,sidespin_rpm,Sidespin
+-1065.749,147.6925,sidespin_rpm,Sidespin
+-1437.7894,125.9296,sidespin_rpm,Sidespin
+-1454.5455,154.4619,sidespin_rpm,Sidespin
+-2006.3925,126.7826,sidespin_rpm,Sidespin
+-93.0913,153.0512,sidespin_rpm,Sidespin
+-2081.8433,106.2227,sidespin_rpm,Sidespin
+1238.0593,78.1387,sidespin_rpm,Sidespin
+-792.0425,160.7174,sidespin_rpm,Sidespin
+-191.7041,166.9182,sidespin_rpm,Sidespin
+585.6017,120.0459,sidespin_rpm,Sidespin
+39.5541,151.6295,sidespin_rpm,Sidespin
+-564.7563,149.5188,sidespin_rpm,Sidespin
+195.8883,174.0485,sidespin_rpm,Sidespin
+-1044.5417,134.9409,sidespin_rpm,Sidespin
+372.8705,175.0219,sidespin_rpm,Sidespin
+432.3956,132.185,sidespin_rpm,Sidespin
+-2735.6702,101.9576,sidespin_rpm,Sidespin
+-558.2966,131.7695,sidespin_rpm,Sidespin
+-1328.4045,70.7021,sidespin_rpm,Sidespin
+2293.1953,133.0271,sidespin_rpm,Sidespin
+-1678.9299,120.1444,sidespin_rpm,Sidespin
+-8035.8433,55.8071,sidespin_rpm,Sidespin
+-1450.7301,81.7913,sidespin_rpm,Sidespin
+-2282.4888,91.5792,sidespin_rpm,Sidespin
+-1350.3844,79.4619,sidespin_rpm,Sidespin
+-2370.9561,124.4313,sidespin_rpm,Sidespin
+-259.754,57.8959,sidespin_rpm,Sidespin
+257.1607,127.8543,sidespin_rpm,Sidespin
+306.3577,96.916,sidespin_rpm,Sidespin
+423.1557,146.1505,sidespin_rpm,Sidespin
+-430.3093,123.9064,sidespin_rpm,Sidespin
+-706.8289,141.1527,sidespin_rpm,Sidespin
+397.9276,149.5625,sidespin_rpm,Sidespin
+-648.2214,136.1439,sidespin_rpm,Sidespin
+117.1829,147.6269,sidespin_rpm,Sidespin
+250.8666,156.1899,sidespin_rpm,Sidespin
+-2047.6757,117.2025,sidespin_rpm,Sidespin
+-311.338,137.9046,sidespin_rpm,Sidespin
+1547.4717,95.1334,sidespin_rpm,Sidespin
+946.0792,110.6955,sidespin_rpm,Sidespin
+740.1848,111.7126,sidespin_rpm,Sidespin
+831.8602,109.416,sidespin_rpm,Sidespin
+-487.0422,105.3696,sidespin_rpm,Sidespin
+346.3502,103.0402,sidespin_rpm,Sidespin
+1807.2046,136.2533,sidespin_rpm,Sidespin
+1494.1755,148.2502,sidespin_rpm,Sidespin
+228.6698,119.871,sidespin_rpm,Sidespin
+1353.916,116.273,sidespin_rpm,Sidespin
+-731.2255,114.5451,sidespin_rpm,Sidespin
+1243.682,92.465,sidespin_rpm,Sidespin
+1427.3259,84.1973,sidespin_rpm,Sidespin
+677.8231,95.7349,sidespin_rpm,Sidespin
+354.071,165.584,sidespin_rpm,Sidespin
+-74.9251,99.6391,sidespin_rpm,Sidespin
+-2050.1099,49.3329,sidespin_rpm,Sidespin
+479.4316,167.3884,sidespin_rpm,Sidespin
+640.9039,154.6369,sidespin_rpm,Sidespin
+1105.2661,146.3145,sidespin_rpm,Sidespin
+1634.6394,149.5297,sidespin_rpm,Sidespin
+1124.144,102.231,sidespin_rpm,Sidespin
+774.7955,67.0166,sidespin_rpm,Sidespin
+1093.948,126.3342,sidespin_rpm,Sidespin
+741.7298,143.0118,sidespin_rpm,Sidespin
+1540.0808,151.2686,sidespin_rpm,Sidespin
+2293.6941,155.5884,sidespin_rpm,Sidespin
+2207.4321,165.7262,sidespin_rpm,Sidespin
+99.5957,158.7708,sidespin_rpm,Sidespin
+-148.1985,152.8434,sidespin_rpm,Sidespin
+38.3218,164.8185,sidespin_rpm,Sidespin
+259.0386,184.6894,sidespin_rpm,Sidespin
+944.4622,145.6037,sidespin_rpm,Sidespin
+466.0094,184.5691,sidespin_rpm,Sidespin
+-409.4299,211.4939,sidespin_rpm,Sidespin
+813.7633,170.8661,sidespin_rpm,Sidespin
+163.6163,169.7616,sidespin_rpm,Sidespin
+-287.5195,140.1028,sidespin_rpm,Sidespin
+-909.4761,157.5131,sidespin_rpm,Sidespin
+677.0085,117.3228,sidespin_rpm,Sidespin
+-1073.5536,121.0411,sidespin_rpm,Sidespin
+-550.0162,115.7152,sidespin_rpm,Sidespin
+-580.3382,115.4528,sidespin_rpm,Sidespin
+-478.4272,121.4458,sidespin_rpm,Sidespin
+-1708.3964,137.8062,sidespin_rpm,Sidespin
+-575.8264,147.0582,sidespin_rpm,Sidespin
+-2707.6243,108.9567,sidespin_rpm,Sidespin
+614.4127,164.8075,sidespin_rpm,Sidespin
+-207.1315,127.2966,sidespin_rpm,Sidespin
+-243.0437,127.3731,sidespin_rpm,Sidespin
+-913.9322,115.8246,sidespin_rpm,Sidespin
+-1468.1832,96.0302,sidespin_rpm,Sidespin
+-353.0879,150.8311,sidespin_rpm,Sidespin
+-2958.3269,114.9825,sidespin_rpm,Sidespin
+-1264.015,132.8412,sidespin_rpm,Sidespin
+-267.1855,149.6172,sidespin_rpm,Sidespin
+-2143.3,129.4838,sidespin_rpm,Sidespin
+-1949.4,133.0271,sidespin_rpm,Sidespin
+-618.6475,143.7445,sidespin_rpm,Sidespin
+-693.7137,36.3845,sidespin_rpm,Sidespin
+-356.7914,111.0564,sidespin_rpm,Sidespin
+-881.1123,122.8237,sidespin_rpm,Sidespin
+88.136,186.7782,sidespin_rpm,Sidespin
+217.7094,186.7345,sidespin_rpm,Sidespin
+465.2135,144.0507,sidespin_rpm,Sidespin
+-1391.127,182.2725,sidespin_rpm,Sidespin
+-588.1813,206.5398,sidespin_rpm,Sidespin
+1528.6448,126.4326,sidespin_rpm,Sidespin
+3410.7439,113.7248,sidespin_rpm,Sidespin
+1428.4355,80.5993,sidespin_rpm,Sidespin
+-1517.3832,61.0346,sidespin_rpm,Sidespin
+26.5609,116.5245,sidespin_rpm,Sidespin
+-440.6906,104.6697,sidespin_rpm,Sidespin
+-103.9372,128.6527,sidespin_rpm,Sidespin
+-615.0671,162.4563,sidespin_rpm,Sidespin
+-86.6824,76.6842,sidespin_rpm,Sidespin
+1038.0972,165.4856,sidespin_rpm,Sidespin
+3709.5386,63.4952,sidespin_rpm,Sidespin
+1044.6589,129.3526,sidespin_rpm,Sidespin
+2212.4153,116.5901,sidespin_rpm,Sidespin
+-819.8657,192.4103,sidespin_rpm,Sidespin
+-3199.499,158.4755,sidespin_rpm,Sidespin
+-1948.3102,87.9484,sidespin_rpm,Sidespin
+-108.3578,166.7104,sidespin_rpm,Sidespin
+475.0597,185.8815,sidespin_rpm,Sidespin
+1252.923,161.1439,sidespin_rpm,Sidespin
+-819.478,43.657,sidespin_rpm,Sidespin
+-199.7274,201.7498,sidespin_rpm,Sidespin
+-1151.6096,179.8994,sidespin_rpm,Sidespin
+0.9925,181.3976,sidespin_rpm,Sidespin
+-887.8524,116.8526,sidespin_rpm,Sidespin
+94.8301,177.395,sidespin_rpm,Sidespin
+1341.813,128.1387,sidespin_rpm,Sidespin
+1164.115,126.9248,sidespin_rpm,Sidespin
+-1040.2244,124.7703,sidespin_rpm,Sidespin
+414.0919,114.3263,sidespin_rpm,Sidespin
+-22.8638,141.1308,sidespin_rpm,Sidespin
+525.7937,147.9331,sidespin_rpm,Sidespin
+412.2276,150.1859,sidespin_rpm,Sidespin
+-841.9685,145.0241,sidespin_rpm,Sidespin
+-532.6063,152.6247,sidespin_rpm,Sidespin
+-954.3735,125.2734,sidespin_rpm,Sidespin
+103.2154,170.6584,sidespin_rpm,Sidespin
+1714.8822,171.9598,sidespin_rpm,Sidespin
+-735.7072,165.4965,sidespin_rpm,Sidespin
+154.1859,181.2008,sidespin_rpm,Sidespin
+1347.9569,143.4711,sidespin_rpm,Sidespin
+827.3234,179.4182,sidespin_rpm,Sidespin
+1134.8397,160.1925,sidespin_rpm,Sidespin
+279.478,182.2835,sidespin_rpm,Sidespin
+1018.5978,146.3145,sidespin_rpm,Sidespin
+1080.9374,139.7419,sidespin_rpm,Sidespin
+163.9329,132.0538,sidespin_rpm,Sidespin
+667.3721,156.846,sidespin_rpm,Sidespin
+953.3463,169.6304,sidespin_rpm,Sidespin
+223.7145,179.2323,sidespin_rpm,Sidespin
+342.0792,163.2218,sidespin_rpm,Sidespin
+831.0562,176.2795,sidespin_rpm,Sidespin
+1473.4386,165.4746,sidespin_rpm,Sidespin
+1821.7384,157.3819,sidespin_rpm,Sidespin
+1033.5778,108.5521,sidespin_rpm,Sidespin
+2517.6257,160.4221,sidespin_rpm,Sidespin
+1233.4413,162.4672,sidespin_rpm,Sidespin
+1221.3096,146.4348,sidespin_rpm,Sidespin
+602.3757,144.7288,sidespin_rpm,Sidespin
+885.0429,137.4235,sidespin_rpm,Sidespin
+952.8345,163.2874,sidespin_rpm,Sidespin
+315.468,121.3911,sidespin_rpm,Sidespin
+-399.3674,118.0446,sidespin_rpm,Sidespin
+-2816.6042,113.9436,sidespin_rpm,Sidespin
+-4027.335,80.4899,sidespin_rpm,Sidespin
+-217.2174,125.6124,sidespin_rpm,Sidespin
+-1050.592,113.9982,sidespin_rpm,Sidespin
+726.0795,119.4444,sidespin_rpm,Sidespin
+1378.49,137.675,sidespin_rpm,Sidespin
+-156.3348,112.7625,sidespin_rpm,Sidespin
+-301.8443,138.8451,sidespin_rpm,Sidespin
+604.9098,151.3998,sidespin_rpm,Sidespin
+-20.928,140.6277,sidespin_rpm,Sidespin
+154.0673,171.5114,sidespin_rpm,Sidespin
+492.5703,131.1789,sidespin_rpm,Sidespin
+438.4736,186.5595,sidespin_rpm,Sidespin
+-907.6362,79.1557,sidespin_rpm,Sidespin
+398.1336,95.2537,sidespin_rpm,Sidespin
+-128.0789,115.2887,sidespin_rpm,Sidespin
+321.6881,111.472,sidespin_rpm,Sidespin
+-646.4952,121.9926,sidespin_rpm,Sidespin
+-1146.0983,75.2625,sidespin_rpm,Sidespin
+-1646.8993,118.0556,sidespin_rpm,Sidespin
+-74.2582,123.7314,sidespin_rpm,Sidespin
+-87.2276,142.4869,sidespin_rpm,Sidespin
+1829.4967,152.2528,sidespin_rpm,Sidespin
+714.3173,118.0227,sidespin_rpm,Sidespin
+266.7235,95.1662,sidespin_rpm,Sidespin
+1564.4443,139.6544,sidespin_rpm,Sidespin
+-357.375,150.5359,sidespin_rpm,Sidespin
+853.0228,169.9366,sidespin_rpm,Sidespin
+-1225.8151,166.5792,sidespin_rpm,Sidespin
+-1227.0308,139.2388,sidespin_rpm,Sidespin
+84.7459,161.5704,sidespin_rpm,Sidespin
+-79.3019,168.9414,sidespin_rpm,Sidespin
+-2351.0557,118.3946,sidespin_rpm,Sidespin
+-358.9974,104.6807,sidespin_rpm,Sidespin
+-4.4873,172.1019,sidespin_rpm,Sidespin
+1082.6906,101.6732,sidespin_rpm,Sidespin
+435.5767,114.8731,sidespin_rpm,Sidespin
+1767.601,145.2537,sidespin_rpm,Sidespin
+1292.5099,113.353,sidespin_rpm,Sidespin
+-252.4666,169.2695,sidespin_rpm,Sidespin
+-244.8705,136.2861,sidespin_rpm,Sidespin
+-596.0981,183.7708,sidespin_rpm,Sidespin
+4.1134,182.7428,sidespin_rpm,Sidespin
+1993.2653,121.3583,sidespin_rpm,Sidespin
+253.5556,153.259,sidespin_rpm,Sidespin
+351.4996,135.444,sidespin_rpm,Sidespin
+1041.7574,167.5197,sidespin_rpm,Sidespin
+-393.3704,120.713,sidespin_rpm,Sidespin
+-1550.5872,102.4825,sidespin_rpm,Sidespin
+-191.9086,115.5731,sidespin_rpm,Sidespin
+385.9542,121.3801,sidespin_rpm,Sidespin
+-510.593,105.818,sidespin_rpm,Sidespin
+-1424.1771,100.6343,sidespin_rpm,Sidespin
+-2266.9968,121.7629,sidespin_rpm,Sidespin
+-549.6326,137.9265,sidespin_rpm,Sidespin
+-2633.8625,120.199,sidespin_rpm,Sidespin
+-2391.7292,134.6785,sidespin_rpm,Sidespin
+-369.9333,148.1955,sidespin_rpm,Sidespin
+461.926,140.2668,sidespin_rpm,Sidespin
+-209.6597,139.1842,sidespin_rpm,Sidespin
+-224.3197,147.0363,sidespin_rpm,Sidespin
+-1754.0342,140.8246,sidespin_rpm,Sidespin
+-1789.4037,130.5227,sidespin_rpm,Sidespin
+-2071.0125,102.7559,sidespin_rpm,Sidespin
+-25.484,209.0332,sidespin_rpm,Sidespin
+-959.4609,92.3556,sidespin_rpm,Sidespin
+-262.4321,199.9344,sidespin_rpm,Sidespin
+-675.8326,123.5018,sidespin_rpm,Sidespin
+-366.1971,117.7493,sidespin_rpm,Sidespin
+-1080.7756,151.5967,sidespin_rpm,Sidespin
+-1000.3533,155.479,sidespin_rpm,Sidespin
+-1474.9392,146.9598,sidespin_rpm,Sidespin
+-240.7469,148.119,sidespin_rpm,Sidespin
+-1391.6998,177.3513,sidespin_rpm,Sidespin
+-658.9081,137.3141,sidespin_rpm,Sidespin
+-1177.1372,168.2524,sidespin_rpm,Sidespin
+-1329.3562,194.3788,sidespin_rpm,Sidespin
+-1760.4106,192.1807,sidespin_rpm,Sidespin
+-439.5918,147.8565,sidespin_rpm,Sidespin
+-771.5114,213.9217,sidespin_rpm,Sidespin
+242.8578,190.245,sidespin_rpm,Sidespin
+-321.7643,222.2988,sidespin_rpm,Sidespin
+1243.8585,165.0044,sidespin_rpm,Sidespin
+957.1415,125.6234,sidespin_rpm,Sidespin
+-2128.6863,195.035,sidespin_rpm,Sidespin
+-192.0689,236.0127,sidespin_rpm,Sidespin
+965.6943,177.9418,sidespin_rpm,Sidespin
+1272.7043,179.2542,sidespin_rpm,Sidespin
+554.5944,223.8517,sidespin_rpm,Sidespin
+-491.317,180.4681,sidespin_rpm,Sidespin
+755.8969,131.9116,sidespin_rpm,Sidespin
+-1538.7019,172.0801,sidespin_rpm,Sidespin
+499.9695,197.5722,sidespin_rpm,Sidespin
+-1183.6859,124.9563,sidespin_rpm,Sidespin
+-1456.7731,175.2843,sidespin_rpm,Sidespin
+-593.7668,120.4615,sidespin_rpm,Sidespin
+-739.3651,146.0302,sidespin_rpm,Sidespin
+-557.8241,152.4388,sidespin_rpm,Sidespin
+-1666.9602,162.664,sidespin_rpm,Sidespin
+-487.9579,161.8657,sidespin_rpm,Sidespin
+-1546.2272,182.0319,sidespin_rpm,Sidespin
+-283.2344,115.7152,sidespin_rpm,Sidespin
+-1003.4395,147.9878,sidespin_rpm,Sidespin
+-1361.9103,158.9129,sidespin_rpm,Sidespin
+-1297.2585,216.7104,sidespin_rpm,Sidespin
+135.6436,126.3889,sidespin_rpm,Sidespin
+-2280.3782,200.35,sidespin_rpm,Sidespin
+-2922.6252,130.818,sidespin_rpm,Sidespin
+-1357.2961,228.1277,sidespin_rpm,Sidespin
+-2550.4526,137.2047,sidespin_rpm,Sidespin
+1730.7914,126.6514,sidespin_rpm,Sidespin
+-557.3099,167.5087,sidespin_rpm,Sidespin
+-43.4607,186.8876,sidespin_rpm,Sidespin
+-41.2076,165.2012,sidespin_rpm,Sidespin
+-17.197,149.1907,sidespin_rpm,Sidespin
+-3482.2695,112.8718,sidespin_rpm,Sidespin
+-218.9852,199.9453,sidespin_rpm,Sidespin
+-173.2775,190.9011,sidespin_rpm,Sidespin
+-1338.3778,189.8731,sidespin_rpm,Sidespin
+147.8447,131.4195,sidespin_rpm,Sidespin
+-5.6584,185.9252,sidespin_rpm,Sidespin
+-1627.4943,150.2078,sidespin_rpm,Sidespin
+-1550.8955,172.6925,sidespin_rpm,Sidespin
+-550.0453,202.1216,sidespin_rpm,Sidespin
+-708.8879,128.3793,sidespin_rpm,Sidespin
+519.5399,185.0284,sidespin_rpm,Sidespin
+-1054.7383,191.5245,sidespin_rpm,Sidespin
+-628.0533,222.2878,sidespin_rpm,Sidespin
+-340.0856,227.7997,sidespin_rpm,Sidespin
+-2153.4453,206.8351,sidespin_rpm,Sidespin
+-93.196,193.3399,sidespin_rpm,Sidespin
+25.0404,118.8539,sidespin_rpm,Sidespin
+-1357.8979,102.9309,sidespin_rpm,Sidespin
+-1190.0012,100.4921,sidespin_rpm,Sidespin
+-267.3908,151.7935,sidespin_rpm,Sidespin
+-283.8496,198.4033,sidespin_rpm,Sidespin
+680.0914,167.2244,sidespin_rpm,Sidespin
+-68.5037,184.077,sidespin_rpm,Sidespin
+367.8226,205.5884,sidespin_rpm,Sidespin
+16.5651,186.2533,sidespin_rpm,Sidespin
+673.1616,197.1675,sidespin_rpm,Sidespin
+-596.2156,235.8377,sidespin_rpm,Sidespin
+-376.7103,212.4891,sidespin_rpm,Sidespin
+299.4482,164.9278,sidespin_rpm,Sidespin
+-1797.8276,205.6759,sidespin_rpm,Sidespin
+-860.0655,250.5468,sidespin_rpm,Sidespin
+-3318.0417,209.6238,sidespin_rpm,Sidespin
+-742.8268,238.6374,sidespin_rpm,Sidespin
+-728.0964,211.6251,sidespin_rpm,Sidespin
+-1450.4186,200.2734,sidespin_rpm,Sidespin
+1210.9117,106.168,sidespin_rpm,Sidespin
+-1507.4371,184.8753,sidespin_rpm,Sidespin
+-260.883,200.3281,sidespin_rpm,Sidespin
+179.9236,209.2192,sidespin_rpm,Sidespin
+676.2414,220.9536,sidespin_rpm,Sidespin
+-737.0539,164.9169,sidespin_rpm,Sidespin
+-3224.6492,167.7822,sidespin_rpm,Sidespin
+-1422.0356,190.4418,sidespin_rpm,Sidespin
+-1670.4089,123.633,sidespin_rpm,Sidespin
+3790.0964,90.3325,sidespin_rpm,Sidespin
+1579.4501,74.1907,sidespin_rpm,Sidespin
+-117.1572,98.3158,sidespin_rpm,Sidespin
+-1099.9833,72.9659,sidespin_rpm,Sidespin
+203.3032,144.871,sidespin_rpm,Sidespin
+-100.839,145.0459,sidespin_rpm,Sidespin
+2341.7542,160.105,sidespin_rpm,Sidespin
+-1007.5155,158.3771,sidespin_rpm,Sidespin
+-3095.3005,136.6689,sidespin_rpm,Sidespin
+-342.2358,127.0888,sidespin_rpm,Sidespin
+480.7876,164.5779,sidespin_rpm,Sidespin
+-584.873,160.3237,sidespin_rpm,Sidespin
+-1327.8867,156.8023,sidespin_rpm,Sidespin
+-669.1113,177.4169,sidespin_rpm,Sidespin
+10.1402,168.1649,sidespin_rpm,Sidespin
+1570.7521,150.2625,sidespin_rpm,Sidespin
+-554.2063,166.1855,sidespin_rpm,Sidespin
+-1263.2006,140.8246,sidespin_rpm,Sidespin
+-855.4565,172.8237,sidespin_rpm,Sidespin
+-892.7944,135.0394,sidespin_rpm,Sidespin
+-2939.3242,72.1347,sidespin_rpm,Sidespin
+-1164.1562,145.5053,sidespin_rpm,Sidespin
+-86.2328,164.3701,sidespin_rpm,Sidespin
+-671.0146,159.077,sidespin_rpm,Sidespin
+-67.0326,63.5389,sidespin_rpm,Sidespin
+-972.6373,143.7445,sidespin_rpm,Sidespin
+-1728.9642,132.2835,sidespin_rpm,Sidespin
+-814.0711,160.7612,sidespin_rpm,Sidespin
+-3254.7866,72.7581,sidespin_rpm,Sidespin
+711.7755,126.5748,sidespin_rpm,Sidespin
+-2202.8367,125.9842,sidespin_rpm,Sidespin
+-83.3565,144.3023,sidespin_rpm,Sidespin
+-2193.9314,40.0044,sidespin_rpm,Sidespin
+-985.858,105.993,sidespin_rpm,Sidespin
+1157.8842,54.1229,sidespin_rpm,Sidespin
+-763.5571,131.7695,sidespin_rpm,Sidespin
+-20.3455,165.2559,sidespin_rpm,Sidespin
+-2776.9253,144.2585,sidespin_rpm,Sidespin
+-417.132,78.8823,sidespin_rpm,Sidespin
+301.6805,168.1649,sidespin_rpm,Sidespin
+-1298.9872,126.6842,sidespin_rpm,Sidespin
+-2068.1838,159.0661,sidespin_rpm,Sidespin
+-1226.5192,187.5984,sidespin_rpm,Sidespin
+-1517.5034,121.3801,sidespin_rpm,Sidespin
+-79.6247,172.9549,sidespin_rpm,Sidespin
+-2238.8254,176.9904,sidespin_rpm,Sidespin
+-1443.4913,199.7813,sidespin_rpm,Sidespin
+164.1992,195.1334,sidespin_rpm,Sidespin
+532.6747,85.619,sidespin_rpm,Sidespin
+150.5135,59.0879,sidespin_rpm,Sidespin
+665.7908,99.825,sidespin_rpm,Sidespin
+755.6135,95.035,sidespin_rpm,Sidespin
+963.9677,98.3486,sidespin_rpm,Sidespin
+107.8493,91.9182,sidespin_rpm,Sidespin
+153.9284,108.4208,sidespin_rpm,Sidespin
+1621.3716,79.287,sidespin_rpm,Sidespin
+1791.0049,122.4191,sidespin_rpm,Sidespin
+1223.4384,97.4847,sidespin_rpm,Sidespin
+1806.6328,99.8141,sidespin_rpm,Sidespin
+802.0027,114.4576,sidespin_rpm,Sidespin
+939.2297,121.3692,sidespin_rpm,Sidespin
+28.492,115.1247,sidespin_rpm,Sidespin
+-1590.7482,108.399,sidespin_rpm,Sidespin
+770.8699,122.2222,sidespin_rpm,Sidespin
+444.3607,133.9239,sidespin_rpm,Sidespin
+-1228.1393,126.192,sidespin_rpm,Sidespin
+501.798,128.8714,sidespin_rpm,Sidespin
+405.7935,120.4396,sidespin_rpm,Sidespin
+65.7204,118.5039,sidespin_rpm,Sidespin
+101.2246,77.231,sidespin_rpm,Sidespin
+433.8253,159.6675,sidespin_rpm,Sidespin
+294.0697,105.643,sidespin_rpm,Sidespin
+-817.6699,118.2415,sidespin_rpm,Sidespin
+-571.6819,166.3823,sidespin_rpm,Sidespin
+-1548.1102,101.0389,sidespin_rpm,Sidespin
+-793.0677,170.8661,sidespin_rpm,Sidespin
+878.6611,74.0376,sidespin_rpm,Sidespin
+1121.9293,143.6899,sidespin_rpm,Sidespin
+396.8029,115.5621,sidespin_rpm,Sidespin
+1307.4293,141.1855,sidespin_rpm,Sidespin
+-216.4624,150.2187,sidespin_rpm,Sidespin
+2241.3965,84.8972,sidespin_rpm,Sidespin
+548.696,109.3723,sidespin_rpm,Sidespin
+-799.3976,156.7367,sidespin_rpm,Sidespin
+-137.148,136.0783,sidespin_rpm,Sidespin
+917.1281,78.423,sidespin_rpm,Sidespin
+1284.8549,92.0494,sidespin_rpm,Sidespin
+1283.0148,124.836,sidespin_rpm,Sidespin
+315.9767,138.0796,sidespin_rpm,Sidespin
+466.5405,118.2633,sidespin_rpm,Sidespin
+448.2907,117.0713,sidespin_rpm,Sidespin
+1728.2881,68.1102,sidespin_rpm,Sidespin
+-145.5977,120.9427,sidespin_rpm,Sidespin
+297.3833,121.402,sidespin_rpm,Sidespin
+-693.1125,182.5678,sidespin_rpm,Sidespin
+140.5266,165.4199,sidespin_rpm,Sidespin
+2.6628,160.3784,sidespin_rpm,Sidespin
+-1607.5256,173.1299,sidespin_rpm,Sidespin
+388.0959,101.6842,sidespin_rpm,Sidespin
+1465.2473,79.7135,sidespin_rpm,Sidespin
+1706.9722,97.9221,sidespin_rpm,Sidespin
+956.4976,128.423,sidespin_rpm,Sidespin
+855.4544,168.0665,sidespin_rpm,Sidespin

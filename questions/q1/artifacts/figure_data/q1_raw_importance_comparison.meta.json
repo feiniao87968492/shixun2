@@ -1,0 +1,14 @@
+{
+  "stem": "q1_raw_importance_comparison",
+  "title": "Raw method importance comparison",
+  "source_script": "questions/q1/scripts/visualize.py",
+  "generated_at": "2026-07-12T11:47:33.683957+00:00",
+  "rows": 27,
+  "columns": [
+    "feature",
+    "feature_label",
+    "method",
+    "value"
+  ],
+  "notes": "Raw values are shown separately; they are not averaged into one unique ranking."
+}

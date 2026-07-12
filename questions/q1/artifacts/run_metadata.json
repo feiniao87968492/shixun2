@@ -1,0 +1,63 @@
+{
+  "timestamp": "2026-07-12T11:47:39.184497+00:00",
+  "git_commit": "aa71df42732bef50f64c7f478e2bce37f9701b43",
+  "data_path": "data\\processed\\golf_shots_clean.csv",
+  "data_hash": "1b0546e153d3676f0164efe5846124c96b93553545717dcd6daa619b08567bcd",
+  "config_path": "configs\\default.yaml",
+  "config_hash": "dbe4444965dff613516340b40a9fafa20b2aaab7996ca6dfe273b45dd4b237a1",
+  "random_seed": 2026,
+  "python_version": "3.10.11",
+  "package_versions": {
+    "python": "3.10.11",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scipy": "1.15.3",
+    "scikit_learn": "1.7.2",
+    "matplotlib": "3.10.8"
+  },
+  "sample_sizes": {
+    "S1_core": 735,
+    "S2_complete": 667,
+    "S3_imputed": 735,
+    "S3_spin_components": 735
+  },
+  "invalid_zero_corrections": {
+    "club_speed_mph": 3,
+    "attack_angle_deg": 3,
+    "record_ids": [
+      225,
+      226,
+      308
+    ]
+  },
+  "selected_spin_representation": "A: spin_rate_rpm + spin_axis_deg",
+  "selected_nonlinear_model": "ExtraTreesRegressor",
+  "table_hashes": {
+    "q1_data_audit": "479735f41d2a061d19654984b44d296eb18aae99179bc9546455c049937bc55b",
+    "q1_missing_audit": "7effed0727d787a393063525bde92032b8a3d8f3bd94bd3aeefbde15584bbd4e",
+    "q1_invalid_zero_records": "5f60d818a6255543a2fbae56fe5e4738cfe398d5fbd35c940f30e6901c48aa2c",
+    "q1_outlier_audit": "48ef8b608ca9971f7f487430745f7b8df2f4075be6cd41b8e4acf4ed0e355acb",
+    "q1_outlier_flags": "5c847ae64362ce66b1182e4f02d7ce5ca8e2195803be1654daaa88c1919c5687",
+    "q1_pearson_correlation": "fd3d746c8b2d5a7b431deef8e8f335e4fc592ae6a91c2055ce421190668f4c38",
+    "q1_spearman_correlation": "f3d45ca0c3c674f9d31da39a75febb028337056f5880f96f0369ae9e3ed3f133",
+    "q1_kendall_correlation": "da4b0db8e4f0cc5225a9b7811e10a044dc025e1dcf3d6315350d400dbf08ae85",
+    "q1_correlation_matrix": "b2a92292289cfd47cbc16d450e2b59aa55075343089a7189c3ffadf215ed7314",
+    "q1_correlation_confidence_intervals": "15748e8d984cf57ceffd2c0b39c62a47012efffcfca91632c2e6b5f972c8d5d7",
+    "q1_correlation_confidence_intervals_long": "1563f00ce7e6e713b9bf72b3ba6b2fe4314356ae5f83f43fd5c0d26ad2175d39",
+    "q1_model_cv_scores": "c18b9c9a9a07a24097a0fda7749831be06c7c7845b0e5a9cf22f9a97706d7983",
+    "q1_model_performance": "c18b9c9a9a07a24097a0fda7749831be06c7c7845b0e5a9cf22f9a97706d7983",
+    "q1_ridge_coefficients": "c4c6bc1943faeb2128435850defb838575960b77c00b8bb38232cf715e340180",
+    "q1_permutation_importance": "5f365e1f4a93425c3cb0402ea538a14c0e663e6f5eb784513fc5acf3350fb9cc",
+    "q1_method_importance": "a572df5fa2ea91b76a562c6366b65eeec228ef4ba086559f55e1c4d2ed3dc617",
+    "q1_feature_summary": "7613e4ade321cd717af10a00f2ed7119abc7986d68cb0496715f988e5b53aafa",
+    "q1_feature_ranking": "999595e2bbf6aabfa598e4ceb30e415120ef2930cb5b028c3d5a6bffbcc9cd0c",
+    "q1_feature_importance": "999595e2bbf6aabfa598e4ceb30e415120ef2930cb5b028c3d5a6bffbcc9cd0c",
+    "q1_group_importance": "b8db0f3c82dedd89e2e385e0df88990535fbbb0a7d080b7b8831f64474043ad1",
+    "q1_sensitivity_comparison": "5605b69e7bd9924cb714e32132989a2d392acb8fe4be8df40d0ae64596a980d2",
+    "q1_spin_representation_comparison": "873745eb1b19a7c843d6b23bab9acbad68aec70eae93cd7d7f274a9eb33e3279",
+    "q1_sample_definition_comparison": "d0b489922d6f69231910b5c7979da1bed8c114b2decf3e1ecad7790ce961ebef",
+    "q1_speed_overlap_models": "97b87c59993db2ff8f082a8bd78434e5c60799837c354adabcf19abcbd58e25f",
+    "q1_launch_angle_quadratic": "985272f1c606fd8f9a662e3b2f23cbdab92bc5fbd91ed7132c416ea47c28fe03",
+    "q1_rank_stability": "301c97d189fbc167ad1d8b00082773e62f8103f4f432d3e9cdbb5fd89f7a50d9"
+  }
+}

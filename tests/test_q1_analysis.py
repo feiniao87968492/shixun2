@@ -28,8 +28,8 @@ def test_load_and_clean_golf_data_uses_real_header_and_canonical_columns() -> No
     assert "ball_speed_mph" in clean.columns
     assert "carry_distance_yd" in clean.columns
     assert clean["record_id"].is_unique
-    assert clean["club_speed_mph"].isna().sum() == 63
-    assert clean["attack_angle_deg"].isna().sum() == 65
+    assert clean["club_speed_mph"].isna().sum() == 66
+    assert clean["attack_angle_deg"].isna().sum() == 68
 
 
 def test_sample_views_enforce_missing_value_and_spin_representation_contracts() -> None:
@@ -44,7 +44,7 @@ def test_sample_views_enforce_missing_value_and_spin_representation_contracts() 
     assert "spin_rate_rpm" in views["S1_core"].features
     assert "backspin_rpm" not in views["S1_core"].features
     assert len(views["S2_complete"].frame) < len(clean)
-    assert views["S3_imputed"].frame[views["S3_imputed"].features].isna().sum().sum() == 0
+    assert views["S3_imputed"].frame[["club_speed_mph", "attack_angle_deg"]].isna().sum().sum() == 134
     assert {"club_speed_missing", "attack_angle_missing"}.issubset(views["S3_imputed"].features)
 
 

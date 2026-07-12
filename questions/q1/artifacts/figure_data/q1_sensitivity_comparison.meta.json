@@ -1,0 +1,17 @@
+{
+  "stem": "q1_sensitivity_comparison",
+  "title": "Sensitivity scenario comparison",
+  "source_script": "questions/q1/scripts/visualize.py",
+  "generated_at": "2026-07-12T11:47:39.149348+00:00",
+  "rows": 6,
+  "columns": [
+    "scenario",
+    "n",
+    "feature_count",
+    "top3",
+    "top5",
+    "spearman_with_main_rank",
+    "notes"
+  ],
+  "notes": "Scenario ranking is compared with the main feature summary rank."
+}

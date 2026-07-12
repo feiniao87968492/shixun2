@@ -1,0 +1,4 @@
+record_id,ball_speed_mph,carry_distance_yd,club_speed_mph,attack_angle_deg,club_speed_invalid_zero,attack_angle_invalid_zero,correction
+225,111.5113,152.8106,0,0,1,1,zero_to_nan
+226,113.3232,162.9812,0,0,1,1,zero_to_nan
+308,107.7085,125.9296,0,0,1,1,zero_to_nan

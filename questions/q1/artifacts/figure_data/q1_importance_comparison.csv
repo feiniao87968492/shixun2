@@ -18,20 +18,20 @@ backspin_rpm,Backspin,spearman_score,0.375
 launch_direction_deg,Launch direction,spearman_score,0.25
 spin_rate_rpm,Spin rate,spearman_score,0.125
 ball_speed_mph,Ball speed,ridge_score,1
-club_speed_mph,Club speed,ridge_score,0.625
+club_speed_mph,Club speed,ridge_score,0.75
 attack_angle_deg,Attack angle,ridge_score,0.5
 launch_angle_deg,Launch angle,ridge_score,0.875
-spin_axis_deg,Spin axis,ridge_score,0.75
+spin_axis_deg,Spin axis,ridge_score,0.625
 sidespin_rpm,Sidespin,ridge_score,0.125
-backspin_rpm,Backspin,ridge_score,0.375
-launch_direction_deg,Launch direction,ridge_score,0.25
+backspin_rpm,Backspin,ridge_score,0.25
+launch_direction_deg,Launch direction,ridge_score,0.375
 spin_rate_rpm,Spin rate,ridge_score,0
 ball_speed_mph,Ball speed,permutation_score,1
-club_speed_mph,Club speed,permutation_score,0.25
+club_speed_mph,Club speed,permutation_score,0.375
 attack_angle_deg,Attack angle,permutation_score,0
 launch_angle_deg,Launch angle,permutation_score,0.875
 spin_axis_deg,Spin axis,permutation_score,0.625
-sidespin_rpm,Sidespin,permutation_score,0.375
+sidespin_rpm,Sidespin,permutation_score,0.25
 backspin_rpm,Backspin,permutation_score,0.75
 launch_direction_deg,Launch direction,permutation_score,0.125
 spin_rate_rpm,Spin rate,permutation_score,0.5

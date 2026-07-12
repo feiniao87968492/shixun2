@@ -27,11 +27,11 @@ sidespin_rpm,Sidespin,carry_distance_yd,Carry distance,-0.0941828975096,0.094182
 sidespin_rpm,Sidespin,max_height_yd,Max height,-0.0927289593924,0.0927289593924,735
 sidespin_rpm,Sidespin,total_distance_yd,Total distance,-0.00492335982607,0.00492335982607,735
 sidespin_rpm,Sidespin,lateral_offset_yd,Lateral offset,-0.619801544163,0.619801544163,735
-club_speed_mph,Club speed,carry_distance_yd,Carry distance,0.427412649557,0.427412649557,672
-club_speed_mph,Club speed,max_height_yd,Max height,0.0553583170386,0.0553583170386,672
-club_speed_mph,Club speed,total_distance_yd,Total distance,0.525038802259,0.525038802259,672
-club_speed_mph,Club speed,lateral_offset_yd,Lateral offset,0.0275426612041,0.0275426612041,672
-attack_angle_deg,Attack angle,carry_distance_yd,Carry distance,0.141003474423,0.141003474423,670
-attack_angle_deg,Attack angle,max_height_yd,Max height,0.0385407918257,0.0385407918257,670
-attack_angle_deg,Attack angle,total_distance_yd,Total distance,0.223621555426,0.223621555426,670
-attack_angle_deg,Attack angle,lateral_offset_yd,Lateral offset,0.0370940846752,0.0370940846752,670
+club_speed_mph,Club speed,carry_distance_yd,Carry distance,0.432594969502,0.432594969502,669
+club_speed_mph,Club speed,max_height_yd,Max height,0.0537113213402,0.0537113213402,669
+club_speed_mph,Club speed,total_distance_yd,Total distance,0.530481065132,0.530481065132,669
+club_speed_mph,Club speed,lateral_offset_yd,Lateral offset,0.0330600732314,0.0330600732314,669
+attack_angle_deg,Attack angle,carry_distance_yd,Carry distance,0.140865448689,0.140865448689,667
+attack_angle_deg,Attack angle,max_height_yd,Max height,0.0400823560941,0.0400823560941,667
+attack_angle_deg,Attack angle,total_distance_yd,Total distance,0.224021571054,0.224021571054,667
+attack_angle_deg,Attack angle,lateral_offset_yd,Lateral offset,0.0340006923493,0.0340006923493,667

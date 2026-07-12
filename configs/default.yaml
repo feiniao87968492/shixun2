@@ -23,3 +23,31 @@ validation:
   sensitivity_relative_changes: [-0.20, -0.10, 0.10, 0.20]
   repeated_runs: 30
   confidence_level: 0.95
+
+q1:
+  input_path: data/raw/problem/附件（实训题2）.xlsx
+  processed_path: data/processed/golf_shots_clean.csv
+  output_dir: questions/q1/artifacts
+  random_seed: 2026
+  invalid_zero_rules:
+    club_speed_mph: true
+    attack_angle_deg: true
+  bootstrap:
+    iterations: 1000
+    confidence_level: 0.95
+  cross_validation:
+    folds: 5
+    repeats: 5
+  ridge:
+    alphas: [0.001, 0.01, 0.1, 1, 10, 100]
+  permutation_importance:
+    repeats: 10
+  nonlinear_model:
+    name: ExtraTreesRegressor
+    n_estimators: 120
+    min_samples_leaf: 3
+  outlier_analysis:
+    lower_quantile: 0.01
+    upper_quantile: 0.99
+  plotting:
+    dpi: 300

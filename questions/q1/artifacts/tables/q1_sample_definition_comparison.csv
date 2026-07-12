@@ -1,0 +1,5 @@
+sample_view,n,feature_count,features,missing_in_model_features,description
+S1_core,735,5,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg,0,Core sample without club speed or attack angle.
+S2_complete,667,7,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg;club_speed_mph;attack_angle_deg,0,Complete-case sample after invalid zero correction.
+S3_imputed,735,9,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg;club_speed_mph;attack_angle_deg;club_speed_missing;attack_angle_missing,134,Full sample with fold-local median imputation and missing indicators.
+S3_spin_components,735,9,ball_speed_mph;launch_angle_deg;launch_direction_deg;backspin_rpm;sidespin_rpm;club_speed_mph;attack_angle_deg;club_speed_missing;attack_angle_missing,134,Sensitivity sample using backspin and sidespin instead of spin rate and axis.

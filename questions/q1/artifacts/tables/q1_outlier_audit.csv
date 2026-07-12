@@ -1,0 +1,5 @@
+scenario,original_n,processed_n,removed_n,removed_rate,rule
+A_original_corrected,735,735,0,0,No deletion after confirmed invalid zero correction.
+B_winsorize_1pct,735,735,0,0,Clip continuous variables to 1%-99% quantiles.
+C_target_trim_1pct,735,719,16,0.021768707483,Remove only carry-distance extremes outside 1%-99%.
+D_joint_trim_1pct,735,558,177,0.240816326531,Retain rows inside 1%-99% for every continuous input/output.
