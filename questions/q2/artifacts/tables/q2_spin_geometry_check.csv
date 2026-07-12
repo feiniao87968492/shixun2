@@ -1,0 +1,5 @@
+relationship,selected_sign,mean_absolute_error_rpm,n,notes
+backspin = spin_rate * cos(spin_axis),,0.000104482528942,735,Backspin geometry check.
+sidespin = + spin_rate * sin(spin_axis),1,1977.92504468,735,Candidate side-spin sign.
+sidespin = - spin_rate * sin(spin_axis),-1,6.22370527398e-05,735,Candidate side-spin sign.
+selected_sidespin_sign,-1,6.22370527398e-05,735,Sign with lower observed sidespin reconstruction error.

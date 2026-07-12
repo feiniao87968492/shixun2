@@ -1,0 +1,7 @@
+check,passed,value
+mph_to_mps,True,0.44704
+rpm_to_rad_s,True,6.28318530718
+yd_to_m,True,0.9144
+vacuum_numeric_matches_analytic,True,0.000456030729393
+drag_model_reduces_vacuum_carry,True,2.72558301254
+ground_event_success,True,1

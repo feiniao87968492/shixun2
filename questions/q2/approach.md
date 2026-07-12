@@ -2,83 +2,98 @@
 
 ## 1. 题意解释
 
-- 原题要求：建立飞行距离和最高点高度预测模型，按 70%/30% 划分训练测试集并报告 RMSE、MAPE；建立三维 ODE 模型，标定 $C_D$ 和 $C_L$；选取约 100/150/200 yd 三条典型记录绘制轨迹并分析误差。
-- 数学目标：学习映射 $f(X)=(D_{carry},H_{max})$；构建 ODE $m\dot{v}=F_g+F_D+F_L$ 并通过最小误差标定空气动力参数。
-- 输入：q1 清洗后的输入特征、题面物理常数、典型记录初始条件。
-- 输出：监督模型性能表、ODE 参数、典型 3D 轨迹图、相对误差表。
-- 评价指标：测试集 RMSE/MAPE；典型记录飞行距离、最高点高度、横向偏移相对误差。
-- 歧义与采用解释：典型记录按飞行距离最接近 100、150、200 yd 自动选择，记录序号写入结果表。
+第二问要求预测飞行距离和最高点高度，并建立三维轨迹模型。当前阶段先完成可复现的基础层：
 
-## 2. 符号、单位和约束
+- 监督预测：按 70%/30% 固定划分训练集和测试集，报告 RMSE、MAPE、MAE、R2、MdAPE。
+- 物理模型：实现真空抛体和仅阻力 ODE，完成单位换算、落地事件和真空解析解验证。
+- 暂不宣称：最终 `C_D`、`C_L`、含升力轨迹、100/150/200 yd 典型轨迹和灵敏度分析。
 
-| 符号 | 含义 | 单位 | 范围 / 约束 |
-|---|---|---|---|
-| $f$ | 监督预测模型 | 混合 | 输入击球参数，输出飞行距离和最高点 |
-| $C_D$ | 阻力系数 | 无 | 待标定，要求非负且物理合理 |
-| $C_L$ | 升力系数 | 无 | 待标定，要求非负且物理合理 |
-| $r(t)$ | 三维位置 | m | $z(t)\ge 0$，落地时终止 |
-| $v(t)$ | 三维速度 | m/s | 初值由球速、发射角、发射方向换算 |
-| $\omega$ | 自旋向量 | rad/s | 由自旋速率和自旋轴偏角构造 |
+## 2. 输入、输出和单位
 
-## 3. 数据与预处理
+输入数据为 q1 清洗后的 `data/processed/golf_shots_clean.csv`。Q2 在加载层把 q1 的 `max_height_yd` 显式映射为本题术语 `apex_height_yd`，不修改 q1 产物。
 
-- 数据来源：q1 清洗输出 `data/processed/golf_shots_clean.csv`，初期可直接从 raw Excel 读取生成。
-- 质量问题：缺失字段需要与 q1 口径一致；ODE 使用的球速、角度、自旋必须完成单位换算。
-- 缺失值：监督模型沿用 q1 插补/缺失指示方案；ODE 典型记录优先选取核心字段完整样本。
-- 异常值：对 ODE 标定敏感的极端自旋、横向偏移记录应做残差诊断，不静默删除。
-- 单位与尺度：监督模型报告 yd；ODE 内部统一 m、s、kg、rad，最终换算回 yd。
-- 防止泄漏：测试集不能用于超参数选择；典型轨迹选择规则不依赖模型误差。
+监督模型特征集：
 
-## 4. 基线方案
+| 特征集 | 字段 | 用途 |
+|---|---|---|
+| `launch_state_model` | `ball_speed_mph`、`launch_angle_deg`、`launch_direction_deg`、`spin_rate_rpm`、`spin_axis_deg` | 主模型；与 ODE 初始状态一致 |
+| `full_shot_model` | launch state + `club_speed_mph`、`attack_angle_deg` | 精度对照；缺失值只在训练流水线内部插补 |
 
-- 方法：多元线性回归分别预测飞行距离和最高点高度；ODE 基线使用无风、常数系数的简化抛体/空气阻力模型。
-- 为什么适合作为基线：线性回归解释性强，能衡量非线性模型是否确有收益；简化 ODE 能检查单位和终止条件。
-- 预期指标：线性模型 RMSE/MAPE、主模型相对基线改进；ODE 典型记录误差可解释。
+目标变量：
 
-## 5. 候选模型
+- `carry_distance_yd`
+- `apex_height_yd`
 
-| 模型 | 适配性 | 假设 | 优点 | 风险 | 是否采用 |
-|---|---|---|---|---|---|
-| 多元线性回归 | 监督预测基线 | 近似线性 | 可解释、易复现 | 欠拟合 | adopt-baseline |
-| 岭回归/ElasticNet | 共线特征预测 | 线性、正则有效 | 抑制共线性 | 非线性不足 | candidate |
-| 随机森林/梯度提升 | 非线性预测 | 训练测试同分布 | 中小样本表现稳健 | 解释性较弱 | candidate |
-| SVR | 小样本非线性 | 核函数参数合适 | 泛化可能好 | 调参敏感 | candidate |
-| 三维 ODE | 轨迹生成和物理解释 | 常数 $C_D,C_L$ 足够 | 可画完整轨迹 | 参数不唯一、缺外部环境 | required |
+ODE 内部统一使用 SI 单位：m、s、kg、rad；输出再换算回 yd。
 
-## 6. 主模型
+## 3. 固定划分与防泄漏规则
 
-- 数学定义：监督预测模型用于 $D_{carry}$ 和 $H_{max}$；ODE 模型包含重力、二次阻力和马格努斯升力。
-- 目标函数 / 损失：监督模型最小化测试 RMSE/MAPE；ODE 标定最小化飞行距离和最高点高度的归一化平方误差，可加入横向偏移诊断项。
-- 约束：$C_D,C_L\ge 0$；轨迹终止条件为高度回到地面；积分失败时返回错误而非空结果。
-- 参数来源：物理常数来自题面；随机种子来自配置；$C_D,C_L$ 由数据标定。
-- 求解算法：scikit-learn 回归模型；SciPy `solve_ivp` 积分；`least_squares` 或差分进化标定参数。
-- 复杂度：监督模型轻量；ODE 标定需控制迭代次数和容差。
+使用 `random_seed=2026` 和 `test_size=0.30` 建立主划分，保存到 `q2_data_split.csv`。当前样本数为 train=514、test=221。
 
-## 7. 验证与诊断
+规则：
 
-- 基线比较：主监督模型 vs 线性回归；ODE vs 典型记录实测。
-- 主验证方法：70%/30% 固定随机划分测试；典型记录误差复算；单位换算检查。
-- 通过标准：主模型误差不劣于基线且结果稳定；ODE 参数物理合理，误差来源能解释。
-- 失败案例：若 ODE 常数系数误差过大，报告其局限，并考虑速度/自旋相关的经验系数作为扩展方案。
+- 超参数和模型选择只使用训练集 5 折交叉验证。
+- 测试集只用于最终指标报告和图表诊断。
+- 插补、标准化、模型拟合均封装在 sklearn pipeline 内，避免测试集泄漏。
+- 所有监督模型和 ODE 测试评估使用同一主划分。
 
-## 8. 灵敏度与不确定性
+## 4. 监督预测模型
 
-- 关键参数：训练测试划分、模型超参数、$C_D,C_L$、积分步长、典型记录选择。
-- 扰动范围：随机种子重复、$C_D,C_L$ 按 ±10%/±20% 扰动、ODE 容差变化。
-- 稳健性指标：RMSE/MAPE 方差、典型记录误差变化、落点坐标变化。
-- 极端场景：低球速/高自旋、强侧旋、大发射角记录。
+候选模型：
 
-## 9. 计划产物
+- `DummyRegressor(strategy="mean")`
+- `LinearRegression`
+- `RidgeCV`
+- `ExtraTreesRegressor`
+- `HistGradientBoostingRegressor`
 
-| 产物 ID | 类型 | 内容 | 生成脚本 | 数据文件 |
-|---|---|---|---|---|
-| q2-T01 | table | 监督预测模型性能 | `questions/q2/scripts/pipeline.py` | `questions/q2/artifacts/tables/q2_supervised_metrics.csv` |
-| q2-T02 | table | ODE 参数与典型记录误差 | `questions/q2/scripts/pipeline.py` | `questions/q2/artifacts/tables/q2_ode_typical_errors.csv` |
-| q2-F01 | figure | 约 100/150/200 yd 三维轨迹图 | `questions/q2/scripts/visualize.py` | `questions/q2/artifacts/figure_data/q2_typical_trajectories.csv` |
-| q2-F02 | figure | 真实值-预测值散点图 | `questions/q2/scripts/visualize.py` | `questions/q2/artifacts/figure_data/q2_prediction_scatter.csv` |
+每个目标分别在两套特征集上比较候选模型，以训练集 CV RMSE 最低者作为选中模型。测试集输出 RMSE、MAPE、MAE、R2、MdAPE，并用 1000 次测试集 bootstrap 给出 RMSE/MAPE/MAE 区间。
 
-## 10. 备用方案与停止条件
+## 5. ODE 第一阶段
 
-- 主模型失败时：保留线性回归和 ODE 基线，明确预测能力不足。
-- 计算超时处理：先用监督模型筛选，ODE 标定只用训练子集或降低积分精度。
-- 数据不足处理：使用重复随机划分和置信区间，不报告单次划分的过度精确结论。
+坐标定义：
+
+- `x`：目标方向，向前为正；
+- `y`：横向方向，向右为正；
+- `z`：竖直方向，向上为正。
+
+初速度由球速、发射角和发射方向分解：
+
+```text
+v_x(0)=v0 cos(theta) cos(phi)
+v_y(0)=v0 cos(theta) sin(phi)
+v_z(0)=v0 sin(theta)
+```
+
+第一阶段模型：
+
+| 模型 | 力项 | 目的 |
+|---|---|---|
+| vacuum | 重力 | 校验单位、初速度分解、落地事件和解析解 |
+| drag | 重力 + 二次阻力 | 建立阻力接口和参数扫描基线 |
+
+仅阻力模型使用一维粗网格扫描 `C_D in [0.05, 0.60]`。当前得到 `C_D=0.05` 且位于下界，因此只登记为 `preliminary_drag_only`，后续必须进入含升力和参数可识别性检查后才能形成最终物理结论。
+
+## 6. 产物
+
+| 产物 | 路径 |
+|---|---|
+| 数据划分 | `questions/q2/artifacts/tables/q2_data_split.csv` |
+| 监督模型指标 | `questions/q2/artifacts/tables/q2_supervised_metrics.csv` |
+| 监督预测明细 | `questions/q2/artifacts/tables/q2_supervised_predictions.csv` |
+| ODE 参数 | `questions/q2/artifacts/tables/q2_ode_parameters.csv` |
+| ODE 测试指标 | `questions/q2/artifacts/tables/q2_ode_test_metrics.csv` |
+| ODE 验证检查 | `questions/q2/artifacts/tables/q2_ode_validation_checks.csv` |
+| 图表 | `questions/q2/artifacts/figures/` |
+| 生图数据和 meta | `questions/q2/artifacts/figure_data/` |
+| 模型文件 | `questions/q2/artifacts/models/` |
+
+## 7. 后续工作
+
+下一阶段需要完成：
+
+- 含升力 ODE；
+- `C_D/C_L` 或自旋因子升力参数标定；
+- 参数曲面和边界复核；
+- 100/150/200 yd 典型轨迹；
+- 监督模型重复划分稳定性和 ODE 灵敏度分析。

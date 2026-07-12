@@ -1,0 +1,6 @@
+model,parameter,value,lower_bound,upper_bound,calibration_stage,source
+drag,C_D,0.05,0.05,0.6,preliminary_drag_only,training split preliminary grid scan; not final C_D/C_L calibration
+physics,mass_kg,0.0456,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表
+physics,radius_m,0.021335,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表
+physics,air_density_kg_m3,1.225,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表
+physics,gravity_m_s2,9.80665,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表

@@ -1,0 +1,19 @@
+{
+  "stem": "q2_prediction_scatter_carry",
+  "title": "Q2 carry prediction scatter",
+  "source_script": "questions/q2/scripts/visualize.py",
+  "generated_at": "2026-07-12T14:59:10.988148+00:00",
+  "rows": 221,
+  "columns": [
+    "record_id",
+    "target",
+    "feature_set",
+    "model",
+    "actual",
+    "predicted",
+    "residual",
+    "absolute_error",
+    "absolute_percentage_error"
+  ],
+  "notes": "Selected supervised model on fixed test split."
+}

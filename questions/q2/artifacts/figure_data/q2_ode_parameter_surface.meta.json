@@ -1,0 +1,14 @@
+{
+  "stem": "q2_ode_parameter_surface",
+  "title": "Q2 preliminary drag parameter surface",
+  "source_script": "questions/q2/scripts/visualize.py",
+  "generated_at": "2026-07-12T14:59:13.885932+00:00",
+  "rows": 10,
+  "columns": [
+    "cd",
+    "objective",
+    "calibration_n",
+    "failed_count"
+  ],
+  "notes": "First-stage one-dimensional C_D scan; not final C_D/C_L calibration."
+}

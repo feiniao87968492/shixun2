@@ -1,6 +1,6 @@
 question: q2
-status: planned
-objective: "建立监督预测模型和三维 ODE 轨迹模型，完成典型记录误差分析"
+status: first_stage_done
+objective: "建立监督预测模型和三维 ODE 轨迹模型；当前完成第一阶段真空/仅阻力基线，不宣称最终 C_D/C_L。"
 
 inputs:
   raw_data:
@@ -8,7 +8,9 @@ inputs:
   processed_data:
     - data/processed/golf_shots_clean.csv
   upstream_artifacts:
-    - questions/q1/artifacts/tables/q1_feature_importance.csv
+    - questions/q1/artifacts/tables/q1_feature_summary.csv
+    - questions/q1/artifacts/tables/q1_data_audit.csv
+    - questions/q1/artifacts/tables/q1_invalid_zero_records.csv
 
 entrypoints:
   pipeline: questions/q2/scripts/pipeline.py
@@ -22,8 +24,8 @@ outputs:
   models: questions/q2/artifacts/models
 
 quality_gates:
-  baseline: false
-  validation: false
+  baseline: true
+  validation: true
   sensitivity: false
-  evidence_chain: false
-  reproducible: false
+  evidence_chain: true
+  reproducible: true

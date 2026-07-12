@@ -6,6 +6,31 @@
 
 ---
 
+## 2026-07-12 - q2 第一阶段监督预测与 ODE 基线完成
+
+- **目标**：完成 `docs/plans/task2.md` 第 26 节停止点，形成可复现的固定划分、监督预测模型、真空/仅阻力 ODE 和验证证据。
+- **完成**：
+  - 修正 `configs/default.yaml` 的 q2 配置和 `questions/q2/manifest.yaml` 上游依赖。
+  - 新增 `questions/q2/scripts/preprocessing.py`、`supervised.py`、`ode_model.py`，并接入 `pipeline.py`、`validate.py`、`visualize.py`。
+  - 保存固定 70/30 划分：train=514，test=221，随机种子 2026。
+  - 比较 Dummy、Linear、Ridge、ExtraTrees、HistGradientBoosting 两套特征模型。
+  - 实现真空和仅阻力 ODE，完成 mph/rpm/yd 单位换算、落地事件和真空解析解校验。
+  - 生成 q2 表格、图、同名生图数据、meta.json、模型文件和运行元数据。
+  - 更新 q2 文档、全局证据链、图表登记、README 和论文草稿。
+- **关键发现**：
+  - carry 最优监督模型为 `launch_state_model / hist_gradient_boosting`，测试 RMSE=8.337 yd，MAPE=4.986%。
+  - apex 最优监督模型为 `launch_state_model / hist_gradient_boosting`，测试 RMSE=1.739 yd，MAPE=14.335%。
+  - 真空数值解与解析解最大差异为 0.000456；ODE 测试样本积分失败率为 0。
+  - drag-only 粗网格得到 `C_D=0.05`，但位于搜索下界且测试误差未优于 vacuum，因此只作为 `preliminary_drag_only`，不得宣称最终 `C_D/C_L`。
+- **验证**：
+  - `python questions\q2\scripts\pipeline.py --config configs/default.yaml` 通过。
+  - `python questions\q2\scripts\validate.py --config configs/default.yaml` 通过 45 项检查。
+  - `python -m pytest tests\test_q2_first_stage.py -q` 通过 4 项测试。
+- **未解决问题**：
+  - 含升力 ODE、最终 `C_D/C_L` 标定、100/150/200 yd 典型轨迹、重复划分稳定性和 ODE 灵敏度仍未完成。
+- **下一步**：
+  - 进入含升力模型和参数可识别性检查，再生成典型轨迹与 q3 可复用接口。
+
 ## 2026-07-12 — 仓库初始化与前期问题拆分
 
 - **目标**：建立 2026年实训题2 高尔夫球飞行轨迹预测与最优击球策略建模 的可复现建模仓库，并完成题目接收阶段的拆解文档。
