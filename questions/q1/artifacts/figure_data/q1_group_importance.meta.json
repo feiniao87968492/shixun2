@@ -2,7 +2,7 @@
   "stem": "q1_group_importance",
   "title": "Group permutation importance",
   "source_script": "questions/q1/scripts/visualize.py",
-  "generated_at": "2026-07-12T11:47:37.784207+00:00",
+  "generated_at": "2026-07-12T12:26:11.536090+00:00",
   "rows": 5,
   "columns": [
     "group",

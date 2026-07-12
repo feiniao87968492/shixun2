@@ -69,3 +69,18 @@ def test_feature_summary_uses_layered_categories_not_only_aggregate_rank() -> No
     assert "aggregate_score" not in summary.columns
     attack = summary.loc[summary["feature"] == "attack_angle_deg"].iloc[0]
     assert attack["stability_category"] != "stable_key"
+
+
+def test_visualize_standalone_entry_loads_review1_tables() -> None:
+    visualize = load_module("visualize.py", "q1_visualize_review1")
+
+    required = {
+        "q1_pearson_correlation",
+        "q1_spearman_correlation",
+        "q1_feature_ranking",
+        "q1_feature_summary",
+        "q1_rank_stability",
+        "q1_group_importance",
+        "q1_sensitivity_comparison",
+    }
+    assert required.issubset(visualize.REQUIRED_TABLES)

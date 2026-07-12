@@ -21,30 +21,35 @@ from analysis import (  # noqa: E402
 )
 from modeling_common.paths import project_root  # noqa: E402
 
+REQUIRED_TABLES = {
+    "q1_pearson_correlation": "q1_pearson_correlation.csv",
+    "q1_spearman_correlation": "q1_spearman_correlation.csv",
+    "q1_feature_ranking": "q1_feature_ranking.csv",
+    "q1_feature_summary": "q1_feature_summary.csv",
+    "q1_rank_stability": "q1_rank_stability.csv",
+    "q1_group_importance": "q1_group_importance.csv",
+    "q1_sensitivity_comparison": "q1_sensitivity_comparison.csv",
+}
+
 
 def main() -> int:
     root = project_root()
     qdir = root / "questions" / "q1"
     tables_dir = qdir / "artifacts" / "tables"
-    required = {
-        "q1_pearson_correlation": "q1_pearson_correlation.csv",
-        "q1_spearman_correlation": "q1_spearman_correlation.csv",
-        "q1_feature_ranking": "q1_feature_ranking.csv",
-        "q1_rank_stability": "q1_rank_stability.csv",
-    }
-    if not all((tables_dir / filename).exists() for filename in required.values()):
+    if not all((tables_dir / filename).exists() for filename in REQUIRED_TABLES.values()):
         raise SystemExit("Run questions/q1/scripts/pipeline.py before visualize.py")
 
     import pandas as pd
 
-    tables = {name: pd.read_csv(tables_dir / filename) for name, filename in required.items()}
+    tables = {name: pd.read_csv(tables_dir / filename) for name, filename in REQUIRED_TABLES.items()}
     clean = clean_golf_data(load_raw_golf_data(root))
     config = load_config(root, "configs/default.yaml")
+    q1_plotting = config.get("q1", {}).get("plotting", {})
     create_visualizations(
         clean=clean,
         tables=tables,
         question_dir=qdir,
-        dpi=int(config.get("plot", {}).get("dpi", 300)),
+        dpi=int(q1_plotting.get("dpi", config.get("plot", {}).get("dpi", 300))),
     )
     print("[ok] q1 figures regenerated")
     return 0

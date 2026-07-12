@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-07-12T11:47:39.184497+00:00",
-  "git_commit": "aa71df42732bef50f64c7f478e2bce37f9701b43",
+  "timestamp": "2026-07-12T12:26:12.978848+00:00",
+  "git_commit": "756a0aac6700bf8bed52f6562a0baf75ac1a11c9",
   "data_path": "data\\processed\\golf_shots_clean.csv",
   "data_hash": "1b0546e153d3676f0164efe5846124c96b93553545717dcd6daa619b08567bcd",
   "config_path": "configs\\default.yaml",

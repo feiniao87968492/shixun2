@@ -12,11 +12,12 @@
 - 当前目录：`D:\Users\zty\数学建模\赛题集\实训2`。
 - `docs/plans/task1.md` 要求第一问分为相关性分析和飞行距离影响因素排序两个子任务。
 - 实际 Excel 读取结果为 735 条记录；`高尔夫球实测数据` 工作表第 3 行为表头。
-- 缺失情况：`杆头速度(mph)` 缺失 63 条，`攻击角(度)` 缺失 65 条，其余核心字段未发现缺失。
-- q1 pipeline 结果：球速是飞行距离最稳定关键因素，Pearson=0.758，Spearman=0.776，Bootstrap 排名区间 1-1。
-- q1 综合排序前五：球速、杆头速度、攻击角、发射角、自旋轴偏角。
+- 原始缺失情况：`杆头速度(mph)` 缺失 63 条，`攻击角(度)` 缺失 65 条，其余核心字段未发现原始缺失。
+- review1 修正后缺失情况：`record_id=225,226,308` 的杆头速度和攻击角异常 0 值修正为缺失，修正后缺失数为 66/68。
+- q1 review1 结果：球速是飞行距离最稳定关键因素，Pearson=0.758，Spearman=0.776，Bootstrap 排名区间 1-1。
+- q1 初版“单一综合排序前五：球速、杆头速度、攻击角、发射角、自旋轴偏角”已被 review1 废弃；当前以 `q1_feature_summary.csv` 的分层分类为准。
 - q1 分组重要性：速度组第一，发射姿态组第二，自旋状态组中等，水平方向组最弱。
-- q1 artifact 验证：`python questions/q1/scripts/validate.py` 通过 26 个检查。
+- q1 artifact 验证：`python questions/q1/scripts/validate.py --config configs/default.yaml` 通过 62 项 artifact/schema/numeric/reproducibility 检查。
 
 ## Technical Decisions
 | Decision | Rationale |
@@ -42,3 +43,11 @@
 
 ## Visual/Browser Findings
 - q1 生成的 Pearson/Spearman 热力图、前四变量关系图、多方法重要性图和排名稳定性图均非空且可读。
+
+## Review1 Findings
+- `questions/q1/review1.md` 的完成标准要求正式入口可重跑全部结果、异常零值修正、S1/S2/S3 样本口径、自旋 A/B 表示比较、Bootstrap 置信区间、岭回归 CV、验证集置换重要性、分组重要性、稳定性/敏感性、真实数值验证、同种子可复现、图表数据/配置/元数据完整、文档与 CSV 一致、README 同步且无未实现占位。
+- 当前 review1 口径下，`record_id=225,226,308` 的杆头速度和攻击角异常 0 值已修正为缺失；杆头速度缺失数从 63 变为 66，攻击角缺失数从 65 变为 68。
+- `q1_feature_summary.csv` 是最终解释主表：球速为 `stable_key`，杆头速度为 `secondary`，发射角和后旋为 `structural_nonlinear`，攻击角为 `unstable`，不再写作稳定关键因素。
+- 修正后核心结果：球速与飞行距离 Pearson=0.758、Spearman=0.776；杆头速度 Pearson=0.581、Spearman=0.589；攻击角 Pearson=0.156、Spearman=0.206。
+- 验证升级为 62 项 artifact/schema/numeric/reproducibility 检查；新增 `tests/test_q1_review1.py` 覆盖异常零值、review1 表、分层结论和 standalone 绘图入口依赖。
+- `visualize.py` standalone 入口此前只加载旧 4 张表，已补齐 `q1_feature_summary`、`q1_group_importance`、`q1_sensitivity_comparison`，与 `create_visualizations` 的 review1 图表依赖一致。

@@ -202,3 +202,46 @@
 | What's the goal? | Complete `docs/plans/task1.md` |
 | What have I learned? | See findings.md |
 | What have I done? | q1 workflow implemented, artifacts generated, docs updated |
+
+## Session: 2026-07-12 — q1 review1 completion audit
+
+### Phase 11: review1 整改补齐
+- **Status:** in_progress, final commit/push pending
+- Actions taken:
+  - 确认远端已成功推送到 `origin/main`，当前远端提交为 `756a0aa fix(q1): complete review1 reproducibility audit`。
+  - 读取 `questions/q1/review1.md`、`task_plan.md`、`progress.md` 和 `findings.md`，从当前工作树重新审计完成标准。
+  - 用 `rg` 搜索旧口径数字和结论，定位 `docs/data_dictionary.md`、`docs/assumptions.md`、`docs/symbols.md`、`devlog.md` 和计划文件中仍需同步的 review1 口径。
+  - 更新数据字典、假设表和符号表：原始缺失 63/65，异常 0 值 3/3，修正后缺失 66/68，杆头速度修正后非缺失范围 50.3534-106.59 mph。
+  - 追加 `devlog.md` 的 q1 review1 整改记录，保留旧 task1 历史记录。
+  - 修正 `questions/q1/scripts/visualize.py` standalone 入口，使其加载 `q1_feature_summary`、`q1_group_importance` 和 `q1_sensitivity_comparison` 等 review1 图表依赖。
+  - 新增测试断言 standalone 绘图入口注册 review1 所需表。
+  - 运行 standalone 绘图入口，确认 q1 图表可由 `visualize.py` 独立再生成。
+  - 按 review1 验收顺序运行 pipeline、validate、pipeline，并比较关键 CSV hash；`q1_feature_summary.csv`、`q1_correlation_confidence_intervals.csv`、`q1_permutation_importance.csv`、`q1_model_performance.csv` hash 前后完全一致。
+  - 运行全量 pytest、仓库检查、raw snapshot verify 和 whitespace check。
+- Files modified:
+  - `questions/q1/scripts/visualize.py`
+  - `tests/test_q1_review1.py`
+  - `docs/data_dictionary.md`
+  - `docs/assumptions.md`
+  - `docs/symbols.md`
+  - `devlog.md`
+  - `task_plan.md`
+  - `findings.md`
+  - `progress.md`
+
+## Review1 Test Results
+| Test | Input | Expected | Actual | Status |
+|------|-------|----------|--------|--------|
+| standalone q1 visualize | `python questions\q1\scripts\visualize.py` | Regenerate q1 figures from registered tables | `[ok] q1 figures regenerated` | pass |
+| q1 pipeline first run | `python questions\q1\scripts\pipeline.py --config configs/default.yaml` | Regenerate all q1 artifacts | Completed | pass |
+| q1 validation | `python questions\q1\scripts\validate.py --config configs/default.yaml` | Real artifact/schema/numeric/repro checks pass | 62 checks passed | pass |
+| q1 pipeline second run | `python questions\q1\scripts\pipeline.py --config configs/default.yaml` | Same-seed rerun succeeds | Completed | pass |
+| key CSV reproducibility | SHA256 of four key q1 CSVs before/after second pipeline | Hashes unchanged | All four hashes identical | pass |
+| q1 targeted tests | `python -m pytest tests\test_q1_review1.py tests\test_q1_analysis.py -q` | Review1 and q1 analysis tests pass | 8 passed | pass |
+| full pytest | `python -m pytest -q` | All tests pass | 10 passed | pass |
+| whitespace check | `git diff --check` | No whitespace errors | No output | pass |
+| repo check | `python scripts\check_repo.py` | No errors | Passed with q2/q3 scaffold warnings | pass |
+| raw verify | `python scripts\snapshot_raw.py --verify` | Raw files match manifest | Verified 3 raw files | pass |
+
+### Pending
+- Commit and push the Phase 11 completion-audit patch.
