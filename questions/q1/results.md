@@ -34,7 +34,7 @@
 
 ## 4. 杆头速度与球速信息重叠
 
-`q1_speed_overlap_models.csv` 显示，仅球速模型的重复 CV RMSE 为 24.32 yd，仅杆头速度模型为 30.34 yd，同时使用球速和杆头速度为 24.42 yd。杆头速度本身有较强边际相关，但加入球速后没有明显降低误差，说明两者存在明显信息重叠。
+`q1_speed_overlap_models.csv` 显示，在球速、杆头速度和飞行距离同时非缺失的 669 条共同样本、同一 5x5 CV 折上，仅球速模型的 RMSE 为 24.43 yd，仅杆头速度模型为 30.34 yd，同时使用球速和杆头速度为 24.42 yd。每折配对误差保存在 `q1_speed_overlap_fold_scores.csv`。杆头速度本身有较强边际相关，但加入球速后几乎不降低误差，说明两者存在明显信息重叠。
 
 ## 5. 发射角非线性结构
 
@@ -42,13 +42,13 @@
 
 ## 6. 分组重要性
 
-`q1_group_importance.csv` 中整组置换后的 RMSE 增量排序为：
+`q1_group_importance.csv` 中整组置换后的 RMSE 增量排序为。该表使用 5x5 CV，并对每个变量组使用同一个行置换索引整体打乱组内列，以保留组内联合结构：
 
-1. 速度组：38.61 yd；
-2. 发射姿态组：19.76 yd；
-3. 自旋状态 B（后旋+侧旋）：3.56 yd；
-4. 自旋状态 A（自旋速率+自旋轴偏角）：3.21 yd；
-5. 水平方向组：0.12 yd。
+1. 速度组：39.16 yd；
+2. 发射姿态组：19.44 yd；
+3. 自旋状态 B（后旋+侧旋）：4.84 yd；
+4. 自旋状态 A（自旋速率+自旋轴偏角）：4.31 yd；
+5. 水平方向组：0.19 yd。
 
 分组重要性仅用于解释物理变量组，不替代单变量分层分析。
 
@@ -56,14 +56,15 @@
 
 - S1 核心变量样本：735 条，不使用杆头速度和攻击角。
 - S2 完整样本：667 条，所有主输入变量非缺失。
-- S3 插补样本：735 条，杆头速度和攻击角在每个训练折内中位数插补，并加入缺失指示变量。
+- S3 插补样本：735 条；模型训练中的杆头速度和攻击角在每个训练折内中位数插补，并加入缺失指示变量。边际相关敏感性表中的 S3 行另标记为 `descriptive_imputed_marginal`，`ranked_n=735`。
 - 自旋表示 A（自旋速率+自旋轴偏角）与表示 B（后旋+侧旋）均已建模；B 的 CV RMSE 略低（8.23 vs 8.48），A 保留为主解释口径，B 作为敏感性对照。
 - 异常值方案包括原始修正样本、1% 缩尾、仅目标变量截断和多变量联合截断；`q1_outlier_audit.csv` 明确记录删除比例，不再把多变量联合截断简单称为“去除上下 1%”。
+- `q1_rank_stability.csv` 只报告 Pearson/Spearman 边际相关排名的 Bootstrap 稳定性，字段为 `marginal_rank_interval`、`marginal_top3_frequency` 和 `stability_scope=marginal_correlation_bootstrap`，不解释为综合方法稳定性。
 
 ## 8. 验证结果
 
 - `python questions/q1/scripts/pipeline.py --config configs/default.yaml` 可从原始数据重新生成全部 Q1 结果。
-- `python questions/q1/scripts/validate.py --config configs/default.yaml` 通过 62 项检查，覆盖文件、schema、数值范围、异常零值、相关性区间、模型指标、元数据和表哈希。
+- `python questions/q1/scripts/validate.py --config configs/default.yaml` 通过 71 项检查，覆盖文件、schema、数值范围、异常零值、相关性区间、模型指标、元数据、表哈希，以及 S3 样本口径、速度重叠配对 CV、分组 block permutation、边际稳定性字段和旧排名弃用等 review2 方法不变量。
 - `run_metadata.json` 记录 Git commit、数据哈希、配置哈希、随机种子、包版本、样本口径和表格哈希。
 
 ## 9. 第一问最终结论

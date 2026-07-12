@@ -18,12 +18,15 @@
     "total_distance_yd",
     "lateral_offset_yd"
   ],
-  "top_features": [
+  "summary_order_features": [
     "ball_speed_mph",
     "club_speed_mph",
     "attack_angle_deg",
     "sidespin_rpm",
     "spin_axis_deg"
+  ],
+  "stable_key_features": [
+    "ball_speed_mph"
   ],
   "tables": {
     "q1_data_audit": "questions\\q1\\artifacts\\tables\\q1_data_audit.csv",
@@ -50,6 +53,7 @@
     "q1_spin_representation_comparison": "questions\\q1\\artifacts\\tables\\q1_spin_representation_comparison.csv",
     "q1_sample_definition_comparison": "questions\\q1\\artifacts\\tables\\q1_sample_definition_comparison.csv",
     "q1_speed_overlap_models": "questions\\q1\\artifacts\\tables\\q1_speed_overlap_models.csv",
+    "q1_speed_overlap_fold_scores": "questions\\q1\\artifacts\\tables\\q1_speed_overlap_fold_scores.csv",
     "q1_launch_angle_quadratic": "questions\\q1\\artifacts\\tables\\q1_launch_angle_quadratic.csv",
     "q1_rank_stability": "questions\\q1\\artifacts\\tables\\q1_rank_stability.csv"
   },

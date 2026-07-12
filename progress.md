@@ -247,3 +247,58 @@
 
 ### Completion
 - Phase 11 review1 completion-audit patch has been committed and pushed.
+
+## Session: 2026-07-12 — q1 review2 method audit
+
+### Phase 12: review2 RED tests and implementation
+- **Status:** in_progress
+- Actions taken:
+  - 读取 `questions/q1/review2.md`，确认状态为 `q1_status: conditionally_passed`，需修复 4 项必须整改和若干次要问题。
+  - 新增 `tests/test_q1_review2.py`，覆盖 S3 敏感性样本量、速度重叠同样本配对 CV、分组重要性重复 CV/block permutation、边际稳定性字段命名、Ridge 重复估计、旧等权排名弃用、联合截断删除原因和 validate 方法不变量。
+  - 运行 `python -m pytest tests\test_q1_review2.py -q`，8 项按预期失败，证明测试覆盖旧问题。
+  - 修改 `questions/q1/scripts/analysis.py`：Ridge 改为训练折重复估计；S3 敏感性新增描述性插补口径；速度重叠输出同样本 summary + fold scores；分组重要性改为重复 CV + block permutation；rank stability 改为 `marginal_*` 字段；旧 feature ranking 标记为 deprecated；outlier audit 拆分删除原因；validate 增加 review2 方法检查。
+  - 运行 `python -m py_compile ...` 通过。
+  - 运行 `python -m pytest tests\test_q1_analysis.py tests\test_q1_review1.py -q`，8 passed。
+- Files modified:
+  - `questions/q1/scripts/analysis.py`
+  - `tests/test_q1_review2.py`
+  - `task_plan.md`
+  - `findings.md`
+  - `progress.md`
+
+## Review2 Test Results
+| Test | Input | Expected | Actual | Status |
+|------|-------|----------|--------|--------|
+| review2 RED | `python -m pytest tests\test_q1_review2.py -q` | Fail on old artifacts/method contracts | 8 failed for expected missing columns/tables/checks | pass |
+| syntax | `python -m py_compile questions\q1\scripts\analysis.py ...` | No syntax errors | No output | pass |
+| existing q1 tests | `python -m pytest tests\test_q1_analysis.py tests\test_q1_review1.py -q` | Existing behavior remains green | 8 passed | pass |
+
+### Pending
+- None for review2.
+
+### Phase 12: review2 documentation sync
+- **Status:** complete
+- Actions taken:
+  - 修正 `pipeline.py` 输出，不再打印容易误导为最终结论的 `top_features`，改为 `summary_order_features` 和 `stable_key_features`。
+  - 新增 review2 测试断言 `q1_run_summary.json` 只保留 `summary_order_features` / `stable_key_features`，且稳定关键因素仅为 `ball_speed_mph`。
+  - 更新 `questions/q1/approach.md`、`results.md`、`experiments.md`、`evidence.md`、`questions/q1/README.md`、根 `README.md`、`report/paper.md`、`docs/evidence_chain.csv` 和 `docs/figure_table_registry.csv`。
+  - 文档同步为 669 条共同样本配对 CV、5x5 CV block permutation、边际排名稳定性、旧等权排名弃用和 71 项验证检查。
+  - 运行 `python questions\q1\scripts\pipeline.py --config configs/default.yaml`，重新生成 review2 artifacts，CLI 摘要为 `stable_key_features=ball_speed_mph`。
+  - 运行 `python questions\q1\scripts\validate.py --config configs/default.yaml`，71 checks passed。
+  - 运行 `python -m pytest -q`，19 passed。
+  - 运行 `python scripts\check_repo.py`，通过，保留 q2/q3 pipeline scaffold warning。
+  - 运行 `python scripts\snapshot_raw.py --verify`，verified 3 raw files。
+  - 运行 `git diff --check`，无输出。
+
+## Review2 Test Results
+| Test | Input | Expected | Actual | Status |
+|------|-------|----------|--------|--------|
+| q1 pipeline | `python questions\q1\scripts\pipeline.py --config configs/default.yaml` | Regenerate all q1 artifacts | Completed; stable key only `ball_speed_mph` | pass |
+| q1 validation | `python questions\q1\scripts\validate.py --config configs/default.yaml` | Review2 method invariants pass | 71 checks passed | pass |
+| full pytest | `python -m pytest -q` | All tests pass | 19 passed | pass |
+| repo check | `python scripts\check_repo.py` | No errors | Passed with q2/q3 scaffold warnings | pass |
+| raw verify | `python scripts\snapshot_raw.py --verify` | Raw files match manifest | Verified 3 raw files | pass |
+| whitespace check | `git diff --check` | No whitespace errors | No output | pass |
+
+### Completion
+- Phase 12 review2 method-audit patch is ready for commit and push to `origin/main`.

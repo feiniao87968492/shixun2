@@ -1,4 +1,4 @@
-model,features,n,rmse_mean,rmse_std,mae_mean,mae_std,r2_mean,r2_std,notes
-ball_speed_only,ball_speed_mph,735,24.3247183799,1.72059800471,17.4483304885,1.08302968069,0.571068009483,0.0448651777225,Only ball speed.
-club_speed_only,club_speed_mph,669,30.3432881821,2.35515018292,23.2045603654,1.76479572593,0.332884121347,0.0658409254987,Only club speed after invalid zero correction.
-ball_and_club_speed,ball_speed_mph;club_speed_mph,669,24.4175524119,2.47248295068,17.5203206285,1.27730504564,0.566874788593,0.0663041894269,Ball speed and club speed together.
+model,features,n,fold_count,rmse_mean,rmse_std,mae_mean,mae_std,r2_mean,r2_std,paired_delta_rmse_vs_ball_speed,paired_delta_rmse_std,paired_improvement_frequency,notes
+ball_speed_only,ball_speed_mph,669,25,24.4322835546,2.49965567171,17.6105300467,1.34052280615,0.566353085593,0.0670819974713,0,0,0,Only ball speed.
+club_speed_only,club_speed_mph,669,25,30.3432881821,2.35515018292,23.2045603654,1.76479572593,0.332884121347,0.0658409254987,5.91100462754,0.962478710341,0,Only club speed after invalid zero correction.
+ball_and_club_speed,ball_speed_mph;club_speed_mph,669,25,24.4175524119,2.47248295068,17.5203206285,1.27730504564,0.566874788593,0.0663041894269,-0.0147311426725,0.143982113167,0.68,Ball speed and club speed together.

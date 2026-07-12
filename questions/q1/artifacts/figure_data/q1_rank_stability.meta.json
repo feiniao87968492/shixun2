@@ -1,20 +1,21 @@
 {
   "stem": "q1_rank_stability",
-  "title": "Bootstrap rank stability",
+  "title": "Bootstrap marginal rank stability",
   "source_script": "questions/q1/scripts/visualize.py",
-  "generated_at": "2026-07-12T12:26:10.292514+00:00",
+  "generated_at": "2026-07-12T13:44:26.946273+00:00",
   "rows": 9,
   "columns": [
     "feature",
-    "rank_median",
-    "rank_ci_low",
-    "rank_ci_high",
-    "rank_interval",
-    "top3_frequency",
-    "top5_frequency",
+    "marginal_rank_median",
+    "marginal_rank_ci_low",
+    "marginal_rank_ci_high",
+    "marginal_rank_interval",
+    "marginal_top3_frequency",
+    "marginal_top5_frequency",
+    "stability_scope",
     "iterations",
     "feature_label",
     "marginal_rank"
   ],
-  "notes": "Intervals use marginal Pearson/Spearman bootstrap ranking."
+  "notes": "Intervals only use marginal Pearson/Spearman bootstrap ranking."
 }

@@ -2,7 +2,7 @@
   "stem": "q1_group_importance",
   "title": "Group permutation importance",
   "source_script": "questions/q1/scripts/visualize.py",
-  "generated_at": "2026-07-12T12:26:11.536090+00:00",
+  "generated_at": "2026-07-12T13:44:28.159872+00:00",
   "rows": 5,
   "columns": [
     "group",
@@ -12,6 +12,10 @@
     "permuted_rmse",
     "importance_mean",
     "importance_std",
+    "positive_frequency",
+    "fold_count",
+    "permutation_repeats",
+    "block_permutation",
     "rank"
   ],
   "notes": "Groups are permuted as blocks on validation samples."

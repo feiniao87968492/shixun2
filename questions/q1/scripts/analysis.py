@@ -20,7 +20,7 @@ from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.linear_model import LinearRegression, RidgeCV
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.model_selection import RepeatedKFold, train_test_split
+from sklearn.model_selection import RepeatedKFold
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
@@ -307,24 +307,43 @@ def _rank_desc(series: pd.Series) -> pd.Series:
     return filled.rank(ascending=False, method="min").astype(int)
 
 
-def _ridge_coefficients(view: SampleView) -> pd.DataFrame:
-    X = view.frame[view.features]
-    y = view.frame[TARGET]
+def _ridge_coefficients(
+    view: SampleView,
+    *,
+    seed: int,
+    cv_splits: int,
+    cv_repeats: int,
+) -> pd.DataFrame:
+    X = view.frame[view.features].to_numpy(dtype=float)
+    y = view.frame[TARGET].to_numpy(dtype=float)
     alphas = np.logspace(-3, 3, 25)
-    model = make_pipeline(SimpleImputer(strategy="median"), StandardScaler(), RidgeCV(alphas=alphas))
-    model.fit(X, y)
-    ridge = model.named_steps["ridgecv"]
-    scaler = model.named_steps["standardscaler"]
-    coefficients = ridge.coef_ / scaler.scale_
-    standardized_coefficients = ridge.coef_
-    return pd.DataFrame(
-        {
-            "feature": view.features,
-            "ridge_coef": standardized_coefficients,
-            "ridge_coef_original_scale": coefficients,
-            "ridge_alpha": float(ridge.alpha_),
-            "sample_view": view.name,
-        }
+    cv = RepeatedKFold(n_splits=cv_splits, n_repeats=cv_repeats, random_state=seed)
+    rows = []
+    for fold_id, (train_idx, _) in enumerate(cv.split(X), start=1):
+        model = make_pipeline(SimpleImputer(strategy="median"), StandardScaler(), RidgeCV(alphas=alphas))
+        model.fit(X[train_idx], y[train_idx])
+        ridge = model.named_steps["ridgecv"]
+        for feature, coefficient in zip(view.features, ridge.coef_, strict=True):
+            rows.append(
+                {
+                    "sample_view": view.name,
+                    "fold": fold_id,
+                    "feature": feature,
+                    "ridge_coef": float(coefficient),
+                    "ridge_alpha": float(ridge.alpha_),
+                }
+            )
+    fold_coefficients = pd.DataFrame(rows)
+    return (
+        fold_coefficients.groupby(["sample_view", "feature"], as_index=False)
+        .agg(
+            ridge_coef_mean=("ridge_coef", "mean"),
+            ridge_coef_std=("ridge_coef", lambda s: float(s.std(ddof=1)) if len(s) > 1 else 0.0),
+            ridge_alpha=("ridge_alpha", "median"),
+            ridge_positive_frequency=("ridge_coef", lambda s: float((s > 0).mean())),
+            ridge_negative_frequency=("ridge_coef", lambda s: float((s < 0).mean())),
+            ridge_fold_count=("fold", "nunique"),
+        )
     )
 
 
@@ -405,7 +424,12 @@ def model_importance_tables(
     score_frames = []
     for key in ["S3_imputed", "S3_spin_components"]:
         view = views[key]
-        ridge = _ridge_coefficients(view)
+        ridge = _ridge_coefficients(
+            view,
+            seed=seed,
+            cv_splits=cv_splits,
+            cv_repeats=cv_repeats,
+        )
         permutation, scores = _permutation_importance(
             view,
             seed=seed,
@@ -419,14 +443,13 @@ def model_importance_tables(
 
     details = pd.concat(detail_frames, ignore_index=True)
     details = details[~details["feature"].isin(MISSING_INDICATORS)].copy()
-    details["ridge_coef_mean"] = details["ridge_coef"]
-    details["ridge_coef_std"] = 0.0
+    details["ridge_coef"] = details["ridge_coef_mean"]
     details["direction"] = np.where(
-        details["ridge_coef"].abs().lt(1e-12),
+        details["ridge_coef_mean"].abs().lt(1e-12),
         "weak",
-        np.where(details["ridge_coef"].gt(0), "positive", "negative"),
+        np.where(details["ridge_coef_mean"].gt(0), "positive", "negative"),
     )
-    details["ridge_abs_rank"] = details.groupby("sample_view")["ridge_coef"].transform(
+    details["ridge_abs_rank"] = details.groupby("sample_view")["ridge_coef_mean"].transform(
         lambda s: _rank_desc(s.abs())
     )
     details["permutation_rank"] = details.groupby("sample_view")["permutation_importance"].transform(
@@ -441,8 +464,16 @@ def model_importance_tables(
             "ridge_abs_rank",
             "direction",
             "ridge_alpha",
+            "ridge_fold_count",
+            "ridge_positive_frequency",
+            "ridge_negative_frequency",
         ]
-    ].copy()
+    ].rename(
+        columns={
+            "ridge_positive_frequency": "positive_frequency",
+            "ridge_negative_frequency": "negative_frequency",
+        }
+    ).copy()
     permutation_details = details[
         [
             "sample_view",
@@ -554,16 +585,37 @@ def bootstrap_rank_stability(
         rows.append(
             {
                 "feature": feature,
-                "rank_median": float(np.median(arr)),
-                "rank_ci_low": int(np.quantile(arr, 0.025, method="nearest")),
-                "rank_ci_high": int(np.quantile(arr, 0.975, method="nearest")),
-                "rank_interval": f"{int(np.quantile(arr, 0.025, method='nearest'))}-{int(np.quantile(arr, 0.975, method='nearest'))}",
-                "top3_frequency": float(np.mean(arr <= 3)),
-                "top5_frequency": float(np.mean(arr <= 5)),
+                "marginal_rank_median": float(np.median(arr)),
+                "marginal_rank_ci_low": int(np.quantile(arr, 0.025, method="nearest")),
+                "marginal_rank_ci_high": int(np.quantile(arr, 0.975, method="nearest")),
+                "marginal_rank_interval": f"{int(np.quantile(arr, 0.025, method='nearest'))}-{int(np.quantile(arr, 0.975, method='nearest'))}",
+                "marginal_top3_frequency": float(np.mean(arr <= 3)),
+                "marginal_top5_frequency": float(np.mean(arr <= 5)),
+                "stability_scope": "marginal_correlation_bootstrap",
                 "iterations": iterations,
             }
         )
-    return pd.DataFrame(rows).sort_values(["rank_median", "feature"]).reset_index(drop=True)
+    return pd.DataFrame(rows).sort_values(["marginal_rank_median", "feature"]).reset_index(drop=True)
+
+
+def _normalize_stability_columns(stability: pd.DataFrame) -> pd.DataFrame:
+    stability = stability.copy()
+    rename_map = {
+        "rank_median": "marginal_rank_median",
+        "rank_ci_low": "marginal_rank_ci_low",
+        "rank_ci_high": "marginal_rank_ci_high",
+        "rank_interval": "marginal_rank_interval",
+        "top3_frequency": "marginal_top3_frequency",
+        "top5_frequency": "marginal_top5_frequency",
+    }
+    for old, new in rename_map.items():
+        if old in stability.columns and new not in stability.columns:
+            stability[new] = stability[old]
+    if "marginal_top5_frequency" not in stability.columns:
+        stability["marginal_top5_frequency"] = np.nan
+    if "stability_scope" not in stability.columns:
+        stability["stability_scope"] = "marginal_correlation_bootstrap"
+    return stability
 
 
 def aggregate_rankings(method_table: pd.DataFrame, stability: pd.DataFrame | None = None) -> pd.DataFrame:
@@ -584,18 +636,25 @@ def aggregate_rankings(method_table: pd.DataFrame, stability: pd.DataFrame | Non
     ranking["final_rank"] = _rank_desc(ranking["aggregate_score"])
 
     if stability is not None:
-        stability = stability.copy()
-        if "top5_frequency" not in stability.columns:
-            stability["top5_frequency"] = np.nan
+        stability = _normalize_stability_columns(stability)
         ranking = ranking.merge(
-            stability[["feature", "rank_interval", "top3_frequency", "top5_frequency"]],
+            stability[
+                [
+                    "feature",
+                    "marginal_rank_interval",
+                    "marginal_top3_frequency",
+                    "marginal_top5_frequency",
+                    "stability_scope",
+                ]
+            ],
             on="feature",
             how="left",
         )
     else:
-        ranking["rank_interval"] = ""
-        ranking["top3_frequency"] = np.nan
-        ranking["top5_frequency"] = np.nan
+        ranking["marginal_rank_interval"] = ""
+        ranking["marginal_top3_frequency"] = np.nan
+        ranking["marginal_top5_frequency"] = np.nan
+        ranking["stability_scope"] = "marginal_correlation_bootstrap"
 
     def direction(row: pd.Series) -> str:
         value = row["pearson"] if abs(row["pearson"]) >= abs(row["spearman"]) else row["spearman"]
@@ -604,12 +663,12 @@ def aggregate_rankings(method_table: pd.DataFrame, stability: pd.DataFrame | Non
         return "positive" if value > 0 else "negative"
 
     def stability_label(row: pd.Series) -> str:
-        interval = str(row.get("rank_interval", ""))
+        interval = str(row.get("marginal_rank_interval", ""))
         width = 99
         if "-" in interval:
             low, high = interval.split("-", 1)
             width = int(high) - int(low)
-        top3 = row.get("top3_frequency", 0.0)
+        top3 = row.get("marginal_top3_frequency", 0.0)
         if row["final_rank"] <= 3 and top3 >= 0.6 and width <= 4:
             return "stable_key"
         if row["final_rank"] <= 6 and width <= 6:
@@ -637,12 +696,16 @@ def aggregate_rankings(method_table: pd.DataFrame, stability: pd.DataFrame | Non
         "permutation_score",
         "aggregate_score",
         "final_rank",
-        "rank_interval",
-        "top3_frequency",
-        "top5_frequency",
+        "marginal_rank_interval",
+        "marginal_top3_frequency",
+        "marginal_top5_frequency",
+        "stability_scope",
         "direction",
         "stability",
     ]
+    ranking["deprecated"] = True
+    ranking["not_for_final_conclusion"] = True
+    ordered_cols.extend(["deprecated", "not_for_final_conclusion"])
     return ranking.sort_values(["final_rank", "feature"])[ordered_cols].reset_index(drop=True)
 
 
@@ -664,18 +727,39 @@ def _rank_by_marginal(frame: pd.DataFrame, features: list[str]) -> pd.DataFrame:
     return table.sort_values("rank").reset_index(drop=True)
 
 
+def _descriptive_imputed_frame(frame: pd.DataFrame, features: list[str]) -> pd.DataFrame:
+    imputed = frame.copy()
+    for feature in features:
+        if feature in imputed.columns and imputed[feature].isna().any():
+            imputed[feature] = imputed[feature].fillna(imputed[feature].median())
+    return imputed
+
+
 def sensitivity_comparison(clean: pd.DataFrame, main_ranking: pd.DataFrame) -> pd.DataFrame:
-    scenarios: list[tuple[str, pd.DataFrame, list[str], str]] = []
+    scenarios: list[tuple[str, pd.DataFrame, list[str], str, str]] = []
     views = build_sample_views(clean)
-    scenarios.append(("S1_core", views["S1_core"].frame, views["S1_core"].features, "No club speed or attack angle."))
-    scenarios.append(("S2_complete", views["S2_complete"].frame, views["S2_complete"].features, "Complete-case primary variables."))
-    scenarios.append(("S3_imputed", views["S3_imputed"].frame, PRIMARY_FEATURES, "Median imputation plus missing indicators."))
+    scenarios.append(
+        ("S1_core", views["S1_core"].frame, views["S1_core"].features, "No club speed or attack angle.", "observed_marginal")
+    )
+    scenarios.append(
+        ("S2_complete", views["S2_complete"].frame, views["S2_complete"].features, "Complete-case primary variables.", "observed_marginal")
+    )
+    scenarios.append(
+        (
+            "S3_imputed",
+            _descriptive_imputed_frame(views["S3_imputed"].frame, PRIMARY_FEATURES),
+            PRIMARY_FEATURES,
+            "Descriptive median-imputed marginal ranking; model CV uses fold-local imputation.",
+            "descriptive_imputed_marginal",
+        )
+    )
     scenarios.append(
         (
             "S3_spin_components",
             views["S3_spin_components"].frame,
             SPIN_COMPONENT_FEATURES,
             "Backspin and sidespin representation.",
+            "observed_marginal",
         )
     )
 
@@ -683,19 +767,20 @@ def sensitivity_comparison(clean: pd.DataFrame, main_ranking: pd.DataFrame) -> p
     low = clean[continuous].quantile(0.01)
     high = clean[continuous].quantile(0.99)
     mask = clean[continuous].ge(low).all(axis=1) & clean[continuous].le(high).all(axis=1)
-    scenarios.append(("trim_1pct", clean[mask].copy(), PRIMARY_FEATURES, "Rows outside 1%-99% range removed."))
+    scenarios.append(("trim_1pct", clean[mask].copy(), PRIMARY_FEATURES, "Rows outside 1%-99% range removed.", "joint_trim_marginal"))
 
     winsorized = clean.copy()
     for column in continuous:
         winsorized[column] = winsorized[column].clip(low[column], high[column])
-    scenarios.append(("winsorized_1pct", winsorized, PRIMARY_FEATURES, "Continuous variables clipped to 1%-99%."))
+    scenarios.append(("winsorized_1pct", winsorized, PRIMARY_FEATURES, "Continuous variables clipped to 1%-99%.", "winsorized_marginal"))
 
     rank_column = "final_rank" if "final_rank" in main_ranking.columns else "marginal_rank"
     main_order = main_ranking.set_index("feature")[rank_column]
     rows = []
-    for name, frame, features, notes in scenarios:
+    for name, frame, features, notes, analysis_type in scenarios:
         available = [feature for feature in features if feature in frame.columns]
-        ranked = _rank_by_marginal(frame.dropna(subset=[*available, TARGET]), available)
+        ranked_frame = frame.dropna(subset=[*available, TARGET])
+        ranked = _rank_by_marginal(ranked_frame, available)
         top3 = ranked.head(3)["feature"].tolist()
         top5 = ranked.head(5)["feature"].tolist()
         common = [feature for feature in ranked["feature"] if feature in main_order.index]
@@ -712,19 +797,27 @@ def sensitivity_comparison(clean: pd.DataFrame, main_ranking: pd.DataFrame) -> p
             {
                 "scenario": name,
                 "n": int(len(frame)),
+                "ranked_n": int(len(ranked_frame)),
                 "feature_count": int(len(available)),
                 "top3": ";".join(top3),
                 "top5": ";".join(top5),
                 "spearman_with_main_rank": rho,
+                "analysis_type": analysis_type,
                 "notes": notes,
             }
         )
     return pd.DataFrame(rows)
 
 
-def group_importance(clean: pd.DataFrame, *, seed: int) -> pd.DataFrame:
+def group_importance(
+    clean: pd.DataFrame,
+    *,
+    seed: int,
+    cv_splits: int,
+    cv_repeats: int,
+    permutation_repeats: int,
+) -> pd.DataFrame:
     views = build_sample_views(clean)
-    rows = []
     group_specs = [
         ("speed_group", "S3_imputed", ["ball_speed_mph", "club_speed_mph"]),
         ("launch_attitude_group", "S3_imputed", ["launch_angle_deg", "attack_angle_deg"]),
@@ -733,33 +826,58 @@ def group_importance(clean: pd.DataFrame, *, seed: int) -> pd.DataFrame:
         ("spin_state_group_B", "S3_spin_components", ["backspin_rpm", "sidespin_rpm"]),
     ]
     rng = np.random.default_rng(seed)
+    grouped_specs: dict[str, list[tuple[str, list[str]]]] = {}
     for group, view_name, features in group_specs:
+        grouped_specs.setdefault(view_name, []).append((group, features))
+
+    deltas: dict[str, list[float]] = {group: [] for group, _, _ in group_specs}
+    baseline_rmses: dict[str, list[float]] = {group: [] for group, _, _ in group_specs}
+    permuted_rmses: dict[str, list[float]] = {group: [] for group, _, _ in group_specs}
+    positives: dict[str, list[float]] = {group: [] for group, _, _ in group_specs}
+
+    for view_name, specs in grouped_specs.items():
         view = views[view_name]
         X = view.frame[view.features].to_numpy(dtype=float)
         y = view.frame[TARGET].to_numpy(dtype=float)
-        train_idx, valid_idx = train_test_split(
-            np.arange(len(view.frame)), test_size=0.30, random_state=seed
-        )
-        model = make_pipeline(
-            SimpleImputer(strategy="median"),
-            ExtraTreesRegressor(n_estimators=160, min_samples_leaf=3, random_state=seed, n_jobs=-1),
-        )
-        model.fit(X[train_idx], y[train_idx])
-        original_rmse = math.sqrt(mean_squared_error(y[valid_idx], model.predict(X[valid_idx])))
-        X_perm = X[valid_idx].copy()
-        feature_indexes = [view.features.index(feature) for feature in features]
-        for feature_idx in feature_indexes:
-            X_perm[:, feature_idx] = rng.permutation(X_perm[:, feature_idx])
-        permuted_rmse = math.sqrt(mean_squared_error(y[valid_idx], model.predict(X_perm)))
+        cv = RepeatedKFold(n_splits=cv_splits, n_repeats=cv_repeats, random_state=seed)
+        for fold_id, (train_idx, valid_idx) in enumerate(cv.split(X), start=1):
+            model = make_pipeline(
+                SimpleImputer(strategy="median"),
+                ExtraTreesRegressor(n_estimators=120, min_samples_leaf=3, random_state=seed + fold_id, n_jobs=-1),
+            )
+            model.fit(X[train_idx], y[train_idx])
+            X_valid = X[valid_idx].copy()
+            y_valid = y[valid_idx]
+            original_rmse = math.sqrt(mean_squared_error(y_valid, model.predict(X_valid)))
+            for group, features in specs:
+                feature_indexes = [view.features.index(feature) for feature in features]
+                for _ in range(permutation_repeats):
+                    X_perm = X_valid.copy()
+                    row_permutation = rng.permutation(len(X_valid))
+                    X_perm[:, feature_indexes] = X_valid[row_permutation][:, feature_indexes]
+                    permuted_rmse = math.sqrt(mean_squared_error(y_valid, model.predict(X_perm)))
+                    delta = permuted_rmse - original_rmse
+                    deltas[group].append(delta)
+                    baseline_rmses[group].append(original_rmse)
+                    permuted_rmses[group].append(permuted_rmse)
+                    positives[group].append(float(delta > 0))
+
+    rows = []
+    for group, view_name, features in group_specs:
+        values = np.asarray(deltas[group], dtype=float)
         rows.append(
             {
                 "group": group,
                 "sample_view": view_name,
                 "features": ";".join(features),
-                "original_rmse": original_rmse,
-                "permuted_rmse": permuted_rmse,
-                "importance_mean": permuted_rmse - original_rmse,
-                "importance_std": 0.0,
+                "original_rmse": float(np.mean(baseline_rmses[group])),
+                "permuted_rmse": float(np.mean(permuted_rmses[group])),
+                "importance_mean": float(np.mean(values)),
+                "importance_std": float(np.std(values, ddof=1)) if len(values) > 1 else 0.0,
+                "positive_frequency": float(np.mean(positives[group])),
+                "fold_count": int(cv_splits * cv_repeats),
+                "permutation_repeats": int(permutation_repeats),
+                "block_permutation": True,
             }
         )
     result = pd.DataFrame(rows)
@@ -814,7 +932,13 @@ def outlier_audit(clean: pd.DataFrame) -> pd.DataFrame:
     continuous = INPUT_FEATURES + OUTPUT_COLUMNS
     low = clean[continuous].quantile(0.01)
     high = clean[continuous].quantile(0.99)
-    joint_mask = clean[continuous].ge(low).all(axis=1) & clean[continuous].le(high).all(axis=1)
+    non_missing_mask = clean[continuous].notna().all(axis=1)
+    outside_observed = clean[continuous].lt(low) | clean[continuous].gt(high)
+    outside_any = outside_observed.any(axis=1)
+    joint_mask = non_missing_mask & ~outside_any
+    missing_only = (~non_missing_mask) & ~outside_any
+    quantile_only = non_missing_mask & outside_any
+    both_missing_and_quantile = (~non_missing_mask) & outside_any
     target_mask = clean[TARGET].ge(low[TARGET]) & clean[TARGET].le(high[TARGET])
     rows = [
         {
@@ -823,6 +947,9 @@ def outlier_audit(clean: pd.DataFrame) -> pd.DataFrame:
             "processed_n": int(len(clean)),
             "removed_n": 0,
             "removed_rate": 0.0,
+            "missing_removed_n": 0,
+            "quantile_removed_n": 0,
+            "both_removed_n": 0,
             "rule": "No deletion after confirmed invalid zero correction.",
         },
         {
@@ -831,6 +958,9 @@ def outlier_audit(clean: pd.DataFrame) -> pd.DataFrame:
             "processed_n": int(len(clean)),
             "removed_n": 0,
             "removed_rate": 0.0,
+            "missing_removed_n": 0,
+            "quantile_removed_n": 0,
+            "both_removed_n": 0,
             "rule": "Clip continuous variables to 1%-99% quantiles.",
         },
         {
@@ -839,6 +969,9 @@ def outlier_audit(clean: pd.DataFrame) -> pd.DataFrame:
             "processed_n": int(target_mask.sum()),
             "removed_n": int((~target_mask).sum()),
             "removed_rate": float((~target_mask).mean()),
+            "missing_removed_n": 0,
+            "quantile_removed_n": int((~target_mask).sum()),
+            "both_removed_n": 0,
             "rule": "Remove only carry-distance extremes outside 1%-99%.",
         },
         {
@@ -847,6 +980,9 @@ def outlier_audit(clean: pd.DataFrame) -> pd.DataFrame:
             "processed_n": int(joint_mask.sum()),
             "removed_n": int((~joint_mask).sum()),
             "removed_rate": float((~joint_mask).mean()),
+            "missing_removed_n": int(missing_only.sum()),
+            "quantile_removed_n": int(quantile_only.sum()),
+            "both_removed_n": int(both_missing_and_quantile.sum()),
             "rule": "Retain rows inside 1%-99% for every continuous input/output.",
         },
     ]
@@ -860,8 +996,17 @@ def feature_summary_table(method_table: pd.DataFrame, stability: pd.DataFrame) -
     summary["marginal_rank"] = _rank_desc(summary["marginal_score"])
     summary["ridge_abs_rank"] = _rank_desc(summary["ridge_coef"].abs())
     summary["permutation_rank"] = _rank_desc(summary["permutation_importance"].clip(lower=0))
+    stability = _normalize_stability_columns(stability)
     summary = summary.merge(
-        stability[["feature", "rank_interval", "top3_frequency", "top5_frequency"]],
+        stability[
+            [
+                "feature",
+                "marginal_rank_interval",
+                "marginal_top3_frequency",
+                "marginal_top5_frequency",
+                "stability_scope",
+            ]
+        ],
         on="feature",
         how="left",
     )
@@ -870,13 +1015,13 @@ def feature_summary_table(method_table: pd.DataFrame, stability: pd.DataFrame) -
         if row["feature"] == "attack_angle_deg":
             return "unstable"
         strong_count = int(row["marginal_rank"] <= 3) + int(row["ridge_abs_rank"] <= 3) + int(row["permutation_rank"] <= 3)
-        if strong_count >= 3 and row.get("top3_frequency", 0.0) >= 0.6:
+        if strong_count >= 3 and row.get("marginal_top3_frequency", 0.0) >= 0.6:
             return "stable_key"
         if row["permutation_rank"] <= 3 and row["marginal_rank"] > 5:
             return "structural_nonlinear"
         if strong_count >= 2:
             return "secondary"
-        interval = str(row.get("rank_interval", ""))
+        interval = str(row.get("marginal_rank_interval", ""))
         if "-" in interval:
             low_s, high_s = interval.split("-", 1)
             if int(high_s) - int(low_s) >= 5:
@@ -909,9 +1054,10 @@ def feature_summary_table(method_table: pd.DataFrame, stability: pd.DataFrame) -
             "permutation_importance",
             "permutation_importance_std",
             "permutation_rank",
-            "rank_interval",
-            "top3_frequency",
-            "top5_frequency",
+            "marginal_rank_interval",
+            "marginal_top3_frequency",
+            "marginal_top5_frequency",
+            "stability_scope",
             "stability_category",
             "final_interpretation",
         ]
@@ -955,23 +1101,74 @@ def _cv_regression_metrics(
     }
 
 
-def speed_overlap_models(clean: pd.DataFrame, *, seed: int, cv_splits: int, cv_repeats: int) -> pd.DataFrame:
-    rows = []
+def speed_overlap_model_tables(
+    clean: pd.DataFrame,
+    *,
+    seed: int,
+    cv_splits: int,
+    cv_repeats: int,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    data = clean[["ball_speed_mph", "club_speed_mph", TARGET]].dropna().copy()
     specs = [
         ("ball_speed_only", ["ball_speed_mph"], "Only ball speed."),
         ("club_speed_only", ["club_speed_mph"], "Only club speed after invalid zero correction."),
         ("ball_and_club_speed", ["ball_speed_mph", "club_speed_mph"], "Ball speed and club speed together."),
     ]
-    for model_name, features, notes in specs:
-        metrics = _cv_regression_metrics(
-            clean,
-            features,
-            seed=seed,
-            cv_splits=cv_splits,
-            cv_repeats=cv_repeats,
+    X_all = {model_name: data[features].to_numpy(dtype=float) for model_name, features, _ in specs}
+    y = data[TARGET].to_numpy(dtype=float)
+    cv = RepeatedKFold(n_splits=cv_splits, n_repeats=cv_repeats, random_state=seed)
+    fold_rows = []
+    for fold_id, (train_idx, valid_idx) in enumerate(cv.split(data), start=1):
+        for model_name, features, _ in specs:
+            model = make_pipeline(StandardScaler(), LinearRegression())
+            X = X_all[model_name]
+            model.fit(X[train_idx], y[train_idx])
+            pred = model.predict(X[valid_idx])
+            fold_rows.append(
+                {
+                    "fold": fold_id,
+                    "model": model_name,
+                    "features": ";".join(features),
+                    "n": int(len(data)),
+                    "rmse": float(math.sqrt(mean_squared_error(y[valid_idx], pred))),
+                    "mae": float(mean_absolute_error(y[valid_idx], pred)),
+                    "r2": float(r2_score(y[valid_idx], pred)),
+                }
+            )
+    fold_scores = pd.DataFrame(fold_rows)
+    baseline = fold_scores[fold_scores["model"] == "ball_speed_only"][["fold", "rmse"]].rename(
+        columns={"rmse": "baseline_rmse"}
+    )
+    fold_scores = fold_scores.merge(baseline, on="fold", how="left")
+    fold_scores["delta_rmse_vs_ball_speed"] = fold_scores["rmse"] - fold_scores["baseline_rmse"]
+
+    rows = []
+    notes_by_model = {model_name: notes for model_name, _, notes in specs}
+    for model_name, subset in fold_scores.groupby("model", sort=False):
+        rows.append(
+            {
+                "model": model_name,
+                "features": subset["features"].iloc[0],
+                "n": int(subset["n"].iloc[0]),
+                "fold_count": int(subset["fold"].nunique()),
+                "rmse_mean": float(subset["rmse"].mean()),
+                "rmse_std": float(subset["rmse"].std(ddof=1)),
+                "mae_mean": float(subset["mae"].mean()),
+                "mae_std": float(subset["mae"].std(ddof=1)),
+                "r2_mean": float(subset["r2"].mean()),
+                "r2_std": float(subset["r2"].std(ddof=1)),
+                "paired_delta_rmse_vs_ball_speed": float(subset["delta_rmse_vs_ball_speed"].mean()),
+                "paired_delta_rmse_std": float(subset["delta_rmse_vs_ball_speed"].std(ddof=1)),
+                "paired_improvement_frequency": float((subset["delta_rmse_vs_ball_speed"] < 0).mean()),
+                "notes": notes_by_model[model_name],
+            }
         )
-        rows.append({"model": model_name, "features": ";".join(features), **metrics, "notes": notes})
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows), fold_scores
+
+
+def speed_overlap_models(clean: pd.DataFrame, *, seed: int, cv_splits: int, cv_repeats: int) -> pd.DataFrame:
+    summary, _ = speed_overlap_model_tables(clean, seed=seed, cv_splits=cv_splits, cv_repeats=cv_repeats)
+    return summary
 
 
 def launch_angle_quadratic_analysis(
@@ -1183,11 +1380,11 @@ def create_visualizations(
     fig, ax = plt.subplots(figsize=(8, 5))
     y = np.arange(len(stability))
     ax.errorbar(
-        stability["rank_median"],
+        stability["marginal_rank_median"],
         y,
         xerr=[
-            stability["rank_median"] - stability["rank_ci_low"],
-            stability["rank_ci_high"] - stability["rank_median"],
+            stability["marginal_rank_median"] - stability["marginal_rank_ci_low"],
+            stability["marginal_rank_ci_high"] - stability["marginal_rank_median"],
         ],
         fmt="o",
         capsize=3,
@@ -1196,16 +1393,16 @@ def create_visualizations(
     ax.set_yticklabels(stability["feature_label"])
     ax.invert_yaxis()
     ax.set_xlabel("Bootstrap rank interval")
-    ax.set_title("Rank stability")
+    ax.set_title("Marginal rank stability")
     fig.tight_layout()
     outputs["q1_rank_stability"] = save_figure_bundle(
         fig=fig,
         data=stability,
         stem="q1_rank_stability",
         question_dir=question_dir,
-        title="Bootstrap rank stability",
+        title="Bootstrap marginal rank stability",
         source_script="questions/q1/scripts/visualize.py",
-        notes="Intervals use marginal Pearson/Spearman bootstrap ranking.",
+        notes="Intervals only use marginal Pearson/Spearman bootstrap ranking.",
         dpi=dpi,
     )
     plt.close(fig)
@@ -1323,12 +1520,23 @@ def run_analysis(
     feature_ranking = aggregate_rankings(method_table, rank_stability)
     feature_summary = feature_summary_table(method_table, rank_stability)
     sensitivity = sensitivity_comparison(clean, feature_summary)
-    group_table = group_importance(clean, seed=seed)
+    group_table = group_importance(
+        clean,
+        seed=seed,
+        cv_splits=cv_splits,
+        cv_repeats=cv_repeats,
+        permutation_repeats=permutation_repeats,
+    )
     outliers = outlier_flags(clean)
     outlier_summary = outlier_audit(clean)
     sample_definitions = sample_definition_comparison(clean)
     spin_comparison = spin_representation_comparison(cv_scores)
-    speed_overlap = speed_overlap_models(clean, seed=seed, cv_splits=cv_splits, cv_repeats=cv_repeats)
+    speed_overlap, speed_overlap_folds = speed_overlap_model_tables(
+        clean,
+        seed=seed,
+        cv_splits=cv_splits,
+        cv_repeats=cv_repeats,
+    )
     launch_quadratic = launch_angle_quadratic_analysis(
         clean,
         seed=seed,
@@ -1364,6 +1572,7 @@ def run_analysis(
         "q1_spin_representation_comparison": spin_comparison,
         "q1_sample_definition_comparison": sample_definitions,
         "q1_speed_overlap_models": speed_overlap,
+        "q1_speed_overlap_fold_scores": speed_overlap_folds,
         "q1_launch_angle_quadratic": launch_quadratic,
         "q1_rank_stability": rank_stability,
     }
@@ -1382,7 +1591,10 @@ def run_analysis(
         "rows": int(len(clean)),
         "features": INPUT_FEATURES,
         "outputs": OUTPUT_COLUMNS,
-        "top_features": feature_summary.head(5)["feature"].tolist(),
+        "summary_order_features": feature_summary.head(5)["feature"].tolist(),
+        "stable_key_features": feature_summary.loc[
+            feature_summary["stability_category"] == "stable_key", "feature"
+        ].tolist(),
         "tables": {key: str(path.relative_to(root)) for key, path in table_outputs.items()},
         "figures": {
             key: {subkey: str(path.relative_to(root)) for subkey, path in paths.items()}
@@ -1430,6 +1642,7 @@ def run_analysis(
         "table_outputs": table_outputs,
         "figure_outputs": figure_outputs,
         "metadata": metadata,
+        "run_summary": run_summary,
     }
 
 
@@ -1455,6 +1668,7 @@ def validate_outputs(root: Path, *, require_validation_table: bool = True) -> pd
         "q1_spin_representation_comparison.csv",
         "q1_sample_definition_comparison.csv",
         "q1_speed_overlap_models.csv",
+        "q1_speed_overlap_fold_scores.csv",
         "q1_launch_angle_quadratic.csv",
         "q1_rank_stability.csv",
     ]
@@ -1573,6 +1787,76 @@ def validate_outputs(root: Path, *, require_validation_table: bool = True) -> pd
     if model_path.exists():
         perf = pd.read_csv(model_path)
         add("model_metrics_not_nan", "numeric", model_path, perf[["rmse", "mae", "r2"]].notna().all().all())
+
+    sensitivity_path = tables_dir / "q1_sensitivity_comparison.csv"
+    if sensitivity_path.exists():
+        sensitivity = pd.read_csv(sensitivity_path)
+        if {"scenario", "n", "ranked_n", "analysis_type"}.issubset(sensitivity.columns):
+            s3 = sensitivity.loc[sensitivity["scenario"] == "S3_imputed"]
+            passed = (
+                not s3.empty
+                and int(s3["n"].iloc[0]) == 735
+                and int(s3["ranked_n"].iloc[0]) == 735
+                and s3["analysis_type"].iloc[0] == "descriptive_imputed_marginal"
+            )
+        else:
+            passed = False
+        add("s3_sensitivity_ranked_n_matches_reported_n", "numeric", sensitivity_path, passed)
+
+    speed_path = tables_dir / "q1_speed_overlap_models.csv"
+    speed_folds_path = tables_dir / "q1_speed_overlap_fold_scores.csv"
+    if speed_path.exists():
+        speed = pd.read_csv(speed_path)
+        same_sample = "n" in speed.columns and speed["n"].nunique() == 1 and int(speed["n"].iloc[0]) == 669
+        add("speed_overlap_same_sample", "numeric", speed_path, bool(same_sample))
+    if speed_folds_path.exists():
+        speed_folds = pd.read_csv(speed_folds_path)
+        paired = (
+            {"fold", "model"}.issubset(speed_folds.columns)
+            and speed_folds.groupby("fold")["model"].nunique().nunique() == 1
+            and int(speed_folds.groupby("fold")["model"].nunique().iloc[0]) == 3
+        )
+        add("speed_overlap_paired_folds", "numeric", speed_folds_path, bool(paired))
+
+    group_path = tables_dir / "q1_group_importance.csv"
+    if group_path.exists():
+        groups = pd.read_csv(group_path)
+        repeated = {"fold_count", "importance_std", "positive_frequency"}.issubset(groups.columns) and (
+            groups["fold_count"].min() >= 25
+        ) and (groups["importance_std"] > 0).all()
+        block = "block_permutation" in groups.columns and groups["block_permutation"].astype(bool).all()
+        add("group_importance_repeated_cv", "numeric", group_path, bool(repeated))
+        add("group_importance_block_permutation", "schema", group_path, bool(block))
+
+    stability_path = tables_dir / "q1_rank_stability.csv"
+    if stability_path.exists():
+        stability = pd.read_csv(stability_path)
+        required = {
+            "marginal_rank_interval",
+            "marginal_top3_frequency",
+            "marginal_top5_frequency",
+            "stability_scope",
+        }
+        scoped = required.issubset(stability.columns) and set(stability["stability_scope"]) == {
+            "marginal_correlation_bootstrap"
+        }
+        add("rank_stability_marginal_scope", "schema", stability_path, bool(scoped))
+
+    ridge_path = tables_dir / "q1_ridge_coefficients.csv"
+    if ridge_path.exists():
+        ridge = pd.read_csv(ridge_path)
+        repeated = {"ridge_fold_count", "ridge_coef_std"}.issubset(ridge.columns) and (
+            ridge["ridge_fold_count"].min() >= 25
+        ) and (ridge["ridge_coef_std"] > 0).any()
+        add("ridge_coefficients_repeated_estimates", "numeric", ridge_path, bool(repeated))
+
+    ranking_path = tables_dir / "q1_feature_ranking.csv"
+    if ranking_path.exists():
+        ranking = pd.read_csv(ranking_path)
+        deprecated = {"deprecated", "not_for_final_conclusion"}.issubset(ranking.columns) and (
+            ranking["deprecated"].astype(bool).all()
+        ) and ranking["not_for_final_conclusion"].astype(bool).all()
+        add("legacy_ranking_deprecated", "schema", ranking_path, bool(deprecated))
 
     metadata_path = question_dir / "artifacts" / "run_metadata.json"
     if metadata_path.exists():

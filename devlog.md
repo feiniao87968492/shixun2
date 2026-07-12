@@ -101,3 +101,34 @@
   - q2/q3 仍为后续小问，当前仓库检查会保留预期 scaffold warning。
 - **下一步**：
   - 在 q2 开始前继续以 `data/processed/golf_shots_clean.csv` 和 q1 元数据作为共享数据入口。
+
+---
+
+## 2026-07-12 — q1 review2 方法审查整改
+
+- **目标**：修复 `questions/q1/review2.md` 指出的 S3 样本口径、速度重叠实验、分组重要性、排名稳定性和旧排名文件冲突问题。
+- **完成**：
+  - 新增 `tests/test_q1_review2.py`，先在旧产物上确认 8 项方法不变量失败，再用实现修复转绿。
+  - 将 S3 敏感性表改为明确标记的 `descriptive_imputed_marginal`，新增 `ranked_n`，避免 735 条报告样本与实际排名样本不一致。
+  - 将球速/杆头速度重叠实验统一到 669 条共同非缺失样本和相同 25 个 CV 折，并新增 `q1_speed_overlap_fold_scores.csv`。
+  - 将分组重要性改为 5x5 CV + block permutation，输出 `importance_std`、`positive_frequency`、`fold_count` 和 `permutation_repeats`。
+  - 将边际相关 Bootstrap 排名稳定性字段统一为 `marginal_*`，并写入 `stability_scope=marginal_correlation_bootstrap`。
+  - 将 Ridge 系数改为训练折重复估计，输出真实的系数标准差和正/负方向频率。
+  - 标记旧 `q1_feature_ranking.csv` 为 `deprecated` 与 `not_for_final_conclusion`，最终解释以 `q1_feature_summary.csv` 为准。
+  - 更新 q1 文档、论文草稿、证据链、图表登记表和 README 的 review2 口径。
+- **关键发现**：
+  - 同样本配对 CV 下，仅球速 RMSE=24.43 yd，同时加入杆头速度 RMSE=24.42 yd，杆头速度额外预测信息很小。
+  - 分组重要性排序仍为速度组、发射姿态组、自旋状态组、水平方向组，但现在有重复 CV 标准差和正贡献频率支撑。
+  - 自动验证检查从 62 项扩展到 71 项，新增 review2 方法不变量。
+- **决策**：
+  - `q1_rank_stability.csv` 只解释为边际相关排名稳定性，不作为综合方法稳定性。
+  - 自旋表示 A 用于主解释，表示 B 作为纯预测略优的敏感性对照。
+- **产物**：
+  - `questions/q1/artifacts/tables/q1_speed_overlap_fold_scores.csv`
+  - `questions/q1/artifacts/tables/q1_group_importance.csv`
+  - `questions/q1/artifacts/tables/q1_rank_stability.csv`
+  - `questions/q1/artifacts/tables/q1_validation_checks.csv`
+- **未解决问题**：
+  - q2/q3 仍为后续小问，当前仓库检查保留预期 scaffold warning。
+- **下一步**：
+  - 进入 q2 前以 review2 后的 q1 artifacts 和 `data/processed/golf_shots_clean.csv` 为共享入口。

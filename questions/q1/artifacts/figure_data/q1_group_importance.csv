@@ -1,6 +1,6 @@
-group,sample_view,features,original_rmse,permuted_rmse,importance_mean,importance_std,rank
-speed_group,S3_imputed,ball_speed_mph;club_speed_mph,8.53930489141,47.1471228645,38.6078179731,0,1
-launch_attitude_group,S3_imputed,launch_angle_deg;attack_angle_deg,8.53930489141,28.2991748228,19.7598699314,0,2
-spin_state_group_B,S3_spin_components,backspin_rpm;sidespin_rpm,8.3695680823,11.9343484101,3.5647803278,0,3
-spin_state_group_A,S3_imputed,spin_rate_rpm;spin_axis_deg,8.53930489141,11.7531093738,3.21380448242,0,4
-horizontal_direction_group,S3_imputed,launch_direction_deg,8.53930489141,8.66354741444,0.124242523037,0,5
+group,sample_view,features,original_rmse,permuted_rmse,importance_mean,importance_std,positive_frequency,fold_count,permutation_repeats,block_permutation,rank
+speed_group,S3_imputed,ball_speed_mph;club_speed_mph,8.48307725658,47.6441484467,39.1610711902,2.89909961284,1,25,10,True,1
+launch_attitude_group,S3_imputed,launch_angle_deg;attack_angle_deg,8.48307725658,27.9197298697,19.4366526131,2.15759286666,1,25,10,True,2
+spin_state_group_B,S3_spin_components,backspin_rpm;sidespin_rpm,8.23150476926,13.0756652681,4.84416049882,0.770464389854,1,25,10,True,3
+spin_state_group_A,S3_imputed,spin_rate_rpm;spin_axis_deg,8.48307725658,12.7957219135,4.31264465696,0.741940434202,1,25,10,True,4
+horizontal_direction_group,S3_imputed,launch_direction_deg,8.48307725658,8.66896959905,0.18589234247,0.101505653763,0.964,25,10,True,5

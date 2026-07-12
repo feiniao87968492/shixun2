@@ -9,9 +9,9 @@
 | q1-E03 | 2026-07-12 | current | `data/processed/golf_shots_clean.csv` | `q1.bootstrap.iterations=1000` | pairwise | 全变量展示 | Pearson/Spearman/Kendall + Bootstrap | 相关系数、95% CI、有效 n | 球速 Pearson=0.758；杆头速度 Pearson=0.581；攻击角仅弱正相关 | supported |
 | q1-E04 | 2026-07-12 | current | `data/processed/golf_shots_clean.csv` | 5x5 CV | S3 | A/B 分开 | 岭回归 + ExtraTrees 验证集置换 | RMSE、MAE、R²、置换 RMSE 增量 | 球速三类证据均最强；发射角呈结构性非线性贡献；攻击角独立贡献弱 | supported |
 | q1-E05 | 2026-07-12 | current | `data/processed/golf_shots_clean.csv` | 5x5 CV | S3 | A/B 比较 | 自旋表示对照 | CV RMSE/MAE/R² | B（后旋+侧旋）RMSE=8.23，A（自旋率+轴角）RMSE=8.48；A 为主解释，B 为敏感性 | supported |
-| q1-E06 | 2026-07-12 | current | `data/processed/golf_shots_clean.csv` | 5x5 CV | 完整可用样本 | 不适用 | 球速/杆头速度重叠模型 | RMSE、MAE、R² | 仅球速 RMSE=24.32，仅杆头速度 30.34，两者同时 24.42；杆头速度与球速信息重叠明显 | supported |
+| q1-E06 | 2026-07-12 | current | `data/processed/golf_shots_clean.csv` | 5x5 CV | 669 条共同非缺失样本 | 不适用 | 球速/杆头速度重叠模型 | RMSE、MAE、R²、每折配对误差 | 仅球速 RMSE=24.43，仅杆头速度 30.34，两者同时 24.42；同样本配对 CV 下杆头速度额外信息很小 | supported |
 | q1-E07 | 2026-07-12 | current | `data/processed/golf_shots_clean.csv` | 5x5 CV | 735 条 | 不适用 | 发射角线性 vs 二次项 | RMSE、经验最优角 | 二次项 RMSE=34.64，优于线性 RMSE=37.24；经验最优发射角约 17.89 度 | supported |
-| q1-E08 | 2026-07-12 | current | q1 artifacts | `configs/default.yaml` | 全部 | 全部 | `validate.py` | 62 项检查 | 文件、schema、数值范围、异常零值、元数据、表哈希均通过 | supported |
+| q1-E08 | 2026-07-12 | current | q1 artifacts | `configs/default.yaml` | 全部 | 全部 | `validate.py` | 71 项检查 | 文件、schema、数值范围、异常零值、元数据、表哈希和 review2 方法不变量均通过 | supported |
 
 ## 失败与修正
 
@@ -20,6 +20,7 @@
 | 2026-07-12 | 初版 q1 pipeline | 图表阶段缺少 `pearson_score` 等列 | 聚合排序输出裁掉了可视化需要的 score 列 | 增加回归测试并保留兼容字段 |
 | 2026-07-12 | review1 审计 | 异常零值未被修正，攻击角被写为稳定关键因素 | 初版只做文件存在验证，综合排名重复加权边际相关 | 新增 `preprocessing.py`、分层 `q1_feature_summary.csv` 和真实数值验证 |
 | 2026-07-12 | artifact 复跑 | CSV 浮点和 CRLF 导致无意义 diff | 默认 CSV/JSON 写出不稳定 | 固定 12 位有效数字和 LF 换行 |
+| 2026-07-12 | review2 方法审计 | S3 敏感性、速度重叠样本、分组重要性和排名稳定性表述存在方法口径问题 | 旧产物没有验证这些方法不变量 | 新增 review2 回归测试、同样本配对 CV、block permutation、边际稳定性字段和 71 项 validate |
 
 ## 参数
 

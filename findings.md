@@ -16,8 +16,8 @@
 - review1 修正后缺失情况：`record_id=225,226,308` 的杆头速度和攻击角异常 0 值修正为缺失，修正后缺失数为 66/68。
 - q1 review1 结果：球速是飞行距离最稳定关键因素，Pearson=0.758，Spearman=0.776，Bootstrap 排名区间 1-1。
 - q1 初版“单一综合排序前五：球速、杆头速度、攻击角、发射角、自旋轴偏角”已被 review1 废弃；当前以 `q1_feature_summary.csv` 的分层分类为准。
-- q1 分组重要性：速度组第一，发射姿态组第二，自旋状态组中等，水平方向组最弱。
-- q1 artifact 验证：`python questions/q1/scripts/validate.py --config configs/default.yaml` 通过 62 项 artifact/schema/numeric/reproducibility 检查。
+- q1 分组重要性：速度组第一，发射姿态组第二，自旋状态组中等，水平方向组最弱；review2 后使用 5x5 CV + block permutation。
+- q1 artifact 验证：`python questions/q1/scripts/validate.py --config configs/default.yaml` 通过 71 项 artifact/schema/numeric/reproducibility/method-invariant 检查。
 
 ## Technical Decisions
 | Decision | Rationale |
@@ -37,7 +37,8 @@
 ## Resources
 - q1 plan: `docs/plans/task1.md`
 - q1 analysis: `questions/q1/scripts/analysis.py`
-- q1 ranking: `questions/q1/artifacts/tables/q1_feature_ranking.csv`
+- q1 final summary: `questions/q1/artifacts/tables/q1_feature_summary.csv`
+- q1 legacy equal-weight ranking: `questions/q1/artifacts/tables/q1_feature_ranking.csv`，已标记 `deprecated` 和 `not_for_final_conclusion`
 - q1 validation checks: `questions/q1/artifacts/tables/q1_validation_checks.csv`
 - q1 paper draft: `report/paper.md`
 
@@ -51,3 +52,15 @@
 - 修正后核心结果：球速与飞行距离 Pearson=0.758、Spearman=0.776；杆头速度 Pearson=0.581、Spearman=0.589；攻击角 Pearson=0.156、Spearman=0.206。
 - 验证升级为 62 项 artifact/schema/numeric/reproducibility 检查；新增 `tests/test_q1_review1.py` 覆盖异常零值、review1 表、分层结论和 standalone 绘图入口依赖。
 - `visualize.py` standalone 入口此前只加载旧 4 张表，已补齐 `q1_feature_summary`、`q1_group_importance`、`q1_sensitivity_comparison`，与 `create_visualizations` 的 review1 图表依赖一致。
+
+## Review2 Findings
+- `questions/q1/review2.md` 判定第一问主体通过但不能最终定稿，P0 问题为：S3 插补敏感性样本错标、速度重叠实验样本不一致、分组重要性未做重复 CV 且组内联合结构被破坏、排名稳定性字段容易误导为综合稳定性。
+- P1 问题为：Ridge `ridge_coef_std=0` 只是单次拟合副产物，旧等权 `q1_feature_ranking.csv` 与新 `q1_feature_summary.csv` 冲突，自旋方案选择需强调 A 是物理解释主表而非纯预测最优，联合 1% 截断混入缺失删除。
+- 新增 `tests/test_q1_review2.py` 作为 RED 测试，旧产物上 8 项全部失败，覆盖 review2 的核心方法不变量。
+- 选定整改策略：S3 敏感性保留为明确标记的描述性中位数插补边际排名；正式模型仍使用交叉验证训练折内插补。
+- 速度重叠实验统一到 `ball_speed_mph`、`club_speed_mph`、`carry_distance_yd` 同时非缺失的 669 条样本，并输出 `q1_speed_overlap_fold_scores.csv` 支持配对 fold 比较。
+- 分组重要性改为 5x5 CV，组置换使用同一个行索引整体打乱组内列，保留组内联合关系。
+- Bootstrap 排名稳定性只保留 `marginal_*` 字段和 `stability_scope=marginal_correlation_bootstrap`，避免误解为综合稳定性。
+- 当前 review2 口径下，速度重叠实验在同一 669 条样本和相同 25 个 CV 折上比较；仅球速 RMSE=24.43，同时加入杆头速度 RMSE=24.42，额外信息很小。
+- Ridge 系数改为 25 个训练折重复估计，`ridge_coef_std` 和正/负方向频率均来自实际重复估计。
+- `validate.py` 增至 71 项检查，新增 S3 样本口径、速度重叠配对折、分组重复 CV/block permutation、边际稳定性字段、Ridge 重复估计和旧排名弃用检查。

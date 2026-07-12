@@ -1,6 +1,6 @@
 # q1 — 影响落点的关键因素分析
 
-- 状态：`done`
+- 状态：`done_review2`
 - 负责人：建模团队
 - 依赖小问：无
 - 正式入口：`python questions/q1/scripts/pipeline.py --config configs/default.yaml`
@@ -28,9 +28,9 @@
 
 - `q1_feature_summary.csv`：边际关联、条件线性贡献、非线性贡献和稳定性分类。
 - `q1_invalid_zero_records.csv`：异常零值修正记录。
-- `q1_speed_overlap_models.csv`：球速/杆头速度信息重叠对照。
+- `q1_speed_overlap_models.csv`、`q1_speed_overlap_fold_scores.csv`：球速/杆头速度同样本配对 CV 信息重叠对照。
 - `q1_launch_angle_quadratic.csv`：发射角线性与二次项模型对照。
-- `q1_raw_importance_comparison.png`、`q1_group_importance.png`、`q1_sensitivity_comparison.png`：新增 review1 图表。
+- `q1_raw_importance_comparison.png`、`q1_group_importance.png`、`q1_sensitivity_comparison.png`：review1/review2 图表。
 
 ## 完成条件
 

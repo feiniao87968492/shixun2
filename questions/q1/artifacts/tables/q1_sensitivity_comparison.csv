@@ -1,7 +1,7 @@
-scenario,n,feature_count,top3,top5,spearman_with_main_rank,notes
-S1_core,735,5,ball_speed_mph;spin_axis_deg;launch_angle_deg,ball_speed_mph;spin_axis_deg;launch_angle_deg;launch_direction_deg;spin_rate_rpm,0.127801930085,No club speed or attack angle.
-S2_complete,667,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.728918266392,Complete-case primary variables.
-S3_imputed,735,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.728918266392,Median imputation plus missing indicators.
-S3_spin_components,735,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;sidespin_rpm;backspin_rpm,0.864530967117,Backspin and sidespin representation.
-trim_1pct,558,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.728918266392,Rows outside 1%-99% range removed.
-winsorized_1pct,735,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.728918266392,Continuous variables clipped to 1%-99%.
+scenario,n,ranked_n,feature_count,top3,top5,spearman_with_main_rank,analysis_type,notes
+S1_core,735,735,5,ball_speed_mph;spin_axis_deg;launch_angle_deg,ball_speed_mph;spin_axis_deg;launch_angle_deg;launch_direction_deg;spin_rate_rpm,0.127801930085,observed_marginal,No club speed or attack angle.
+S2_complete,667,667,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.728918266392,observed_marginal,Complete-case primary variables.
+S3_imputed,735,735,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_angle_deg,0.745869853983,descriptive_imputed_marginal,Descriptive median-imputed marginal ranking; model CV uses fold-local imputation.
+S3_spin_components,735,667,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;sidespin_rpm;backspin_rpm,0.864530967117,observed_marginal,Backspin and sidespin representation.
+trim_1pct,558,558,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.728918266392,joint_trim_marginal,Rows outside 1%-99% range removed.
+winsorized_1pct,735,667,7,ball_speed_mph;club_speed_mph;attack_angle_deg,ball_speed_mph;club_speed_mph;attack_angle_deg;spin_axis_deg;launch_direction_deg,0.728918266392,winsorized_marginal,Continuous variables clipped to 1%-99%.

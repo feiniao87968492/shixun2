@@ -4,7 +4,7 @@
 完成 `docs/plans/task1.md` 中第一问计划：数据审计、相关性、重要性排序、稳定性分析、图表产物、证据链和文档闭环。
 
 ## Current Phase
-Phase 11
+Phase 12
 
 ## Phases
 
@@ -58,6 +58,20 @@ Phase 11
 - [x] 修正 `questions/q1/scripts/visualize.py` standalone 入口的 review1 表依赖
 - [x] 运行最终完整验证
 - [x] 提交并推送补齐改动
+- **Status:** complete
+
+### Phase 12: q1 review2 方法审查整改
+- [x] 读取 `questions/q1/review2.md` 并抽取 P0/P1 验收项
+- [x] 先写 `tests/test_q1_review2.py`，确认 8 项 review2 回归测试在旧产物上失败
+- [x] 修正 S3 敏感性样本口径，新增 `ranked_n` 与 `analysis_type`
+- [x] 统一速度重叠实验样本，并新增每折配对误差表
+- [x] 将分组重要性改为重复 CV + block permutation，并输出 std、positive frequency、fold count
+- [x] 将 Bootstrap 排名稳定性字段重命名为 marginal scope
+- [x] 将 Ridge 系数改为训练折重复估计，输出系数 std 和方向频率
+- [x] 标记旧等权综合排名为 deprecated/not_for_final_conclusion
+- [x] 拆分联合 1% 截断删除原因为缺失、分位区间和二者同时存在
+- [x] 更新 q1 文档、论文草稿、证据链、图表登记表和 README 的 review2 口径
+- [x] 重跑 pipeline/validate/tests，提交并推送
 - **Status:** complete
 
 ## Key Questions

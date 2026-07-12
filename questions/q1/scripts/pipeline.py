@@ -47,10 +47,11 @@ def main() -> int:
         return 0
 
     result = run_analysis(root=root, config_path=args.config)
-    top = result["tables"]["q1_feature_summary"].head(5)
+    run_summary = result["run_summary"]
     print("[ok] q1 pipeline completed")
     print(f"question_dir={question_dir}")
-    print("top_features=" + ", ".join(top["feature"].tolist()))
+    print("summary_order_features=" + ", ".join(run_summary["summary_order_features"]))
+    print("stable_key_features=" + ", ".join(run_summary["stable_key_features"]))
     return 0
 
 

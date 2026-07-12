@@ -20,7 +20,7 @@
 |---|---|---|
 | S1_core | 不包含杆头速度和攻击角，保留 735 条核心样本 | 主相关性和核心变量稳健性 |
 | S2_complete | 所有主输入变量非缺失，修正零值后 667 条 | 统一样本下比较全部变量 |
-| S3_imputed | 保留 735 条，杆头速度和攻击角在每个训练折内中位数插补，并加入缺失指示变量 | 全样本建模和敏感性分析 |
+| S3_imputed | 保留 735 条，杆头速度和攻击角在每个训练折内中位数插补，并加入缺失指示变量 | 全样本建模和敏感性分析；边际相关敏感性另标记为描述性插补口径 |
 
 数据泄漏控制：插补和标准化均放在 scikit-learn Pipeline 内部，在每个训练折上拟合，再用于对应验证折。
 
@@ -31,21 +31,21 @@
 - 表示 A：自旋速率 + 自旋轴偏角；
 - 表示 B：后旋 + 侧旋。
 
-比较指标包括重复交叉验证 RMSE、MAE、R² 和变量重要性稳定性。表示 A 保留为主解释口径，表示 B 作为敏感性对照。
+比较指标包括重复交叉验证 RMSE、MAE、R² 和变量重要性稳定性。表示 B 的纯预测误差略低，表示 A 因直接对应自旋速率和自旋轴偏角而保留为主解释口径，表示 B 作为敏感性对照。
 
 ## 5. 三类重要性
 
 | 类型 | 回答的问题 | 方法 |
 |---|---|---|
 | 边际关联 | 单独观察变量时与飞行距离关系多强 | Pearson、Spearman、Bootstrap 区间 |
-| 条件线性贡献 | 控制其他输入后线性模型中还保留多少贡献 | 标准化岭回归，交叉验证选择正则化 |
+| 条件线性贡献 | 控制其他输入后线性模型中还保留多少贡献 | 标准化岭回归，5x5 训练折重复估计系数方向和标准差 |
 | 非线性预测贡献 | 打乱变量后验证集预测误差增加多少 | ExtraTrees + 验证集置换重要性 |
 
 最终不再使用四项等权综合排名作为唯一结论，而输出 `q1_feature_summary.csv` 的分层分类。
 
 ## 6. 稳定性分类规则
 
-- 稳定关键因素：边际、岭回归、置换重要性多数靠前，且 Bootstrap Top-3 频率高；
+- 稳定关键因素：边际、岭回归、置换重要性多数靠前，且边际相关 Bootstrap Top-3 频率高；
 - 结构性重要因素：边际线性弱，但非线性置换重要性或二次项模型显示贡献；
 - 次要因素：有一定贡献，但控制其他变量后或换样本口径后减弱；
 - 不稳定因素：方向、排名或缺失处理敏感；
@@ -53,17 +53,19 @@
 
 攻击角默认不得写为稳定关键因素，除非重跑结果同时支持边际、条件和非线性贡献。本次重跑结果将其标为 `unstable`。
 
+`q1_rank_stability.csv` 只表示 Pearson/Spearman 边际相关排名的 Bootstrap 稳定性，字段统一为 `marginal_*`，不得解释为四类方法的综合稳定性。
+
 ## 7. 补充诊断
 
-- 球速/杆头速度重叠：比较仅球速、仅杆头速度、两者同时使用的模型性能。
+- 球速/杆头速度重叠：在 669 条共同非缺失样本、同一 5x5 CV 折上比较仅球速、仅杆头速度、两者同时使用的模型性能，并保存每折配对误差。
 - 发射角非线性：比较发射角线性项模型和二次项模型，并估计样本内经验最优发射角。
 - 异常值敏感性：比较原始修正样本、1% 缩尾、仅目标变量截断、多变量联合截断，并记录删除比例。
 
 ## 8. 产物
 
-主要表格：`q1_feature_summary.csv`、`q1_correlation_confidence_intervals.csv`、`q1_ridge_coefficients.csv`、`q1_permutation_importance.csv`、`q1_group_importance.csv`、`q1_speed_overlap_models.csv`、`q1_launch_angle_quadratic.csv`。
+主要表格：`q1_feature_summary.csv`、`q1_correlation_confidence_intervals.csv`、`q1_ridge_coefficients.csv`、`q1_permutation_importance.csv`、`q1_group_importance.csv`、`q1_speed_overlap_models.csv`、`q1_speed_overlap_fold_scores.csv`、`q1_launch_angle_quadratic.csv`。
 
-主要图：Pearson/Spearman 热力图、前四变量关系图、原始重要性对比图、排名稳定性图、分组重要性图、敏感性比较图。每张图均保存同名生图 CSV 和 `.meta.json`。
+主要图：Pearson/Spearman 热力图、前四变量关系图、原始重要性对比图、边际排名稳定性图、分组重要性图、敏感性比较图。每张图均保存同名生图 CSV 和 `.meta.json`。
 
 ## 9. 备用方案与停止条件
 

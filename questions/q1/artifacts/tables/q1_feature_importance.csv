@@ -1,10 +1,10 @@
-feature,feature_label,pearson,spearman,ridge_coef,permutation_importance,pearson_rank,spearman_rank,ridge_rank,permutation_rank,pearson_score,spearman_score,ridge_score,permutation_score,aggregate_score,final_rank,rank_interval,top3_frequency,top5_frequency,direction,stability
-ball_speed_mph,Ball speed,0.7579103026,0.776022859843,42.2541980791,37.6259510533,1,1,1,1,1,1,1,1,1,1,1-1,1,1,positive,stable_key
-club_speed_mph,Club speed,0.581347382095,0.589009934919,-4.54519705451,0.619704307488,2,2,3,6,0.875,0.875,0.75,0.375,0.8125,2,2-2,1,1,positive,stable_key
-attack_angle_deg,Attack angle,0.156081000238,0.20633818305,-2.73441993496,0.0875768931329,3,3,5,9,0.75,0.75,0.5,0,0.625,3,3-5,0.835,0.978,positive,stable_key
-launch_angle_deg,Launch angle,0.0859263438619,0.0254049083667,20.7545161298,19.6542940845,6,9,2,2,0.375,0,0.875,0.875,0.625,3,4-9,0.005,0.133,weak,secondary
-spin_axis_deg,Spin axis,0.119205450546,0.118247693454,3.54691649562,2.4194343807,4,5,4,4,0.625,0.5,0.625,0.625,0.625,3,3-8,0.076,0.762,positive,secondary
-sidespin_rpm,Sidespin,-0.100398275981,-0.140975766456,-1.8515502739,0.603279796103,5,4,8,7,0.5,0.625,0.125,0.25,0.375,6,3-7,0.066,0.842,negative,secondary
-backspin_rpm,Backspin,0.0580283718997,0.0933009427301,2.155544193,4.36806486027,7,6,7,3,0.25,0.375,0.25,0.75,0.3125,7,4-9,0.017,0.221,weak,weak
-launch_direction_deg,Launch direction,0.0156307026994,0.061532647206,2.33139792569,0.180523341478,8,7,6,8,0.125,0.25,0.375,0.125,0.1875,8,5-9,0.001,0.043,weak,weak
-spin_rate_rpm,Spin rate,0.0087804338808,0.0532459083516,0.475423393603,1.82658108252,9,8,9,5,0,0.125,0,0.5,0.0625,9,6-9,0,0.021,weak,weak
+feature,feature_label,pearson,spearman,ridge_coef,permutation_importance,pearson_rank,spearman_rank,ridge_rank,permutation_rank,pearson_score,spearman_score,ridge_score,permutation_score,aggregate_score,final_rank,marginal_rank_interval,marginal_top3_frequency,marginal_top5_frequency,stability_scope,direction,stability,deprecated,not_for_final_conclusion
+ball_speed_mph,Ball speed,0.7579103026,0.776022859843,42.3606807486,37.6259510533,1,1,1,1,1,1,1,1,1,1,1-1,1,1,marginal_correlation_bootstrap,positive,stable_key,True,True
+club_speed_mph,Club speed,0.581347382095,0.589009934919,-4.63922316434,0.619704307488,2,2,3,6,0.875,0.875,0.75,0.375,0.8125,2,2-2,1,1,marginal_correlation_bootstrap,positive,stable_key,True,True
+attack_angle_deg,Attack angle,0.156081000238,0.20633818305,-2.75656354186,0.0875768931329,3,3,5,9,0.75,0.75,0.5,0,0.625,3,3-5,0.835,0.978,marginal_correlation_bootstrap,positive,stable_key,True,True
+launch_angle_deg,Launch angle,0.0859263438619,0.0254049083667,20.7809797638,19.6542940845,6,9,2,2,0.375,0,0.875,0.875,0.625,3,4-9,0.005,0.133,marginal_correlation_bootstrap,weak,secondary,True,True
+spin_axis_deg,Spin axis,0.119205450546,0.118247693454,3.53855962846,2.4194343807,4,5,4,4,0.625,0.5,0.625,0.625,0.625,3,3-8,0.076,0.762,marginal_correlation_bootstrap,positive,secondary,True,True
+sidespin_rpm,Sidespin,-0.100398275981,-0.140975766456,-1.83710989711,0.603279796103,5,4,8,7,0.5,0.625,0.125,0.25,0.375,6,3-7,0.066,0.842,marginal_correlation_bootstrap,negative,secondary,True,True
+backspin_rpm,Backspin,0.0580283718997,0.0933009427301,2.15203761698,4.36806486027,7,6,7,3,0.25,0.375,0.25,0.75,0.3125,7,4-9,0.017,0.221,marginal_correlation_bootstrap,weak,weak,True,True
+launch_direction_deg,Launch direction,0.0156307026994,0.061532647206,2.34766942556,0.180523341478,8,7,6,8,0.125,0.25,0.375,0.125,0.1875,8,5-9,0.001,0.043,marginal_correlation_bootstrap,weak,weak,True,True
+spin_rate_rpm,Spin rate,0.0087804338808,0.0532459083516,0.474624896653,1.82658108252,9,8,9,5,0,0.125,0,0.5,0.0625,9,6-9,0,0.021,marginal_correlation_bootstrap,weak,weak,True,True

@@ -8,15 +8,15 @@ backspin_rpm,Backspin,marginal_score,0.0756646573149
 launch_angle_deg,Launch angle,marginal_score,0.0556656261143
 launch_direction_deg,Launch direction,marginal_score,0.0385816749527
 spin_rate_rpm,Spin rate,marginal_score,0.0310131711162
-ball_speed_mph,Ball speed,abs_ridge_coef,42.2541980791
-club_speed_mph,Club speed,abs_ridge_coef,4.54519705451
-attack_angle_deg,Attack angle,abs_ridge_coef,2.73441993496
-sidespin_rpm,Sidespin,abs_ridge_coef,1.8515502739
-spin_axis_deg,Spin axis,abs_ridge_coef,3.54691649562
-backspin_rpm,Backspin,abs_ridge_coef,2.155544193
-launch_angle_deg,Launch angle,abs_ridge_coef,20.7545161298
-launch_direction_deg,Launch direction,abs_ridge_coef,2.33139792569
-spin_rate_rpm,Spin rate,abs_ridge_coef,0.475423393603
+ball_speed_mph,Ball speed,abs_ridge_coef,42.3606807486
+club_speed_mph,Club speed,abs_ridge_coef,4.63922316434
+attack_angle_deg,Attack angle,abs_ridge_coef,2.75656354186
+sidespin_rpm,Sidespin,abs_ridge_coef,1.83710989711
+spin_axis_deg,Spin axis,abs_ridge_coef,3.53855962846
+backspin_rpm,Backspin,abs_ridge_coef,2.15203761698
+launch_angle_deg,Launch angle,abs_ridge_coef,20.7809797638
+launch_direction_deg,Launch direction,abs_ridge_coef,2.34766942556
+spin_rate_rpm,Spin rate,abs_ridge_coef,0.474624896653
 ball_speed_mph,Ball speed,permutation_importance,37.6259510533
 club_speed_mph,Club speed,permutation_importance,0.619704307488
 attack_angle_deg,Attack angle,permutation_importance,0.0875768931329

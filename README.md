@@ -4,7 +4,7 @@
 - 小问数量：3
 - 初始化时间：2026-07-12T16:10:49+08:00
 - 文档语言：zh-CN
-- 当前状态：`q1_review1_done`
+- 当前状态：`q1_review2_done`
 
 ## 项目目标
 
@@ -50,7 +50,7 @@ tests/                    基础测试
 
 | 小问 | 状态 | 主要目标 | 入口 |
 |---|---|---|---|
-| q1 | done | review1 整改完成：异常零值修正、分层因素解释、真实数值验证与完整复现 | `python questions/q1/scripts/pipeline.py --config configs/default.yaml` |
+| q1 | done | review2 整改完成：S3 样本口径、速度重叠同样本配对 CV、分组 block permutation、边际稳定性字段和完整复现 | `python questions/q1/scripts/pipeline.py --config configs/default.yaml` |
 | q2 | planned | 监督预测、三维 ODE 轨迹建模与典型记录误差分析 | `python questions/q2/scripts/pipeline.py --dry-run` |
 | q3 | planned | 以 200 yd 目标为约束的最优击球参数搜索与轨迹绘制 | `python questions/q3/scripts/pipeline.py --dry-run` |
 
@@ -63,4 +63,4 @@ python questions/q1/scripts/pipeline.py --config configs/default.yaml
 python questions/q1/scripts/validate.py --config configs/default.yaml
 ```
 
-第一问已修正 `record_id=225,226,308` 中杆头速度和攻击角的异常 0 值。最终解释以 `questions/q1/artifacts/tables/q1_feature_summary.csv` 为准，不再用单一等权综合排名替代边际关联、条件线性贡献和非线性预测贡献。
+第一问已修正 `record_id=225,226,308` 中杆头速度和攻击角的异常 0 值。最终解释以 `questions/q1/artifacts/tables/q1_feature_summary.csv` 为准，不再用单一等权综合排名替代边际关联、条件线性贡献和非线性预测贡献；旧 `q1_feature_ranking.csv` 已标记为弃用且不得用于最终结论。

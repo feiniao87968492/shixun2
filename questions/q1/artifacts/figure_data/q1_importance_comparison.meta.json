@@ -2,7 +2,7 @@
   "stem": "q1_importance_comparison",
   "title": "Legacy method score comparison",
   "source_script": "questions/q1/scripts/visualize.py",
-  "generated_at": "2026-07-12T12:26:09.039780+00:00",
+  "generated_at": "2026-07-12T13:44:25.649618+00:00",
   "rows": 36,
   "columns": [
     "feature",

@@ -1,10 +1,10 @@
-feature,feature_label,pearson,spearman,marginal_score,marginal_rank,ridge_coef,ridge_abs_rank,permutation_importance,permutation_importance_std,permutation_rank,rank_interval,top3_frequency,top5_frequency,stability_category,final_interpretation
-ball_speed_mph,Ball speed,0.7579103026,0.776022859843,0.766966581221,1,42.2541980791,1,37.6259510533,1.82248590562,1,1-1,1,1,stable_key,最稳定的首要因素，边际关联、条件贡献和非线性贡献均靠前。
-club_speed_mph,Club speed,0.581347382095,0.589009934919,0.585178658507,2,-4.54519705451,3,0.619704307488,0.352257146294,6,2-2,1,1,secondary,边际关联较强，但与球速存在信息重叠，控制球速后额外贡献下降。
-attack_angle_deg,Attack angle,0.156081000238,0.20633818305,0.181209591644,3,-2.73441993496,5,0.0875768931329,0.0818879001076,9,3-5,0.835,0.978,unstable,弱边际正相关，控制其他变量后独立贡献有限且方向/排名不稳定。
-sidespin_rpm,Sidespin,-0.100398275981,-0.140975766456,0.120687021219,4,-1.8515502739,8,0.603279796103,0.132051320897,7,3-7,0.066,0.842,weak,贡献取决于指标口径和模型类型，按分层结果解释。
-spin_axis_deg,Spin axis,0.119205450546,0.118247693454,0.118726572,5,3.54691649562,4,2.4194343807,0.536625444309,4,3-8,0.076,0.762,unstable,贡献取决于指标口径和模型类型，按分层结果解释。
-backspin_rpm,Backspin,0.0580283718997,0.0933009427301,0.0756646573149,6,2.155544193,7,4.36806486027,0.673015179085,3,4-9,0.017,0.221,structural_nonlinear,贡献取决于指标口径和模型类型，按分层结果解释。
-launch_angle_deg,Launch angle,0.0859263438619,0.0254049083667,0.0556656261143,7,20.7545161298,2,19.6542940845,1.91004547604,2,4-9,0.005,0.133,structural_nonlinear,线性边际关联较弱，但条件模型和非线性模型显示结构性贡献。
-launch_direction_deg,Launch direction,0.0156307026994,0.061532647206,0.0385816749527,8,2.33139792569,6,0.180523341478,0.0705170732516,8,5-9,0.001,0.043,weak,贡献取决于指标口径和模型类型，按分层结果解释。
-spin_rate_rpm,Spin rate,0.0087804338808,0.0532459083516,0.0310131711162,9,0.475423393603,9,1.82658108252,0.305580746659,5,6-9,0,0.021,weak,贡献取决于指标口径和模型类型，按分层结果解释。
+feature,feature_label,pearson,spearman,marginal_score,marginal_rank,ridge_coef,ridge_abs_rank,permutation_importance,permutation_importance_std,permutation_rank,marginal_rank_interval,marginal_top3_frequency,marginal_top5_frequency,stability_scope,stability_category,final_interpretation
+ball_speed_mph,Ball speed,0.7579103026,0.776022859843,0.766966581221,1,42.3606807486,1,37.6259510533,1.82248590562,1,1-1,1,1,marginal_correlation_bootstrap,stable_key,最稳定的首要因素，边际关联、条件贡献和非线性贡献均靠前。
+club_speed_mph,Club speed,0.581347382095,0.589009934919,0.585178658507,2,-4.63922316434,3,0.619704307488,0.352257146294,6,2-2,1,1,marginal_correlation_bootstrap,secondary,边际关联较强，但与球速存在信息重叠，控制球速后额外贡献下降。
+attack_angle_deg,Attack angle,0.156081000238,0.20633818305,0.181209591644,3,-2.75656354186,5,0.0875768931329,0.0818879001076,9,3-5,0.835,0.978,marginal_correlation_bootstrap,unstable,弱边际正相关，控制其他变量后独立贡献有限且方向/排名不稳定。
+sidespin_rpm,Sidespin,-0.100398275981,-0.140975766456,0.120687021219,4,-1.83710989711,8,0.603279796103,0.132051320897,7,3-7,0.066,0.842,marginal_correlation_bootstrap,weak,贡献取决于指标口径和模型类型，按分层结果解释。
+spin_axis_deg,Spin axis,0.119205450546,0.118247693454,0.118726572,5,3.53855962846,4,2.4194343807,0.536625444309,4,3-8,0.076,0.762,marginal_correlation_bootstrap,unstable,贡献取决于指标口径和模型类型，按分层结果解释。
+backspin_rpm,Backspin,0.0580283718997,0.0933009427301,0.0756646573149,6,2.15203761698,7,4.36806486027,0.673015179085,3,4-9,0.017,0.221,marginal_correlation_bootstrap,structural_nonlinear,贡献取决于指标口径和模型类型，按分层结果解释。
+launch_angle_deg,Launch angle,0.0859263438619,0.0254049083667,0.0556656261143,7,20.7809797638,2,19.6542940845,1.91004547604,2,4-9,0.005,0.133,marginal_correlation_bootstrap,structural_nonlinear,线性边际关联较弱，但条件模型和非线性模型显示结构性贡献。
+launch_direction_deg,Launch direction,0.0156307026994,0.061532647206,0.0385816749527,8,2.34766942556,6,0.180523341478,0.0705170732516,8,5-9,0.001,0.043,marginal_correlation_bootstrap,weak,贡献取决于指标口径和模型类型，按分层结果解释。
+spin_rate_rpm,Spin rate,0.0087804338808,0.0532459083516,0.0310131711162,9,0.474624896653,9,1.82658108252,0.305580746659,5,6-9,0,0.021,marginal_correlation_bootstrap,weak,贡献取决于指标口径和模型类型，按分层结果解释。
