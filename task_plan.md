@@ -25,6 +25,7 @@ Phase 18 - q3 task6 final robustness remediation
 - [x] Phase 15: q2 task3 recalibration and acceptance, committed and pushed.
 - [x] Phase 16: q2 task4 final ODE remediation, committed and pushed.
 - [x] Phase 17: q3 task5 inverse-design implementation, committed and pushed.
+- [x] Phase 18: q3 task6 final robustness remediation, committed and pushed.
 
 ## Phase 13: q2 task2 first stage
 
@@ -148,7 +149,7 @@ Phase 18 - q3 task6 final robustness remediation
 - [x] Regenerate q3 artifacts, figures, run metadata, and validation table.
 - [x] Update q3/root docs, evidence chain, figure/table registry, report, appendix, decision/risk logs, findings, devlog, and progress.
 - [x] Run q3 pipeline, q3 validation, task6 tests, task5 tests, full pytest, repo check, raw snapshot verify, diff check, and reproducibility checks.
-- [ ] Restore q3 status to `done`, stage with raw/PDF/Excel guard, commit, push, and verify remote SHA.
+- [x] Restore q3 status to `done`, stage with raw/PDF/Excel guard, commit, push, and verify remote SHA.
 
 ## Phase 18 RED/GREEN Result
 
@@ -169,6 +170,7 @@ Phase 18 - q3 task6 final robustness remediation
   - `python scripts\snapshot_raw.py --verify`
   - `git diff --check`
 - Reproducibility: major q3 CSV hash check passed after setting q3 ExtraTrees ensemble members to `n_jobs=1`.
+- Implementation commit: `42e61c7c841609146185b4f4577ab30e137477d3`, pushed to `origin/main` and verified by `git ls-remote`.
 
 ## Git Safety
 
