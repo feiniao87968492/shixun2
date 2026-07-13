@@ -2,8 +2,8 @@
   "stem": "q2_typical_trajectories_spin_factor_top",
   "title": "Q2 typical trajectories top view - spin_factor_lift",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-13T04:18:33.877397+00:00",
-  "rows": 945,
+  "generated_at": "2026-07-13T08:00:01.049438+00:00",
+  "rows": 434,
   "columns": [
     "sample_id",
     "target_group",

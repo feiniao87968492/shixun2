@@ -1,5 +1,19 @@
 # Development Log
 
+## 2026-07-13 - q2 task4 最终 ODE 整改
+
+- **目标**：完成 `docs/plans/task4.md`，统一 ODE carry 口径、修正优化器状态、纳入积分失败、验收第三问兼容 ODE。
+- **完成**：
+  - 新增 `carry_definition=forward_x`、局部优化参数和标定失败惩罚配置。
+  - 将标定目标、测试指标、典型误差、灵敏度和距离定义比较全部改为显式 forward-x 主口径。
+  - 将优化运行表扩展为真实 `optimizer_success/objective_finite/accepted` 状态，并记录初始/最终目标、终止信息、迭代数和函数评估数。
+  - 输出 per-model 标定失败样本表；选中参数在标定、完整训练集和测试集均无积分失败。
+  - 主 ODE 根据完整训练集目标自动选择为 `constant_lift`；`spin_factor_lift` 通过 16 个 q3 边界组合稳定性检查。
+  - metadata 路径统一为 POSIX 风格。
+- **关键结果**：constant_lift `C_D=0.238654,C_L=0.203952`，测试集 D_x carry RMSE=7.157 yd；spin_factor_lift `C_D=0.050059,k_L=0.151837`，测试集 D_x carry RMSE=30.530 yd；q3 边界最大飞行时间 8.611 s、最大最高点 93.551 yd、最大横向距离 152.335 yd。
+- **验证**：`python questions\q2\scripts\pipeline.py --config configs/default.yaml` 通过；`python questions\q2\scripts\validate.py --config configs/default.yaml` 通过 165 项检查；`python -m pytest tests\test_q2_task4_final_remediation.py -q` 7 passed；`python -m pytest tests\test_q2_task3_recalibration.py -q` 6 passed。
+- **性能决策**：真实 Powell 优化下，标定专用 `solver_max_step=0.05` 会导致完整 pipeline 超时；改为 calibration-only `solver_max_step=0.15`，最终测试和验证仍使用正式 ODE solver。
+
 ## 2026-07-13 - q2 task3 重标定与最终验收
 
 - **目标**：完成 `docs/plans/task3.md` 的第二问整改、重标定与最终验收，不进入 q3 实现。

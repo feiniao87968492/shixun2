@@ -2,7 +2,7 @@
   "stem": "q2_ode_model_comparison",
   "title": "Q2 ODE model comparison",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-13T04:18:20.716178+00:00",
+  "generated_at": "2026-07-13T07:59:47.501358+00:00",
   "rows": 4,
   "columns": [
     "model",

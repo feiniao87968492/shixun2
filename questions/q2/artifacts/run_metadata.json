@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-07-13T04:18:35.619588+00:00",
-  "git_commit": "0839ca3ead68f0561712861bf6f097fb22ab5714",
+  "timestamp": "2026-07-13T08:00:02.712809+00:00",
+  "git_commit": "07c7d7c00a34f87fb89c64d2d5b0c05026b8e99f",
   "python_version": "3.10.11",
   "package_versions": {
     "numpy": "2.2.6",
@@ -10,9 +10,9 @@
     "matplotlib": "3.10.8",
     "PyYAML": "6.0.3"
   },
-  "config_path": "configs\\default.yaml",
-  "config_sha256": "b7cea4e83150dc7e4700fe65743355355aa79d91493fc1342463da0308c73786",
-  "data_path": "data\\processed\\golf_shots_clean.csv",
+  "config_path": "configs/default.yaml",
+  "config_sha256": "c580a790e43edf57710ecdd153e8ef66458180f8612ef740f4d26fbf42b00fae",
+  "data_path": "data/processed/golf_shots_clean.csv",
   "data_sha256": "1b0546e153d3676f0164efe5846124c96b93553545717dcd6daa619b08567bcd",
   "train_ids_sha256": "ed5db0c042125bd2cebde098505d9c916b9c14d03dc859877bf57e5ba1ed87b5",
   "test_ids_sha256": "1fcf5dc5d2c862a1c0388267527d37d9f8e2875fe9761b49dd82d268d71fc674",
@@ -80,8 +80,16 @@
     656,
     698
   ],
+  "carry_definition": "forward_x",
   "best_fit_ode_model": "constant_lift",
+  "best_fit_selection_rule": "minimum_full_train_objective_among_accepted_models",
+  "full_train_objectives": {
+    "drag": 1.8767170050358932,
+    "constant_lift": 0.1339066021311711,
+    "spin_factor_lift": 1.3161158555968424
+  },
   "q3_compatible_ode_model": "spin_factor_lift",
+  "q3_compatible_boundary_checks_passed": true,
   "train_n": 514,
   "test_n": 221,
   "ode_train_n": 514,
@@ -91,132 +99,135 @@
     "carry_distance_yd:launch_state_model/hist_gradient_boosting"
   ],
   "preliminary_drag_cd": 0.05,
-  "constant_lift_cd": 0.26999999999999996,
-  "constant_lift_cl": 0.18,
-  "spin_factor_lift_cd": 0.48999999999999994,
-  "spin_factor_lift_k_l": 1.6,
+  "constant_lift_cd": 0.23865389879466456,
+  "constant_lift_cl": 0.20395234754494648,
+  "spin_factor_lift_cd": 0.05005882982069819,
+  "spin_factor_lift_k_l": 0.1518366675348651,
   "side_spin_sign": -1,
   "physics_source": "题面 raw OCR 第 9 行；docs/references.md 物理常数表",
   "initial_height_m": 0.01,
   "initial_height_type": "numerical_convention",
   "optimization_runs": {
-    "drag": "questions\\q2\\artifacts\\tables\\q2_drag_optimization_runs.csv",
-    "constant_lift": "questions\\q2\\artifacts\\tables\\q2_constant_lift_optimization_runs.csv",
-    "spin_factor_lift": "questions\\q2\\artifacts\\tables\\q2_spin_factor_optimization_runs.csv"
+    "drag": "questions/q2/artifacts/tables/q2_drag_optimization_runs.csv",
+    "constant_lift": "questions/q2/artifacts/tables/q2_constant_lift_optimization_runs.csv",
+    "spin_factor_lift": "questions/q2/artifacts/tables/q2_spin_factor_optimization_runs.csv"
   },
   "tables": {
-    "q2_data_split": "questions\\q2\\artifacts\\tables\\q2_data_split.csv",
-    "q2_spin_geometry_check": "questions\\q2\\artifacts\\tables\\q2_spin_geometry_check.csv",
-    "q2_supervised_metrics": "questions\\q2\\artifacts\\tables\\q2_supervised_metrics.csv",
-    "q2_supervised_cv_results": "questions\\q2\\artifacts\\tables\\q2_supervised_cv_results.csv",
-    "q2_supervised_predictions": "questions\\q2\\artifacts\\tables\\q2_supervised_predictions.csv",
-    "q2_supervised_bootstrap_ci": "questions\\q2\\artifacts\\tables\\q2_supervised_bootstrap_ci.csv",
-    "q2_supervised_error_groups": "questions\\q2\\artifacts\\tables\\q2_supervised_error_groups.csv",
-    "q2_supervised_repeated_split": "questions\\q2\\artifacts\\tables\\q2_supervised_repeated_split.csv",
-    "q2_drag_calibration_records": "questions\\q2\\artifacts\\tables\\q2_drag_calibration_records.csv",
-    "q2_lift_calibration_records": "questions\\q2\\artifacts\\tables\\q2_lift_calibration_records.csv",
-    "q2_ode_representative_records": "questions\\q2\\artifacts\\tables\\q2_ode_representative_records.csv",
-    "q2_ode_parameter_surface": "questions\\q2\\artifacts\\tables\\q2_ode_parameter_surface.csv",
-    "q2_drag_optimization_runs": "questions\\q2\\artifacts\\tables\\q2_drag_optimization_runs.csv",
-    "q2_constant_lift_optimization_runs": "questions\\q2\\artifacts\\tables\\q2_constant_lift_optimization_runs.csv",
-    "q2_spin_factor_optimization_runs": "questions\\q2\\artifacts\\tables\\q2_spin_factor_optimization_runs.csv",
-    "q2_ode_test_predictions": "questions\\q2\\artifacts\\tables\\q2_ode_test_predictions.csv",
-    "q2_ode_test_metrics": "questions\\q2\\artifacts\\tables\\q2_ode_test_metrics.csv",
-    "q2_ode_model_comparison": "questions\\q2\\artifacts\\tables\\q2_ode_model_comparison.csv",
-    "q2_ode_failures": "questions\\q2\\artifacts\\tables\\q2_ode_failures.csv",
-    "q2_carry_definition_comparison": "questions\\q2\\artifacts\\tables\\q2_carry_definition_comparison.csv",
-    "q2_typical_records": "questions\\q2\\artifacts\\tables\\q2_typical_records.csv",
-    "q2_ode_typical_errors": "questions\\q2\\artifacts\\tables\\q2_ode_typical_errors.csv",
-    "q2_typical_trajectories_constant_lift": "questions\\q2\\artifacts\\tables\\q2_typical_trajectories_constant_lift.csv",
-    "q2_typical_trajectories_spin_factor": "questions\\q2\\artifacts\\tables\\q2_typical_trajectories_spin_factor.csv",
-    "q2_typical_trajectories": "questions\\q2\\artifacts\\tables\\q2_typical_trajectories.csv",
-    "q2_ode_sensitivity": "questions\\q2\\artifacts\\tables\\q2_ode_sensitivity.csv",
-    "q2_ode_parameters": "questions\\q2\\artifacts\\tables\\q2_ode_parameters.csv",
-    "q2_ode_validation_checks": "questions\\q2\\artifacts\\tables\\q2_ode_validation_checks.csv"
+    "q2_data_split": "questions/q2/artifacts/tables/q2_data_split.csv",
+    "q2_spin_geometry_check": "questions/q2/artifacts/tables/q2_spin_geometry_check.csv",
+    "q2_supervised_metrics": "questions/q2/artifacts/tables/q2_supervised_metrics.csv",
+    "q2_supervised_cv_results": "questions/q2/artifacts/tables/q2_supervised_cv_results.csv",
+    "q2_supervised_predictions": "questions/q2/artifacts/tables/q2_supervised_predictions.csv",
+    "q2_supervised_bootstrap_ci": "questions/q2/artifacts/tables/q2_supervised_bootstrap_ci.csv",
+    "q2_supervised_error_groups": "questions/q2/artifacts/tables/q2_supervised_error_groups.csv",
+    "q2_supervised_repeated_split": "questions/q2/artifacts/tables/q2_supervised_repeated_split.csv",
+    "q2_drag_calibration_records": "questions/q2/artifacts/tables/q2_drag_calibration_records.csv",
+    "q2_lift_calibration_records": "questions/q2/artifacts/tables/q2_lift_calibration_records.csv",
+    "q2_ode_representative_records": "questions/q2/artifacts/tables/q2_ode_representative_records.csv",
+    "q2_ode_parameter_surface": "questions/q2/artifacts/tables/q2_ode_parameter_surface.csv",
+    "q2_drag_optimization_runs": "questions/q2/artifacts/tables/q2_drag_optimization_runs.csv",
+    "q2_constant_lift_optimization_runs": "questions/q2/artifacts/tables/q2_constant_lift_optimization_runs.csv",
+    "q2_spin_factor_optimization_runs": "questions/q2/artifacts/tables/q2_spin_factor_optimization_runs.csv",
+    "q2_ode_test_predictions": "questions/q2/artifacts/tables/q2_ode_test_predictions.csv",
+    "q2_ode_test_metrics": "questions/q2/artifacts/tables/q2_ode_test_metrics.csv",
+    "q2_ode_model_comparison": "questions/q2/artifacts/tables/q2_ode_model_comparison.csv",
+    "q2_ode_failures": "questions/q2/artifacts/tables/q2_ode_failures.csv",
+    "q2_carry_definition_comparison": "questions/q2/artifacts/tables/q2_carry_definition_comparison.csv",
+    "q2_drag_calibration_failures": "questions/q2/artifacts/tables/q2_drag_calibration_failures.csv",
+    "q2_constant_lift_calibration_failures": "questions/q2/artifacts/tables/q2_constant_lift_calibration_failures.csv",
+    "q2_spin_factor_calibration_failures": "questions/q2/artifacts/tables/q2_spin_factor_calibration_failures.csv",
+    "q2_typical_records": "questions/q2/artifacts/tables/q2_typical_records.csv",
+    "q2_ode_typical_errors": "questions/q2/artifacts/tables/q2_ode_typical_errors.csv",
+    "q2_typical_trajectories_constant_lift": "questions/q2/artifacts/tables/q2_typical_trajectories_constant_lift.csv",
+    "q2_typical_trajectories_spin_factor": "questions/q2/artifacts/tables/q2_typical_trajectories_spin_factor.csv",
+    "q2_typical_trajectories": "questions/q2/artifacts/tables/q2_typical_trajectories.csv",
+    "q2_ode_sensitivity": "questions/q2/artifacts/tables/q2_ode_sensitivity.csv",
+    "q2_ode_parameters": "questions/q2/artifacts/tables/q2_ode_parameters.csv",
+    "q2_ode_validation_checks": "questions/q2/artifacts/tables/q2_ode_validation_checks.csv"
   },
   "models": {
-    "q2_ode_parameters": "questions\\q2\\artifacts\\models\\q2_ode_parameters.json"
+    "q2_ode_parameters": "questions/q2/artifacts/models/q2_ode_parameters.json"
   },
   "figures": {
     "q2_prediction_scatter_carry": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_prediction_scatter_carry.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_prediction_scatter_carry.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_prediction_scatter_carry.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_prediction_scatter_carry.png",
+      "data": "questions/q2/artifacts/figure_data/q2_prediction_scatter_carry.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_prediction_scatter_carry.meta.json"
     },
     "q2_residuals_carry": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_residuals_carry.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_residuals_carry.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_residuals_carry.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_residuals_carry.png",
+      "data": "questions/q2/artifacts/figure_data/q2_residuals_carry.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_residuals_carry.meta.json"
     },
     "q2_prediction_scatter_apex": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_prediction_scatter_apex.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_prediction_scatter_apex.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_prediction_scatter_apex.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_prediction_scatter_apex.png",
+      "data": "questions/q2/artifacts/figure_data/q2_prediction_scatter_apex.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_prediction_scatter_apex.meta.json"
     },
     "q2_residuals_apex": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_residuals_apex.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_residuals_apex.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_residuals_apex.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_residuals_apex.png",
+      "data": "questions/q2/artifacts/figure_data/q2_residuals_apex.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_residuals_apex.meta.json"
     },
     "q2_ode_model_comparison": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_ode_model_comparison.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_ode_model_comparison.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_ode_model_comparison.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_ode_model_comparison.png",
+      "data": "questions/q2/artifacts/figure_data/q2_ode_model_comparison.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_ode_model_comparison.meta.json"
     },
     "q2_ode_parameter_surface": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_ode_parameter_surface.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_ode_parameter_surface.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_ode_parameter_surface.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_ode_parameter_surface.png",
+      "data": "questions/q2/artifacts/figure_data/q2_ode_parameter_surface.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_ode_parameter_surface.meta.json"
     },
     "q2_typical_trajectories_3d": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_typical_trajectories_3d.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_3d.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_3d.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_typical_trajectories_3d.png",
+      "data": "questions/q2/artifacts/figure_data/q2_typical_trajectories_3d.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_typical_trajectories_3d.meta.json"
     },
     "q2_typical_trajectories_side": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_typical_trajectories_side.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_side.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_side.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_typical_trajectories_side.png",
+      "data": "questions/q2/artifacts/figure_data/q2_typical_trajectories_side.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_typical_trajectories_side.meta.json"
     },
     "q2_typical_trajectories_top": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_typical_trajectories_top.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_top.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_top.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_typical_trajectories_top.png",
+      "data": "questions/q2/artifacts/figure_data/q2_typical_trajectories_top.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_typical_trajectories_top.meta.json"
     },
     "q2_typical_trajectories_constant_lift_3d": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_typical_trajectories_constant_lift_3d.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_constant_lift_3d.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_constant_lift_3d.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_typical_trajectories_constant_lift_3d.png",
+      "data": "questions/q2/artifacts/figure_data/q2_typical_trajectories_constant_lift_3d.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_typical_trajectories_constant_lift_3d.meta.json"
     },
     "q2_typical_trajectories_constant_lift_side": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_typical_trajectories_constant_lift_side.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_constant_lift_side.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_constant_lift_side.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_typical_trajectories_constant_lift_side.png",
+      "data": "questions/q2/artifacts/figure_data/q2_typical_trajectories_constant_lift_side.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_typical_trajectories_constant_lift_side.meta.json"
     },
     "q2_typical_trajectories_constant_lift_top": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_typical_trajectories_constant_lift_top.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_constant_lift_top.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_constant_lift_top.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_typical_trajectories_constant_lift_top.png",
+      "data": "questions/q2/artifacts/figure_data/q2_typical_trajectories_constant_lift_top.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_typical_trajectories_constant_lift_top.meta.json"
     },
     "q2_typical_trajectories_spin_factor_3d": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_typical_trajectories_spin_factor_3d.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_spin_factor_3d.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_spin_factor_3d.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_typical_trajectories_spin_factor_3d.png",
+      "data": "questions/q2/artifacts/figure_data/q2_typical_trajectories_spin_factor_3d.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_typical_trajectories_spin_factor_3d.meta.json"
     },
     "q2_typical_trajectories_spin_factor_side": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_typical_trajectories_spin_factor_side.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_spin_factor_side.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_spin_factor_side.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_typical_trajectories_spin_factor_side.png",
+      "data": "questions/q2/artifacts/figure_data/q2_typical_trajectories_spin_factor_side.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_typical_trajectories_spin_factor_side.meta.json"
     },
     "q2_typical_trajectories_spin_factor_top": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_typical_trajectories_spin_factor_top.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_spin_factor_top.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_typical_trajectories_spin_factor_top.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_typical_trajectories_spin_factor_top.png",
+      "data": "questions/q2/artifacts/figure_data/q2_typical_trajectories_spin_factor_top.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_typical_trajectories_spin_factor_top.meta.json"
     },
     "q2_ode_sensitivity": {
-      "figure": "questions\\q2\\artifacts\\figures\\q2_ode_sensitivity.png",
-      "data": "questions\\q2\\artifacts\\figure_data\\q2_ode_sensitivity.csv",
-      "metadata": "questions\\q2\\artifacts\\figure_data\\q2_ode_sensitivity.meta.json"
+      "figure": "questions/q2/artifacts/figures/q2_ode_sensitivity.png",
+      "data": "questions/q2/artifacts/figure_data/q2_ode_sensitivity.csv",
+      "metadata": "questions/q2/artifacts/figure_data/q2_ode_sensitivity.meta.json"
     }
   }
 }

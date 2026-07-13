@@ -12,7 +12,7 @@
 - 监督预测模型：预测 `carry_distance_yd` 和 `apex_height_yd`，固定 70%/30% 划分，训练集内选模，测试集只报告最终指标。
 - 三维 ODE 模型：实现 `vacuum`、`drag`、`constant_lift`、`spin_factor_lift`，使用训练集代表样本标定参数，并在固定测试集评估。
 
-## task3 后关键结果
+## task4 后关键结果
 
 - 固定划分：train=514，test=221，random_seed=2026。
 - 监督模型：两个目标均由 `launch_state_model / hist_gradient_boosting` 在训练集 CV 中胜出。
@@ -22,18 +22,19 @@
 - ODE 标定：
   - drag 代表样本 36 条，粗网格 10 点。
   - lift 代表样本 24 条，粗网格 6x6。
-  - 参数经粗网格 + 有界局部优化获得。
+  - 参数经粗网格 + 有界局部优化获得；局部优化真实记录 `optimizer_success/objective_finite/accepted`，选中运行均无标定和全训练集积分失败。
 - ODE 参数：
   - drag: `C_D=0.05`，边界解，仅作 drag-only 基线。
-  - constant_lift: `C_D=0.27, C_L=0.18`。
-  - spin_factor_lift: `C_D=0.49, k_L=1.6`。
-- ODE 测试集 carry RMSE：
-  - vacuum=32.233 yd
-  - drag=36.465 yd
-  - constant_lift=16.506 yd
-  - spin_factor_lift=31.996 yd
-- 第二问主轨迹使用 `constant_lift`；第三问兼容接口单独输出 `spin_factor_lift`。
-- 最终采用前向距离 `D_x=x_land` 作为主 carry 定义。
+  - constant_lift: `C_D=0.238654, C_L=0.203952`。
+  - spin_factor_lift: `C_D=0.050059, k_L=0.151837`。
+- 主 carry 定义固定为 `forward_x`，即前向距离 `D_x=x_land`。
+- ODE 测试集 D_x carry RMSE：
+  - vacuum=32.502 yd
+  - drag=36.830 yd
+  - constant_lift=7.157 yd
+  - spin_factor_lift=30.530 yd
+- 第二问 best-fit ODE 由完整训练集目标自动确定为 `constant_lift`；第三问兼容接口单独输出 `spin_factor_lift`。
+- `spin_factor_lift` 通过 16 个边界组合稳定性检查，最大飞行时间 8.611 s、最大最高点 93.551 yd、最大横向距离 152.335 yd。
 
 ## 主要产物
 
@@ -49,5 +50,6 @@
 ```bash
 python questions/q2/scripts/pipeline.py --config configs/default.yaml
 python questions/q2/scripts/validate.py --config configs/default.yaml
+python -m pytest tests/test_q2_task4_final_remediation.py -q
 python -m pytest tests/test_q2_task3_recalibration.py -q
 ```

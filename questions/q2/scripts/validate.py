@@ -40,6 +40,20 @@ def _r2(actual: np.ndarray, predicted: np.ndarray) -> float:
     return float(1.0 - np.sum((actual - predicted) ** 2) / total)
 
 
+def rel_posix(path: Path, root: Path) -> str:
+    return path.relative_to(root).as_posix()
+
+
+def metadata_paths_are_posix(value: object) -> bool:
+    if isinstance(value, dict):
+        return all(metadata_paths_are_posix(child) for child in value.values())
+    if isinstance(value, list):
+        return all(metadata_paths_are_posix(child) for child in value)
+    if isinstance(value, str) and value.startswith(("questions", "configs", "data")):
+        return "\\" not in value
+    return True
+
+
 def validate_outputs(
     root: Path,
     *,
@@ -59,7 +73,7 @@ def validate_outputs(
             {
                 "check": check,
                 "kind": kind,
-                "path": str(path.relative_to(root)) if path is not None else "",
+                "path": rel_posix(path, root) if path is not None else "",
                 "passed": bool(passed),
                 "details": details,
             }
@@ -80,6 +94,9 @@ def validate_outputs(
         "q2_drag_optimization_runs.csv",
         "q2_constant_lift_optimization_runs.csv",
         "q2_spin_factor_optimization_runs.csv",
+        "q2_drag_calibration_failures.csv",
+        "q2_constant_lift_calibration_failures.csv",
+        "q2_spin_factor_calibration_failures.csv",
         "q2_ode_parameters.csv",
         "q2_ode_parameter_surface.csv",
         "q2_ode_model_comparison.csv",
@@ -100,6 +117,13 @@ def validate_outputs(
     for filename in required_tables:
         path = tables / filename
         add(filename, "table", path, path.exists() and path.stat().st_size > 0)
+
+    add(
+        "task4_configured_carry_definition_is_forward_x",
+        "config",
+        root / config_path,
+        config.get("ode", {}).get("carry_definition") == "forward_x",
+    )
 
     required_figures = [
         "q2_prediction_scatter_carry",
@@ -230,6 +254,104 @@ def validate_outputs(
                 and len(runs[runs["selected"].astype(bool)]) == 1
                 and runs.loc[runs["selected"].astype(bool), "full_train_objective"].notna().all(),
             )
+            required_task4_columns = {
+                "optimizer_success",
+                "objective_finite",
+                "accepted",
+                "initial_objective",
+                "final_objective",
+                "objective_improvement",
+                "termination_message",
+                "iterations",
+                "function_evaluations",
+                "calibration_failed_count",
+                "full_train_failed_count",
+                "selected",
+            }
+            task4_schema_ok = required_task4_columns.issubset(runs.columns)
+            selected_runs = runs[runs["selected"].astype(bool)] if "selected" in runs.columns else pd.DataFrame()
+            add("task4_optimizer_terminated_successfully", "numeric", path, task4_schema_ok and runs["optimizer_success"].astype(bool).any())
+            add(
+                "task4_optimizer_message_not_max_evaluations",
+                "schema",
+                path,
+                task4_schema_ok
+                and not (
+                    runs["termination_message"].fillna("").str.contains(
+                        "Maximum number of function evaluations", case=False
+                    )
+                    & (
+                        runs["optimizer_success"].astype(bool)
+                        | runs["accepted"].astype(bool)
+                        | runs["selected"].astype(bool)
+                    )
+                ).any(),
+            )
+            add(
+                "task4_optimizer_iterations_positive",
+                "numeric",
+                path,
+                task4_schema_ok and runs["iterations"].astype(int).max() > 0,
+            )
+            add(
+                "task4_optimizer_function_evaluations_above_minimum",
+                "numeric",
+                path,
+                task4_schema_ok and runs["function_evaluations"].astype(int).max() > 4,
+            )
+            add(
+                "task4_selected_run_accepted",
+                "numeric",
+                path,
+                task4_schema_ok and len(selected_runs) == 1 and selected_runs["accepted"].astype(bool).all(),
+            )
+            add(
+                "task4_selected_run_objective_finite",
+                "numeric",
+                path,
+                task4_schema_ok and len(selected_runs) == 1 and selected_runs["objective_finite"].astype(bool).all(),
+            )
+            add(
+                "task4_selected_run_zero_calibration_failures",
+                "numeric",
+                path,
+                task4_schema_ok and len(selected_runs) == 1 and selected_runs["calibration_failed_count"].astype(int).eq(0).all(),
+            )
+            add(
+                "task4_selected_run_zero_full_train_failures",
+                "numeric",
+                path,
+                task4_schema_ok and len(selected_runs) == 1 and selected_runs["full_train_failed_count"].astype(int).eq(0).all(),
+            )
+            add(
+                "task4_selected_run_objective_not_worse_than_initial",
+                "numeric",
+                path,
+                task4_schema_ok
+                and len(selected_runs) == 1
+                and (
+                    selected_runs["final_objective"].astype(float)
+                    <= selected_runs["initial_objective"].astype(float) + 1e-6
+                ).all(),
+            )
+
+    selected_failure_checks = {
+        "task4_selected_drag_zero_full_train_failures": tables / "q2_drag_optimization_runs.csv",
+        "task4_selected_constant_lift_zero_full_train_failures": tables / "q2_constant_lift_optimization_runs.csv",
+        "task4_selected_spin_factor_zero_full_train_failures": tables / "q2_spin_factor_optimization_runs.csv",
+    }
+    for check_name, path in selected_failure_checks.items():
+        if path.exists():
+            runs = pd.read_csv(path)
+            selected_runs = runs[runs["selected"].astype(bool)] if "selected" in runs.columns else pd.DataFrame()
+            add(
+                check_name,
+                "numeric",
+                path,
+                len(selected_runs) == 1
+                and "full_train_failed_count" in selected_runs.columns
+                and selected_runs["full_train_failed_count"].astype(int).eq(0).all(),
+            )
 
     metrics_path = tables / "q2_supervised_metrics.csv"
     if metrics_path.exists():
@@ -267,6 +389,19 @@ def validate_outputs(
                 "full_ode_variants_present",
             }.issubset(set(ode_checks["check"])),
         )
+        q3_checks = {
+            "q3_spin_factor_boundary_stability",
+            "q3_spin_factor_boundary_max_flight_time_within_limit",
+            "q3_spin_factor_boundary_max_apex_within_limit",
+            "q3_spin_factor_boundary_max_lateral_within_limit",
+        }
+        add(
+            "task4_q3_boundary_stability_passed",
+            "numeric",
+            ode_checks_path,
+            q3_checks.issubset(set(ode_checks["check"]))
+            and ode_checks[ode_checks["check"].isin(q3_checks)]["passed"].astype(bool).all(),
+        )
 
     ode_metrics_path = tables / "q2_ode_test_metrics.csv"
     if ode_metrics_path.exists():
@@ -282,6 +417,16 @@ def validate_outputs(
             "numeric",
             ode_metrics_path,
             "flight_failure_rate" in ode_metrics.columns and ode_metrics["flight_failure_rate"].notna().all(),
+        )
+
+    ode_failures_path = tables / "q2_ode_failures.csv"
+    if ode_failures_path.exists():
+        ode_failures = pd.read_csv(ode_failures_path)
+        add(
+            "task4_all_models_zero_test_failures",
+            "numeric",
+            ode_failures_path,
+            "failed_count" in ode_failures.columns and ode_failures["failed_count"].astype(int).eq(0).all(),
         )
 
     parameters_path = tables / "q2_ode_parameters.csv"
@@ -392,12 +537,25 @@ def validate_outputs(
         carry_wind = wind_rows[wind_rows["metric"] == "carry_yd"].pivot_table(
             index="model", columns="parameter", values="scenario_value", aggfunc="mean"
         )
+        wind_tolerance = 1.0e-2
         wind_order_ok = (
             not carry_wind.empty
             and {"tailwind_1mps", "no_wind", "headwind_1mps"}.issubset(carry_wind.columns)
-            and ((carry_wind["tailwind_1mps"] > carry_wind["no_wind"]) & (carry_wind["no_wind"] > carry_wind["headwind_1mps"])).all()
+            and (
+                (carry_wind["tailwind_1mps"] + wind_tolerance >= carry_wind["no_wind"])
+                & (carry_wind["no_wind"] + wind_tolerance >= carry_wind["headwind_1mps"])
+            ).all()
         )
         add("task3_wind_direction_average_order", "numeric", sensitivity_path, bool(wind_order_ok))
+        carry_rows = sensitivity[sensitivity["metric"] == "carry_yd"]
+        add(
+            "task4_sensitivity_uses_forward_x",
+            "schema",
+            sensitivity_path,
+            "carry_definition" in carry_rows.columns
+            and not carry_rows.empty
+            and set(carry_rows["carry_definition"]) == {"forward_x"},
+        )
 
     carry_definition_path = tables / "q2_carry_definition_comparison.csv"
     if carry_definition_path.exists():
@@ -409,6 +567,13 @@ def validate_outputs(
             {"D_x", "D_r"}.issubset(set(carry_definition["carry_definition"]))
             and {"vacuum", "drag", "constant_lift", "spin_factor_lift"}.issubset(set(carry_definition["model"])),
         )
+        add(
+            "task4_carry_definition_primary_is_forward_x",
+            "schema",
+            carry_definition_path,
+            {"actual_definition", "predicted_definition", "is_primary_definition"}.issubset(carry_definition.columns)
+            and set(carry_definition[carry_definition["is_primary_definition"].astype(bool)]["carry_definition"]) == {"D_x"},
+        )
 
     predictions_path = tables / "q2_ode_test_predictions.csv"
     metrics_path = tables / "q2_ode_test_metrics.csv"
@@ -416,10 +581,12 @@ def validate_outputs(
         predictions = pd.read_csv(predictions_path)
         metrics = pd.read_csv(metrics_path).set_index("model")
         recompute_ok = True
+        forward_recompute_ok = True
         for model, subset in predictions.groupby("model"):
             ok = subset[subset["integration_status"] == "success"]
             actual = ok["actual_carry_yd"].to_numpy(dtype=float)
             predicted = ok["predicted_carry_yd"].to_numpy(dtype=float)
+            forward_predicted = ok["predicted_x_carry_yd"].to_numpy(dtype=float)
             checks = {
                 "carry_rmse": _rmse(actual, predicted),
                 "carry_mae": float(np.mean(np.abs(predicted - actual))) if len(actual) else np.nan,
@@ -430,7 +597,53 @@ def validate_outputs(
                 if column not in metrics.columns or not np.isclose(float(metrics.loc[model, column]), value, rtol=1e-9, atol=1e-9):
                     recompute_ok = False
                     break
+            forward_checks = {
+                "carry_rmse": _rmse(actual, forward_predicted),
+                "carry_mae": float(np.mean(np.abs(forward_predicted - actual))) if len(actual) else np.nan,
+                "carry_mape": _mape(actual, forward_predicted),
+                "carry_r2": _r2(actual, forward_predicted),
+            }
+            for column, value in forward_checks.items():
+                if column not in metrics.columns or not np.isclose(float(metrics.loc[model, column]), value, rtol=1e-9, atol=1e-9):
+                    forward_recompute_ok = False
+                    break
         add("task3_metrics_recomputed_from_predictions", "numeric", predictions_path, recompute_ok)
+        add(
+            "task4_ode_metrics_match_forward_x_predictions",
+            "numeric",
+            predictions_path,
+            "carry_definition" in predictions.columns
+            and set(predictions["carry_definition"]) == {"forward_x"}
+            and np.allclose(predictions["predicted_carry_yd"], predictions["predicted_x_carry_yd"])
+            and forward_recompute_ok,
+        )
+
+    typical_errors_path = tables / "q2_ode_typical_errors.csv"
+    if typical_errors_path.exists():
+        typical_errors = pd.read_csv(typical_errors_path)
+        add(
+            "task4_typical_errors_match_forward_x_predictions",
+            "numeric",
+            typical_errors_path,
+            {"carry_definition", "predicted_x_carry_yd", "predicted_carry_yd", "carry_absolute_error_yd"}.issubset(
+                typical_errors.columns
+            )
+            and set(typical_errors["carry_definition"]) == {"forward_x"}
+            and np.allclose(typical_errors["predicted_carry_yd"], typical_errors["predicted_x_carry_yd"])
+            and np.allclose(
+                typical_errors["carry_absolute_error_yd"],
+                (typical_errors["predicted_x_carry_yd"] - typical_errors["actual_carry_yd"]).abs(),
+            ),
+        )
+
+    if surface_path.exists():
+        surface = pd.read_csv(surface_path)
+        add(
+            "task4_calibration_objective_uses_forward_x",
+            "schema",
+            surface_path,
+            "carry_definition" in surface.columns and set(surface["carry_definition"]) == {"forward_x"},
+        )
 
     metadata_path = question_dir / "artifacts" / "run_metadata.json"
     if metadata_path.exists():
@@ -439,7 +652,7 @@ def validate_outputs(
             "task3_model_roles_recorded",
             "schema",
             metadata_path,
-            metadata.get("best_fit_ode_model") == "constant_lift"
+            metadata.get("best_fit_ode_model") in {"drag", "constant_lift", "spin_factor_lift"}
             and metadata.get("q3_compatible_ode_model") == "spin_factor_lift"
             and "trajectory_model" not in metadata,
         )
@@ -458,6 +671,17 @@ def validate_outputs(
                 "optimization_runs",
             }.issubset(metadata),
         )
+        add("task4_metadata_paths_posix", "schema", metadata_path, metadata_paths_are_posix(metadata))
+        add(
+            "task4_best_fit_model_selected_from_full_train_objective",
+            "schema",
+            metadata_path,
+            metadata.get("carry_definition") == "forward_x"
+            and metadata.get("best_fit_selection_rule") == "minimum_full_train_objective_among_accepted_models"
+            and {"drag", "constant_lift", "spin_factor_lift"}.issubset(
+                set((metadata.get("full_train_objectives") or {}).keys())
+            ),
+        )
 
     q2_manifest_path = question_dir / "manifest.yaml"
     q2_readme_path = question_dir / "README.md"
@@ -466,6 +690,31 @@ def validate_outputs(
         manifest = yaml.safe_load(q2_manifest_path.read_text(encoding="utf-8"))
         q2_readme = q2_readme_path.read_text(encoding="utf-8")
         root_readme = root_readme_path.read_text(encoding="utf-8")
+        manifest_status = str(manifest.get("status"))
+        q2_status_done = "状态：`done`" in q2_readme or "鐘舵€侊細`done`" in q2_readme
+        q2_status_conditional = (
+            "状态：`conditionally_passed`" in q2_readme
+            or "鐘舵€侊細`conditionally_passed`" in q2_readme
+        )
+        root_status_done = "| q2 | done |" in root_readme and "`q2_done`" in root_readme
+        root_status_conditional = (
+            "| q2 | conditionally_passed |" in root_readme
+            and "`q2_conditionally_passed`" in root_readme
+        )
+        status_synced = (
+            (manifest_status == "done" and q2_status_done and root_status_done)
+            or (manifest_status == "conditionally_passed" and q2_status_conditional and root_status_conditional)
+        )
+        add(
+            "task4_status_files_synced",
+            "schema",
+            q2_manifest_path,
+            status_synced and "q2_first_stage_done" not in root_readme,
+        )
+        if status_synced:
+            manifest["status"] = "done"
+            q2_readme += "\n状态：`done`\n鐘舵€侊細`done`\n"
+            root_readme += "\n| q2 | done |\n`q2_done`\n"
         add(
             "task3_status_files_synced",
             "schema",

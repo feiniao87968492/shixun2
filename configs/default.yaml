@@ -100,6 +100,15 @@ q2:
     initial_height_type: numerical_convention
     source: "题面 raw OCR 第 9 行；docs/references.md 物理常数表"
   ode:
+    carry_definition: forward_x
+    calibration_failure_penalty: 100.0
+    local_optimization:
+      method: Powell
+      maxiter: 40
+      maxfev: 120
+      xtol: 1.0e-4
+      ftol: 1.0e-6
+      minimum_improvement: 1.0e-6
     model_variants:
       - vacuum
       - drag
@@ -123,7 +132,7 @@ q2:
       grid_size: 6
       calibration_stage: train_representative_grid
       lateral_weight: 0.02
-      solver_max_step: 0.05
+      solver_max_step: 0.15
     sensitivity_relative_changes:
       - -0.20
       - -0.10

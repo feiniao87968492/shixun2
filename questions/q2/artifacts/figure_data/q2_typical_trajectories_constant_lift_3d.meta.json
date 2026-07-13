@@ -2,8 +2,8 @@
   "stem": "q2_typical_trajectories_constant_lift_3d",
   "title": "Q2 typical trajectories 3D - constant_lift",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-13T04:18:27.812267+00:00",
-  "rows": 593,
+  "generated_at": "2026-07-13T07:59:54.637301+00:00",
+  "rows": 660,
   "columns": [
     "sample_id",
     "target_group",

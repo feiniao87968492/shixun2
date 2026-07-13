@@ -2,15 +2,15 @@
 
 ## Goal
 
-Complete the full scope of `docs/plans/task3.md` for q2 recalibration and final
-acceptance: fix ODE calibration configuration wiring, representative sampling,
-bounded local optimization, wind directions, ODE model roles, carry definition
-validation, initial-height sensitivity, metadata, validation coverage, documentation,
-reproducibility checks, commit, and push.
+Complete the full scope of `docs/plans/task4.md` for q2 final ODE remediation:
+make forward-x carry the configured primary definition, run real local
+optimization with trustworthy termination status, penalize integration failures,
+validate the q3-compatible ODE boundary behavior, regenerate artifacts and docs,
+then restore q2 to `done`, commit, push, and verify the remote SHA.
 
 ## Current Phase
 
-Phase 15 - q2 task3 recalibration and acceptance
+Phase 16 - q2 task4 final ODE remediation
 
 ## Completed Phases
 
@@ -20,6 +20,7 @@ Phase 15 - q2 task3 recalibration and acceptance
 - [x] Phase 12: q1 review2 method audit closeout.
 - [x] Phase 13: q2 first-stage stop point from `docs/plans/task2.md` section 26.
 - [x] Phase 14: q2 full task2 ODE/lift continuation, committed and pushed.
+- [x] Phase 15: q2 task3 recalibration and acceptance, committed and pushed.
 
 ## Phase 13: q2 task2 first stage
 
@@ -88,6 +89,20 @@ Phase 15 - q2 task3 recalibration and acceptance
 - [x] Sync q2 docs, root status, evidence chain, figure registry, report text, findings, and progress.
 - [x] Run pipeline, validate, rerun pipeline, reproducibility checks, pytest, repo checks, raw snapshot verification, and whitespace check.
 - [x] Stage with raw/PDF/Excel guard, commit task3 work, push, and verify remote SHA.
+
+## Phase 16: q2 task4 final ODE remediation
+
+- [x] Read `docs/plans/task4.md` and confirm scope is q2 ODE final remediation.
+- [x] Temporarily downgrade q2 status to `conditionally_passed` in root/q2 docs and manifest.
+- [x] Add RED tests for forward-x carry semantics, real optimizer status, failure accounting, q3 boundary checks, and POSIX metadata paths.
+- [x] Implement configured `carry_definition=forward_x` through calibration, evaluation, typical errors, sensitivity, and comparison tables.
+- [x] Replace short local-optimization limits with configured Powell options and true `optimizer_success/objective_finite/accepted` status.
+- [x] Include integration failures in the calibration objective and emit per-model calibration failure tables.
+- [x] Select q2 best-fit ODE from full-train objectives, not a hard-coded model.
+- [x] Add q3-compatible spin-factor boundary stability checks and validation coverage.
+- [x] Regenerate q2 artifacts, docs, evidence chain, registry, report text, findings, and progress.
+- [x] Run pipeline, validate, task tests, full pytest, repo/raw/diff checks, reproducibility checks.
+- [x] Restore q2 status to `done`, stage with raw/PDF/Excel guard, commit, push, and verify remote SHA.
 
 ## Git Safety
 

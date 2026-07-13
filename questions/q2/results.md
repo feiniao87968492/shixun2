@@ -15,34 +15,35 @@
 
 ## 2. ODE 标定整改
 
-本轮按 `docs/plans/task3.md` 对 ODE 部分重标定：
+本轮按 `docs/plans/task4.md` 对 ODE 部分完成最终整改：
 
 - drag 标定读取 `ode.drag_calibration`：代表样本 36 条，粗网格 10 点。
 - lift 标定读取 `ode.lift_calibration`：代表样本 24 条，粗网格 6x6。
 - 代表样本由球速、发射角、自旋率、carry 的多维 KMeans 覆盖抽取，分别保存为 `q2_drag_calibration_records.csv` 与 `q2_lift_calibration_records.csv`。
-- 参数标定采用粗网格搜索后接有界局部优化；优化尝试分别保存到三张 `q2_*_optimization_runs.csv`。
-- 完整训练集目标函数只对最终选中运行复核并记录，测试集只用于最终评估。
+- 参数标定采用粗网格搜索后接有界 Powell 局部优化；优化尝试分别保存到三张 `q2_*_optimization_runs.csv`。
+- 优化运行表记录 `optimizer_success`、`objective_finite`、`accepted`、初始/最终目标函数、真实终止信息、迭代数和函数评估数。
+- 目标函数统一使用配置中的 `carry_definition=forward_x`，积分失败不再静默丢弃，而是计入失败惩罚；选中运行均满足标定失败数、完整训练集失败数和测试失败率为 0。
 
 重标定参数为：
 
 | 模型 | 参数 |
 |---|---|
 | drag | `C_D=0.05` |
-| constant_lift | `C_D=0.27, C_L=0.18` |
-| spin_factor_lift | `C_D=0.49, k_L=1.6` |
+| constant_lift | `C_D=0.238654, C_L=0.203952` |
+| spin_factor_lift | `C_D=0.050059, k_L=0.151837` |
 
 `drag` 的 `C_D=0.05` 位于下界，且测试误差劣于 vacuum，因此标记为 `boundary_solution`，不能解释为可信阻力系数。含升力模型参数仅解释为当前简化 ODE 下的有效参数。
 
 ## 3. ODE 测试集表现
 
-| ODE 模型 | carry RMSE (yd) | carry MAPE (%) | apex RMSE (yd) | apex MAPE (%) | failure rate |
+| ODE 模型 | D_x carry RMSE (yd) | carry MAPE (%) | apex RMSE (yd) | apex R2 | failure rate |
 |---|---:|---:|---:|---:|---:|
-| vacuum | 32.233 | 18.215 | 7.196 | 41.868 | 0.000 |
-| drag | 36.465 | 21.028 | 7.591 | 43.890 | 0.000 |
-| constant_lift | 16.506 | 10.284 | 3.069 | 16.261 | 0.000 |
-| spin_factor_lift | 31.996 | 18.648 | 7.885 | 50.135 | 0.000 |
+| vacuum | 32.502 | 18.557 | 7.196 | 0.118 | 0.000 |
+| drag | 36.830 | 21.448 | 7.591 | 0.019 | 0.000 |
+| constant_lift | 7.157 | 4.412 | 2.173 | 0.920 | 0.000 |
+| spin_factor_lift | 30.530 | 17.674 | 6.410 | 0.300 | 0.000 |
 
-第二问主结果采用测试集误差最低的 `constant_lift`。`spin_factor_lift` 作为第三问兼容 ODE 接口单独保留，不再混写为无语义的 `trajectory_model`。
+第二问 best-fit ODE 由完整训练集目标自动确定为 `constant_lift`。`spin_factor_lift` 作为第三问兼容 ODE 接口单独保留，不再混写为无语义的 `trajectory_model`；该模型通过 16 个边界组合稳定性检查，最大飞行时间 8.611 s、最大最高点 93.551 yd、最大横向距离 152.335 yd。
 
 ## 4. 距离定义与典型轨迹
 
@@ -51,7 +52,7 @@
 - `D_x=x_land`：前向落点距离。
 - `D_r=sqrt(x_land^2+y_land^2)`：水平欧氏落点距离。
 
-`q2_carry_definition_comparison.csv` 显示当前数据下 `D_x` 对 vacuum、drag、constant_lift 的 RMSE 更低；最终采用前向距离 `D_x` 作为论文主距离定义。测试集比较仅作为诊断，不用于反复调参。
+`q2_carry_definition_comparison.csv` 明确记录实际与预测口径：主定义 `D_x` 使用 `actual=carry_distance_yd`、`predicted=predicted_x_carry_yd`；径向对照 `D_r` 使用 `actual=sqrt(carry_distance_yd^2+lateral_offset_yd^2)`、`predicted=predicted_radial_carry_yd`。最终采用前向距离 `D_x` 作为论文主距离定义。测试集比较仅作为诊断，不用于反复调参。
 
 典型 100/150/200 yd 记录仍为固定测试集中的 sample_id 683、713、623。轨迹产物分两套：
 
@@ -65,11 +66,11 @@
 - `tailwind_1mps=(1,0,0)`；
 - `headwind_1mps=(-1,0,0)`。
 
-平均 carry 满足 `tailwind > no_wind > headwind`。初始高度 `initial_height_m=0.01` 的类型标记为 `numerical_convention`，仅用于避免积分初始时刻立即触发落地事件，不是题面给定或实测击球高度；0.001、0.01、0.05 m 的扰动已写入 `q2_ode_sensitivity.csv`。
+平均 carry 在 0.01 yd 数值容差内满足顺风不低于无风、无风不低于逆风。初始高度 `initial_height_m=0.01` 的类型标记为 `numerical_convention`，仅用于避免积分初始时刻立即触发落地事件，不是题面给定或实测击球高度；0.001、0.01、0.05 m 的扰动已写入 `q2_ode_sensitivity.csv`。
 
 ## 6. 验证与元数据
 
-`questions/q2/scripts/validate.py` 已扩展到 121 项检查，覆盖配置接线、优化运行、边界字段、训练/测试无泄漏、风向、指标复算、状态同步和 metadata。`run_metadata.json` 记录 Git commit、数据与配置 SHA256、包版本、固定 split 哈希、drag/lift 代表样本 ID、ODE 角色和优化运行表路径。
+`questions/q2/scripts/validate.py` 已扩展到 165 项检查，覆盖配置接线、优化运行、边界字段、训练/测试无泄漏、风向、forward_x 指标复算、失败样本表、Q3 边界稳定性、状态同步和 metadata。`run_metadata.json` 记录 Git commit、数据与配置 SHA256、包版本、固定 split 哈希、drag/lift 代表样本 ID、ODE 角色、完整训练集目标、Q3 边界检查结论和优化运行表路径，且路径统一为 POSIX 风格。
 
 重复运行 `python questions/q2/scripts/pipeline.py --config configs/default.yaml` 后，主要 CSV 哈希一致，说明固定测试集、代表样本、参数和主要结果可复现。
 

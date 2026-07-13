@@ -30,6 +30,7 @@ rpm_to_rad_s = _PREPROCESSING.rpm_to_rad_s
 yd_to_m = _PREPROCESSING.yd_to_m
 
 ODE_MODELS = ["vacuum", "drag", "constant_lift", "spin_factor_lift"]
+CARRY_DEFINITIONS = {"forward_x", "radial"}
 
 
 class PhysicalConstants:
@@ -114,7 +115,20 @@ def spin_vector_rad_s(row: pd.Series, *, side_sign: int = 1) -> np.ndarray:
     return backspin * e_lateral + sidespin * e_vertical
 
 
-def vacuum_analytic(row: pd.Series, constants: PhysicalConstants) -> dict[str, float]:
+def select_predicted_carry(prediction: dict[str, float], carry_definition: str) -> float:
+    if carry_definition == "forward_x":
+        return float(prediction["predicted_x_carry_yd"])
+    if carry_definition == "radial":
+        return float(prediction["predicted_radial_carry_yd"])
+    raise ValueError(f"Unsupported carry_definition: {carry_definition}")
+
+
+def vacuum_analytic(
+    row: pd.Series,
+    constants: PhysicalConstants,
+    *,
+    carry_definition: str,
+) -> dict[str, float]:
     vx, vy, vz = initial_velocity_mps(row)
     g = constants.gravity_m_s2
     z0 = constants.initial_height_m
@@ -122,14 +136,17 @@ def vacuum_analytic(row: pd.Series, constants: PhysicalConstants) -> dict[str, f
     x_land = vx * flight_time
     y_land = vy * flight_time
     apex = z0 + vz**2 / (2.0 * g)
-    carry_m = math.sqrt(x_land**2 + y_land**2)
-    return {
-        "predicted_carry_yd": m_to_yd(carry_m),
+    output = {
+        "predicted_radial_carry_yd": m_to_yd(math.sqrt(x_land**2 + y_land**2)),
         "predicted_x_carry_yd": m_to_yd(x_land),
+        "predicted_forward_carry_yd": m_to_yd(x_land),
         "predicted_lateral_yd": m_to_yd(y_land),
         "predicted_apex_yd": m_to_yd(apex),
         "flight_time_s": float(flight_time),
+        "carry_definition": carry_definition,
     }
+    output["predicted_carry_yd"] = select_predicted_carry(output, carry_definition)
+    return output
 
 
 def _rhs_factory(
@@ -190,6 +207,7 @@ def simulate_shot(
     model: str,
     constants: PhysicalConstants,
     solver: dict[str, Any],
+    carry_definition: str,
     cd: float = 0.0,
     cl: float = 0.0,
     lift_scale: float = 0.0,
@@ -200,6 +218,8 @@ def simulate_shot(
 ) -> tuple[dict[str, Any], pd.DataFrame]:
     if model not in set(ODE_MODELS):
         raise ValueError(f"q2 ODE supports {ODE_MODELS}, got {model}")
+    if carry_definition not in CARRY_DEFINITIONS:
+        raise ValueError(f"Unsupported carry_definition: {carry_definition}")
     initial_state = np.asarray(
         [0.0, 0.0, constants.initial_height_m, *initial_velocity_mps(row)],
         dtype=float,
@@ -244,19 +264,20 @@ def simulate_shot(
     output = {
         "model": model,
         "integration_status": status,
-        "predicted_carry_yd": m_to_yd(math.sqrt(float(x_land) ** 2 + float(y_land) ** 2)),
         "predicted_radial_carry_yd": m_to_yd(math.sqrt(float(x_land) ** 2 + float(y_land) ** 2)),
         "predicted_x_carry_yd": m_to_yd(float(x_land)),
         "predicted_forward_carry_yd": m_to_yd(float(x_land)),
         "predicted_lateral_yd": m_to_yd(float(y_land)),
         "predicted_apex_yd": m_to_yd(float(np.nanmax(z_values))),
         "flight_time_s": event_time,
+        "carry_definition": carry_definition,
         "solver_success": bool(sol.success),
         "solver_message": str(sol.message),
         "cd": float(cd),
         "cl": float(cl),
         "lift_scale": float(lift_scale),
     }
+    output["predicted_carry_yd"] = select_predicted_carry(output, carry_definition)
     if keep_trajectory:
         trajectory = pd.DataFrame(
             {
@@ -287,6 +308,8 @@ def _objective(
     model: str,
     constants: PhysicalConstants,
     solver: dict[str, Any],
+    carry_definition: str,
+    failure_penalty: float,
     cd: float,
     cl: float = 0.0,
     lift_scale: float = 0.0,
@@ -306,6 +329,7 @@ def _objective(
             cl=cl,
             lift_scale=lift_scale,
             side_sign=side_sign,
+            carry_definition=carry_definition,
         )
         if pred["integration_status"] != "success":
             failures += 1
@@ -316,7 +340,9 @@ def _objective(
         if "lateral_offset_yd" in row:
             lateral_error = (pred["predicted_lateral_yd"] - float(row["lateral_offset_yd"])) / lateral_scale
         losses.append(carry_error**2 + apex_error**2 + lateral_weight * lateral_error**2)
-    objective = float(np.mean(losses)) if losses else np.inf
+    failure_fraction = float(failures) / float(len(records)) if len(records) else 1.0
+    mean_loss = float(np.mean(losses)) if losses else float(failure_penalty)
+    objective = mean_loss + float(failure_penalty) * failure_fraction
     return objective, failures
 
 
@@ -327,6 +353,9 @@ def calibrate_drag_cd(
     solver: dict[str, Any],
     bounds: tuple[float, float],
     grid_size: int,
+    local_optimization: dict[str, Any],
+    carry_definition: str,
+    failure_penalty: float,
     full_train_records: pd.DataFrame | None = None,
     return_runs: bool = False,
 ) -> tuple[float, pd.DataFrame] | tuple[float, pd.DataFrame, pd.DataFrame]:
@@ -339,10 +368,13 @@ def calibrate_drag_cd(
             constants=constants,
             solver=solver,
             cd=float(cd),
+            carry_definition=carry_definition,
+            failure_penalty=failure_penalty,
         )
         rows.append(
             {
                 "model": "drag",
+                "carry_definition": carry_definition,
                 "cd": float(cd),
                 "cl": np.nan,
                 "lift_scale": np.nan,
@@ -357,16 +389,24 @@ def calibrate_drag_cd(
     surface["coarse_grid_rank"] = np.arange(1, len(surface) + 1)
 
     starts = [
-        ("grid_best", float(surface.iloc[0]["cd"]), int(surface.iloc[0]["coarse_grid_rank"])),
-        ("midpoint", float((bounds[0] + bounds[1]) / 2.0), 0),
         (
-            "grid_second_best",
-            float(surface.iloc[min(1, len(surface) - 1)]["cd"]),
-            int(surface.iloc[min(1, len(surface) - 1)]["coarse_grid_rank"]),
-        ),
+            f"grid_rank_{int(row.coarse_grid_rank)}",
+            float(row.cd),
+            int(row.coarse_grid_rank),
+        )
+        for row in surface.head(min(3, len(surface))).itertuples(index=False)
     ]
+    starts.append(("midpoint", float((bounds[0] + bounds[1]) / 2.0), 0))
     objective_records = full_train_records if full_train_records is not None else calibration_records
     run_rows = []
+    options = {
+        "maxiter": int(local_optimization.get("maxiter", 40)),
+        "maxfev": int(local_optimization.get("maxfev", 120)),
+        "xtol": float(local_optimization.get("xtol", 1e-4)),
+        "ftol": float(local_optimization.get("ftol", 1e-6)),
+    }
+    method = str(local_optimization.get("method", "Powell"))
+    minimum_improvement = float(local_optimization.get("minimum_improvement", 1e-6))
 
     def local_objective(values: np.ndarray) -> float:
         objective, _failures = _objective(
@@ -375,16 +415,27 @@ def calibrate_drag_cd(
             constants=constants,
             solver=solver,
             cd=float(values[0]),
+            carry_definition=carry_definition,
+            failure_penalty=failure_penalty,
         )
         return float(objective)
 
     for start_label, initial_cd, coarse_rank in starts:
+        initial_objective, initial_failures = _objective(
+            calibration_records,
+            model="drag",
+            constants=constants,
+            solver=solver,
+            cd=float(initial_cd),
+            carry_definition=carry_definition,
+            failure_penalty=failure_penalty,
+        )
         result = minimize(
             local_objective,
             x0=np.asarray([initial_cd], dtype=float),
-            method="Powell",
+            method=method,
             bounds=[bounds],
-            options={"maxiter": 1, "maxfev": 4, "xtol": 1e-3, "ftol": 1e-4},
+            options=options,
         )
         final_cd = float(np.clip(result.x[0], bounds[0], bounds[1]))
         objective, failures = _objective(
@@ -393,21 +444,46 @@ def calibrate_drag_cd(
             constants=constants,
             solver=solver,
             cd=final_cd,
+            carry_definition=carry_definition,
+            failure_penalty=failure_penalty,
         )
+        termination_message = str(result.message)
+        if objective > initial_objective + minimum_improvement:
+            final_cd = float(initial_cd)
+            objective = float(initial_objective)
+            failures = int(initial_failures)
+            termination_message = (
+                f"{termination_message}; retained initial point because local result did not improve objective"
+            )
+        optimizer_success = bool(result.success)
+        objective_finite = bool(np.isfinite(objective))
+        accepted = optimizer_success and objective_finite and int(failures) == 0
+        boundary_margin = min(final_cd - float(bounds[0]), float(bounds[1]) - final_cd)
         run_rows.append(
             {
                 "model": "drag",
+                "carry_definition": carry_definition,
                 "start_label": start_label,
                 "coarse_grid_rank": int(coarse_rank),
                 "initial_cd": float(initial_cd),
                 "final_cd": final_cd,
                 "objective": float(objective),
-                "success": bool(np.isfinite(objective)),
-                "message": str(result.message),
+                "initial_objective": float(initial_objective),
+                "final_objective": float(objective),
+                "objective_improvement": float(initial_objective - objective),
+                "optimizer_success": optimizer_success,
+                "objective_finite": objective_finite,
+                "accepted": accepted,
+                "success": optimizer_success,
+                "termination_message": termination_message,
+                "message": termination_message,
                 "iterations": int(getattr(result, "nit", 0)),
                 "function_evaluations": int(getattr(result, "nfev", 0)),
                 "calibration_n": int(len(calibration_records)),
+                "calibration_failed_count": int(failures),
                 "failed_count": int(failures),
+                "initial_failed_count": int(initial_failures),
+                "boundary_margin": float(boundary_margin),
                 "selected": False,
                 "full_train_objective": np.nan,
                 "full_train_failed_count": np.nan,
@@ -415,9 +491,13 @@ def calibrate_drag_cd(
         )
 
     runs = pd.DataFrame(run_rows)
-    successful = runs[runs["success"].astype(bool)]
-    ranked_runs = successful if not successful.empty else runs
-    best = ranked_runs.sort_values(["objective", "final_cd"]).iloc[0]
+    accepted_runs = runs[runs["accepted"].astype(bool)]
+    if accepted_runs.empty:
+        raise RuntimeError("drag calibration failed: no accepted local optimization run")
+    best = accepted_runs.sort_values(
+        ["final_objective", "boundary_margin", "final_cd"],
+        ascending=[True, False, True],
+    ).iloc[0]
     best_index = best.name
     best_cd = float(best["final_cd"])
     full_train_objective, full_train_failures = _objective(
@@ -426,6 +506,8 @@ def calibrate_drag_cd(
         constants=constants,
         solver=solver,
         cd=best_cd,
+        carry_definition=carry_definition,
+        failure_penalty=failure_penalty,
     )
     runs.loc[best_index, "selected"] = True
     runs.loc[best_index, "full_train_objective"] = float(full_train_objective)
@@ -446,6 +528,9 @@ def calibrate_lift_parameters(
     model: str,
     side_sign: int,
     lateral_weight: float,
+    local_optimization: dict[str, Any],
+    carry_definition: str,
+    failure_penalty: float,
     full_train_records: pd.DataFrame | None = None,
     return_runs: bool = False,
 ) -> tuple[dict[str, float], pd.DataFrame] | tuple[dict[str, float], pd.DataFrame, pd.DataFrame]:
@@ -468,10 +553,13 @@ def calibrate_lift_parameters(
                 lift_scale=lift_scale,
                 side_sign=side_sign,
                 lateral_weight=float(lateral_weight),
+                carry_definition=carry_definition,
+                failure_penalty=failure_penalty,
             )
             rows.append(
                 {
                     "model": model,
+                    "carry_definition": carry_definition,
                     "cd": float(cd),
                     "cl": cl if model == "constant_lift" else np.nan,
                     "lift_scale": lift_scale if model == "spin_factor_lift" else np.nan,
@@ -496,8 +584,18 @@ def calibrate_lift_parameters(
         )
         for row in surface.head(top_n).itertuples(index=False)
     ]
+    midpoint_lift = float((lift_bounds[0] + lift_bounds[1]) / 2.0)
+    starts.append(("midpoint", float((cd_bounds[0] + cd_bounds[1]) / 2.0), midpoint_lift, 0))
     objective_records = full_train_records if full_train_records is not None else calibration_records
     run_rows = []
+    options = {
+        "maxiter": int(local_optimization.get("maxiter", 40)),
+        "maxfev": int(local_optimization.get("maxfev", 120)),
+        "xtol": float(local_optimization.get("xtol", 1e-4)),
+        "ftol": float(local_optimization.get("ftol", 1e-6)),
+    }
+    method = str(local_optimization.get("method", "Powell"))
+    minimum_improvement = float(local_optimization.get("minimum_improvement", 1e-6))
 
     def local_objective(values: np.ndarray) -> float:
         cd_value = float(values[0])
@@ -512,16 +610,31 @@ def calibrate_lift_parameters(
             lift_scale=lift_value if model == "spin_factor_lift" else 0.0,
             side_sign=side_sign,
             lateral_weight=float(lateral_weight),
+            carry_definition=carry_definition,
+            failure_penalty=failure_penalty,
         )
         return float(objective)
 
     for start_label, initial_cd, initial_lift, coarse_rank in starts:
+        initial_objective, initial_failures = _objective(
+            calibration_records,
+            model=model,
+            constants=constants,
+            solver=solver,
+            cd=float(initial_cd),
+            cl=float(initial_lift) if model == "constant_lift" else 0.0,
+            lift_scale=float(initial_lift) if model == "spin_factor_lift" else 0.0,
+            side_sign=side_sign,
+            lateral_weight=float(lateral_weight),
+            carry_definition=carry_definition,
+            failure_penalty=failure_penalty,
+        )
         result = minimize(
             local_objective,
             x0=np.asarray([initial_cd, initial_lift], dtype=float),
-            method="Powell",
+            method=method,
             bounds=[cd_bounds, lift_bounds],
-            options={"maxiter": 1, "maxfev": 4, "xtol": 1e-3, "ftol": 1e-4},
+            options=options,
         )
         final_cd = float(np.clip(result.x[0], cd_bounds[0], cd_bounds[1]))
         final_lift = float(np.clip(result.x[1], lift_bounds[0], lift_bounds[1]))
@@ -535,10 +648,31 @@ def calibrate_lift_parameters(
             lift_scale=final_lift if model == "spin_factor_lift" else 0.0,
             side_sign=side_sign,
             lateral_weight=float(lateral_weight),
+            carry_definition=carry_definition,
+            failure_penalty=failure_penalty,
+        )
+        termination_message = str(result.message)
+        if objective > initial_objective + minimum_improvement:
+            final_cd = float(initial_cd)
+            final_lift = float(initial_lift)
+            objective = float(initial_objective)
+            failures = int(initial_failures)
+            termination_message = (
+                f"{termination_message}; retained initial point because local result did not improve objective"
+            )
+        optimizer_success = bool(result.success)
+        objective_finite = bool(np.isfinite(objective))
+        accepted = optimizer_success and objective_finite and int(failures) == 0
+        boundary_margin = min(
+            final_cd - float(cd_bounds[0]),
+            float(cd_bounds[1]) - final_cd,
+            final_lift - float(lift_bounds[0]),
+            float(lift_bounds[1]) - final_lift,
         )
         run_rows.append(
             {
                 "model": model,
+                "carry_definition": carry_definition,
                 "start_label": start_label,
                 "coarse_grid_rank": int(coarse_rank),
                 "initial_cd": float(initial_cd),
@@ -546,12 +680,22 @@ def calibrate_lift_parameters(
                 "final_cd": final_cd,
                 "final_lift": final_lift,
                 "objective": float(objective),
-                "success": bool(np.isfinite(objective)),
-                "message": str(result.message),
+                "initial_objective": float(initial_objective),
+                "final_objective": float(objective),
+                "objective_improvement": float(initial_objective - objective),
+                "optimizer_success": optimizer_success,
+                "objective_finite": objective_finite,
+                "accepted": accepted,
+                "success": optimizer_success,
+                "termination_message": termination_message,
+                "message": termination_message,
                 "iterations": int(getattr(result, "nit", 0)),
                 "function_evaluations": int(getattr(result, "nfev", 0)),
                 "calibration_n": int(len(calibration_records)),
+                "calibration_failed_count": int(failures),
                 "failed_count": int(failures),
+                "initial_failed_count": int(initial_failures),
+                "boundary_margin": float(boundary_margin),
                 "selected": False,
                 "full_train_objective": np.nan,
                 "full_train_failed_count": np.nan,
@@ -559,9 +703,13 @@ def calibrate_lift_parameters(
         )
 
     runs = pd.DataFrame(run_rows)
-    successful = runs[runs["success"].astype(bool)]
-    ranked_runs = successful if not successful.empty else runs
-    best = ranked_runs.sort_values(["objective", "final_cd", "final_lift"]).iloc[0]
+    accepted_runs = runs[runs["accepted"].astype(bool)]
+    if accepted_runs.empty:
+        raise RuntimeError(f"{model} calibration failed: no accepted local optimization run")
+    best = accepted_runs.sort_values(
+        ["final_objective", "boundary_margin", "final_cd", "final_lift"],
+        ascending=[True, False, True, True],
+    ).iloc[0]
     best_index = best.name
     params = {
         "cd": float(best["final_cd"]),
@@ -578,6 +726,8 @@ def calibrate_lift_parameters(
         lift_scale=params["lift_scale"],
         side_sign=side_sign,
         lateral_weight=float(lateral_weight),
+        carry_definition=carry_definition,
+        failure_penalty=failure_penalty,
     )
     runs.loc[best_index, "selected"] = True
     runs.loc[best_index, "full_train_objective"] = float(full_train_objective)
@@ -593,6 +743,7 @@ def evaluate_ode_models(
     constants: PhysicalConstants,
     solver: dict[str, Any],
     parameters: dict[str, dict[str, float]],
+    carry_definition: str,
     model_variants: list[str] | None = None,
     side_sign: int = 1,
 ) -> dict[str, pd.DataFrame]:
@@ -613,6 +764,7 @@ def evaluate_ode_models(
                 cl=float(model_params.get("cl", 0.0)),
                 lift_scale=float(model_params.get("lift_scale", 0.0)),
                 side_sign=side_sign,
+                carry_definition=carry_definition,
             )
             if pred["integration_status"] != "success":
                 failed_ids.append(int(row["record_id"]))
@@ -621,6 +773,7 @@ def evaluate_ode_models(
                     "record_id": int(row["record_id"]),
                     "sample_id": int(row["record_id"]),
                     "model": model,
+                    "carry_definition": carry_definition,
                     "actual_carry_yd": float(row["carry_distance_yd"]),
                     "predicted_carry_yd": pred["predicted_carry_yd"],
                     "predicted_x_carry_yd": pred["predicted_x_carry_yd"],
@@ -663,6 +816,7 @@ def typical_errors_and_trajectories(
     model_variants: list[str],
     trajectory_model: str,
     side_sign: int,
+    carry_definition: str,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     error_rows = []
     trajectory_rows = []
@@ -680,6 +834,7 @@ def typical_errors_and_trajectories(
                 lift_scale=float(params.get("lift_scale", 0.0)),
                 side_sign=side_sign,
                 keep_trajectory=keep_trajectory,
+                carry_definition=carry_definition,
             )
             carry_error = pred["predicted_carry_yd"] - float(row["carry_distance_yd"])
             apex_error = pred["predicted_apex_yd"] - float(row["apex_height_yd"])
@@ -690,8 +845,11 @@ def typical_errors_and_trajectories(
                     "record_id": int(row["record_id"]),
                     "target_group": str(row["target_group"]),
                     "model": model,
+                    "carry_definition": carry_definition,
                     "actual_carry_yd": float(row["carry_distance_yd"]),
                     "predicted_carry_yd": pred["predicted_carry_yd"],
+                    "predicted_x_carry_yd": pred["predicted_x_carry_yd"],
+                    "predicted_radial_carry_yd": pred["predicted_radial_carry_yd"],
                     "carry_absolute_error_yd": abs(carry_error),
                     "carry_relative_error_pct": abs(carry_error / float(row["carry_distance_yd"])) * 100.0,
                     "actual_apex_yd": float(row["apex_height_yd"]),
@@ -724,6 +882,7 @@ def ode_sensitivity(
     baseline_params: dict[str, float] | dict[str, dict[str, float]],
     relative_changes: list[float],
     side_sign: int,
+    carry_definition: str,
     models: list[str] | None = None,
     initial_heights_m: list[float] | None = None,
 ) -> pd.DataFrame:
@@ -749,6 +908,7 @@ def ode_sensitivity(
             solver=solver,
             params=params_for_model,
             side_sign=side_sign,
+            carry_definition=carry_definition,
         )
 
         parameter_names = ["cd", "cl"] if model == "constant_lift" else ["cd", "lift_scale"]
@@ -763,6 +923,7 @@ def ode_sensitivity(
                     solver=solver,
                     params=params,
                     side_sign=side_sign,
+                    carry_definition=carry_definition,
                 )
                 for metric, baseline_value in baseline.items():
                     rows.append(
@@ -772,6 +933,7 @@ def ode_sensitivity(
                             "parameter": parameter,
                             "relative_change": float(change),
                             "metric": metric,
+                            "carry_definition": carry_definition if metric == "carry_yd" else "",
                             "baseline_value": baseline_value,
                             "scenario_value": scenario[metric],
                             "delta": scenario[metric] - baseline_value,
@@ -792,6 +954,7 @@ def ode_sensitivity(
                 params=params_for_model,
                 side_sign=side_sign,
                 wind_mps=wind_mps,
+                carry_definition=carry_definition,
             )
             for metric, baseline_value in baseline.items():
                 rows.append(
@@ -802,6 +965,7 @@ def ode_sensitivity(
                         "relative_change": np.nan,
                         "wind_x_mps": float(wind_mps[0]),
                         "metric": metric,
+                        "carry_definition": carry_definition if metric == "carry_yd" else "",
                         "baseline_value": baseline_value,
                         "scenario_value": scenario[metric],
                         "delta": scenario[metric] - baseline_value,
@@ -817,6 +981,7 @@ def ode_sensitivity(
                 params=params_for_model,
                 side_sign=side_sign,
                 spin_decay_s=spin_decay_s,
+                carry_definition=carry_definition,
             )
             for metric, baseline_value in baseline.items():
                 rows.append(
@@ -826,6 +991,7 @@ def ode_sensitivity(
                         "parameter": parameter,
                         "relative_change": np.nan,
                         "metric": metric,
+                        "carry_definition": carry_definition if metric == "carry_yd" else "",
                         "baseline_value": baseline_value,
                         "scenario_value": scenario[metric],
                         "delta": scenario[metric] - baseline_value,
@@ -846,6 +1012,7 @@ def ode_sensitivity(
                 solver=scenario_solver,
                 params=params_for_model,
                 side_sign=side_sign,
+                carry_definition=carry_definition,
             )
             for metric, baseline_value in baseline.items():
                 rows.append(
@@ -855,6 +1022,7 @@ def ode_sensitivity(
                         "parameter": parameter,
                         "relative_change": np.nan,
                         "metric": metric,
+                        "carry_definition": carry_definition if metric == "carry_yd" else "",
                         "baseline_value": baseline_value,
                         "scenario_value": scenario[metric],
                         "delta": scenario[metric] - baseline_value,
@@ -870,6 +1038,7 @@ def ode_sensitivity(
                 solver=solver,
                 params=params_for_model,
                 side_sign=side_sign,
+                carry_definition=carry_definition,
             )
             for metric, baseline_value in baseline.items():
                 rows.append(
@@ -879,6 +1048,7 @@ def ode_sensitivity(
                         "parameter": f"initial_height_{float(initial_height):.3g}m",
                         "relative_change": np.nan,
                         "metric": metric,
+                        "carry_definition": carry_definition if metric == "carry_yd" else "",
                         "baseline_value": baseline_value,
                         "scenario_value": scenario[metric],
                         "delta": scenario[metric] - baseline_value,
@@ -895,6 +1065,7 @@ def _scenario_means(
     solver: dict[str, Any],
     params: dict[str, float],
     side_sign: int,
+    carry_definition: str,
     wind_mps: tuple[float, float, float] = (0.0, 0.0, 0.0),
     spin_decay_s: float | None = None,
 ) -> dict[str, float]:
@@ -911,6 +1082,7 @@ def _scenario_means(
             side_sign=side_sign,
             wind_mps=wind_mps,
             spin_decay_s=spin_decay_s,
+            carry_definition=carry_definition,
         )
         outputs.append(pred)
     frame = pd.DataFrame(outputs)
@@ -971,7 +1143,7 @@ def ode_metrics(predictions: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows).sort_values("model").reset_index(drop=True)
 
 
-def carry_definition_comparison(predictions: pd.DataFrame) -> pd.DataFrame:
+def carry_definition_comparison(predictions: pd.DataFrame, *, primary_definition: str) -> pd.DataFrame:
     rows = []
     for model, subset in predictions.groupby("model"):
         ok = subset[subset["integration_status"] == "success"].copy()
@@ -980,11 +1152,15 @@ def carry_definition_comparison(predictions: pd.DataFrame) -> pd.DataFrame:
         definitions = [
             (
                 "D_x",
+                "carry_distance_yd",
+                "predicted_x_carry_yd",
                 ok["actual_carry_yd"].to_numpy(dtype=float),
                 ok["predicted_x_carry_yd"].to_numpy(dtype=float),
             ),
             (
                 "D_r",
+                "sqrt(carry_distance_yd^2 + lateral_offset_yd^2)",
+                "predicted_radial_carry_yd",
                 np.sqrt(
                     ok["actual_carry_yd"].to_numpy(dtype=float) ** 2
                     + ok["actual_lateral_yd"].to_numpy(dtype=float) ** 2
@@ -992,12 +1168,16 @@ def carry_definition_comparison(predictions: pd.DataFrame) -> pd.DataFrame:
                 ok["predicted_radial_carry_yd"].to_numpy(dtype=float),
             ),
         ]
-        for definition, actual, predicted in definitions:
+        primary_label = "D_x" if primary_definition == "forward_x" else "D_r"
+        for definition, actual_definition, predicted_definition, actual, predicted in definitions:
             error = predicted - actual
             rows.append(
                 {
                     "model": model,
                     "carry_definition": definition,
+                    "actual_definition": actual_definition,
+                    "predicted_definition": predicted_definition,
+                    "is_primary_definition": definition == primary_label,
                     "rmse": _rmse(actual, predicted),
                     "mae": float(np.mean(np.abs(error))),
                     "mape": _mape(actual, predicted),
@@ -1007,29 +1187,183 @@ def carry_definition_comparison(predictions: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows).sort_values(["model", "carry_definition"]).reset_index(drop=True)
 
 
+def calibration_failure_rows(
+    records: pd.DataFrame,
+    *,
+    model: str,
+    constants: PhysicalConstants,
+    solver: dict[str, Any],
+    params: dict[str, float],
+    side_sign: int,
+    carry_definition: str,
+    stage: str,
+) -> pd.DataFrame:
+    rows = []
+    for _, row in records.iterrows():
+        pred, _ = simulate_shot(
+            row,
+            model=model,
+            constants=constants,
+            solver=solver,
+            cd=float(params.get("cd", 0.0)),
+            cl=float(params.get("cl", 0.0)),
+            lift_scale=float(params.get("lift_scale", 0.0)),
+            side_sign=side_sign,
+            carry_definition=carry_definition,
+        )
+        if pred["integration_status"] != "success":
+            rows.append(
+                {
+                    "model": model,
+                    "record_id": int(row["record_id"]),
+                    "stage": stage,
+                    "integration_status": pred["integration_status"],
+                    "solver_message": pred["solver_message"],
+                }
+            )
+    if rows:
+        return pd.DataFrame(rows)
+    return pd.DataFrame(
+        [
+            {
+                "model": model,
+                "record_id": np.nan,
+                "stage": stage,
+                "integration_status": "success",
+                "solver_message": "no calibration integration failures",
+            }
+        ]
+    )
+
+
+def q3_boundary_stability_checks(
+    records: pd.DataFrame,
+    *,
+    constants: PhysicalConstants,
+    solver: dict[str, Any],
+    params: dict[str, float],
+    side_sign: int,
+    carry_definition: str,
+) -> pd.DataFrame:
+    boundary_features = ["ball_speed_mph", "launch_angle_deg", "spin_rate_rpm", "spin_axis_deg"]
+    ranges = {
+        feature: (
+            float(records[feature].min()),
+            float(records[feature].max()),
+        )
+        for feature in boundary_features
+    }
+    base = records.iloc[0].copy()
+    rows = []
+    outputs = []
+    for speed in ranges["ball_speed_mph"]:
+        for angle in ranges["launch_angle_deg"]:
+            for spin_rate in ranges["spin_rate_rpm"]:
+                for spin_axis in ranges["spin_axis_deg"]:
+                    row = base.copy()
+                    row["ball_speed_mph"] = speed
+                    row["launch_angle_deg"] = angle
+                    row["launch_direction_deg"] = 0.0
+                    row["spin_rate_rpm"] = spin_rate
+                    row["spin_axis_deg"] = spin_axis
+                    pred, _ = simulate_shot(
+                        row,
+                        model="spin_factor_lift",
+                        constants=constants,
+                        solver=solver,
+                        cd=float(params.get("cd", 0.0)),
+                        lift_scale=float(params.get("lift_scale", 0.0)),
+                        side_sign=side_sign,
+                        carry_definition=carry_definition,
+                    )
+                    outputs.append(pred)
+                    rows.append(
+                        {
+                            "ball_speed_mph": speed,
+                            "launch_angle_deg": angle,
+                            "spin_rate_rpm": spin_rate,
+                            "spin_axis_deg": spin_axis,
+                            "integration_status": pred["integration_status"],
+                            "flight_time_s": pred["flight_time_s"],
+                            "predicted_apex_yd": pred["predicted_apex_yd"],
+                            "predicted_lateral_yd": pred["predicted_lateral_yd"],
+                        }
+                    )
+    frame = pd.DataFrame(rows)
+    status_ok = frame["integration_status"].eq("success").all()
+    finite_ok = frame[["flight_time_s", "predicted_apex_yd", "predicted_lateral_yd"]].notna().all().all()
+    max_time = float(frame["flight_time_s"].max())
+    max_apex = float(frame["predicted_apex_yd"].max())
+    max_lateral = float(frame["predicted_lateral_yd"].abs().max())
+    checks = [
+        {
+            "check": "q3_spin_factor_boundary_stability",
+            "passed": bool(status_ok and finite_ok),
+            "value": float(len(frame)),
+        },
+        {
+            "check": "q3_spin_factor_boundary_max_flight_time_within_limit",
+            "passed": bool(np.isfinite(max_time) and max_time <= 12.0),
+            "value": max_time,
+        },
+        {
+            "check": "q3_spin_factor_boundary_max_apex_within_limit",
+            "passed": bool(np.isfinite(max_apex) and max_apex <= 300.0),
+            "value": max_apex,
+        },
+        {
+            "check": "q3_spin_factor_boundary_max_lateral_within_limit",
+            "passed": bool(np.isfinite(max_lateral) and max_lateral <= 400.0),
+            "value": max_lateral,
+        },
+    ]
+    return pd.DataFrame(checks)
+
+
 def validation_checks(
     sample_row: pd.Series,
     *,
     constants: PhysicalConstants,
     solver: dict[str, Any],
+    carry_definition: str,
     cd: float,
     cl: float = 0.20,
     lift_scale: float = 1.0,
     side_sign: int = 1,
 ) -> pd.DataFrame:
-    vacuum_numeric, _ = simulate_shot(sample_row, model="vacuum", constants=constants, solver=solver)
-    vacuum_exact = vacuum_analytic(sample_row, constants)
+    vacuum_numeric, _ = simulate_shot(
+        sample_row,
+        model="vacuum",
+        constants=constants,
+        solver=solver,
+        carry_definition=carry_definition,
+    )
+    vacuum_exact = vacuum_analytic(sample_row, constants, carry_definition=carry_definition)
     max_error = max(
         abs(vacuum_numeric["predicted_carry_yd"] - vacuum_exact["predicted_carry_yd"]),
         abs(vacuum_numeric["predicted_apex_yd"] - vacuum_exact["predicted_apex_yd"]),
         abs(vacuum_numeric["flight_time_s"] - vacuum_exact["flight_time_s"]),
     )
-    drag_numeric, _ = simulate_shot(sample_row, model="drag", constants=constants, solver=solver, cd=cd)
+    drag_numeric, _ = simulate_shot(
+        sample_row,
+        model="drag",
+        constants=constants,
+        solver=solver,
+        cd=cd,
+        carry_definition=carry_definition,
+    )
 
     lift_probe = sample_row.copy()
     lift_probe["launch_direction_deg"] = 0.0
     lift_probe["spin_axis_deg"] = 0.0
-    drag_probe, _ = simulate_shot(lift_probe, model="drag", constants=constants, solver=solver, cd=max(cd, 0.1))
+    drag_probe, _ = simulate_shot(
+        lift_probe,
+        model="drag",
+        constants=constants,
+        solver=solver,
+        cd=max(cd, 0.1),
+        carry_definition=carry_definition,
+    )
     lift_probe_out, _ = simulate_shot(
         lift_probe,
         model="constant_lift",
@@ -1038,6 +1372,7 @@ def validation_checks(
         cd=max(cd, 0.1),
         cl=max(cl, 0.05),
         side_sign=side_sign,
+        carry_definition=carry_definition,
     )
     spin_probe_out, _ = simulate_shot(
         lift_probe,
@@ -1047,6 +1382,7 @@ def validation_checks(
         cd=max(cd, 0.1),
         lift_scale=max(lift_scale, 0.1),
         side_sign=side_sign,
+        carry_definition=carry_definition,
     )
     rows = [
         {"check": "mph_to_mps", "passed": abs(mph_to_mps(1.0) - 0.44704) < 1e-12, "value": mph_to_mps(1.0)},

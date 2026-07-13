@@ -2,8 +2,8 @@
   "stem": "q2_typical_trajectories_spin_factor_side",
   "title": "Q2 typical trajectories side view - spin_factor_lift",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-13T04:18:32.696181+00:00",
-  "rows": 945,
+  "generated_at": "2026-07-13T07:59:59.788894+00:00",
+  "rows": 434,
   "columns": [
     "sample_id",
     "target_group",

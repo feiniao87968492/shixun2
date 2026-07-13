@@ -3,9 +3,13 @@ mph_to_mps,True,0.44704
 rpm_to_rad_s,True,6.28318530718
 yd_to_m,True,0.9144
 vacuum_numeric_matches_analytic,True,0.000456030729393
-drag_model_reduces_vacuum_carry,True,2.72558301254
+drag_model_reduces_vacuum_carry,True,2.65900492234
 ground_event_success,True,1
-positive_backspin_lifts_up,True,6.63670342668
+positive_backspin_lifts_up,True,9.74032140969
 zero_sidespin_zero_direction_lateral_near_zero,True,0
-spin_factor_lift_integrates,True,5.22807263435
+spin_factor_lift_integrates,True,2.08553315287
+q3_spin_factor_boundary_stability,True,16
+q3_spin_factor_boundary_max_flight_time_within_limit,True,8.61129358221
+q3_spin_factor_boundary_max_apex_within_limit,True,93.5511979314
+q3_spin_factor_boundary_max_lateral_within_limit,True,152.335385528
 full_ode_variants_present,True,4

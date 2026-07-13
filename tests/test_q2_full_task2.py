@@ -66,6 +66,7 @@ def test_lift_ode_supports_backspin_and_lateral_symmetry() -> None:
         model="drag",
         constants=constants,
         solver=solver,
+        carry_definition="forward_x",
         cd=0.20,
     )
     lifted, trajectory = ode_model.simulate_shot(
@@ -73,6 +74,7 @@ def test_lift_ode_supports_backspin_and_lateral_symmetry() -> None:
         model="constant_lift",
         constants=constants,
         solver=solver,
+        carry_definition="forward_x",
         cd=0.20,
         cl=0.20,
         keep_trajectory=True,
@@ -82,6 +84,7 @@ def test_lift_ode_supports_backspin_and_lateral_symmetry() -> None:
         model="spin_factor_lift",
         constants=constants,
         solver=solver,
+        carry_definition="forward_x",
         cd=0.20,
         lift_scale=1.0,
     )

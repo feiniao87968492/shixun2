@@ -66,6 +66,7 @@ python questions/q1/scripts/validate.py --config configs/default.yaml
 ```bash
 python questions/q2/scripts/pipeline.py --config configs/default.yaml
 python questions/q2/scripts/validate.py --config configs/default.yaml
+python -m pytest tests/test_q2_task4_final_remediation.py -q
 python -m pytest tests/test_q2_task3_recalibration.py -q
 ```
 
@@ -74,9 +75,10 @@ Q2 当前主结果：
 - 固定划分：train=514，test=221。
 - carry 最优监督模型：`launch_state_model / hist_gradient_boosting`，测试 RMSE=8.337 yd，MAPE=4.986%。
 - apex 最优监督模型：`launch_state_model / hist_gradient_boosting`，测试 RMSE=1.739 yd，MAPE=14.335%。
-- ODE 重标定：drag 使用 36 条代表样本和 10 点粗网格；lift 使用 24 条代表样本和 6x6 粗网格；三类可标定模型均执行粗网格 + 有界局部优化。
-- ODE 参数：drag `C_D=0.05` 为边界解；constant_lift `C_D=0.27,C_L=0.18`；spin_factor_lift `C_D=0.49,k_L=1.6`。
-- 第二问主轨迹采用 `constant_lift`，第三问兼容轨迹单独输出 `spin_factor_lift`。
-- 最终采用前向距离 `D_x=x_land` 作为主 carry 定义；顺风/逆风方向已校正并通过平均 carry 顺序验证。
+- ODE 重标定：drag 使用 36 条代表样本和 10 点粗网格；lift 使用 24 条代表样本和 6x6 粗网格；三类可标定模型均执行粗网格 + 有界局部优化，选中运行均无标定和全训练集积分失败。
+- ODE 参数：drag `C_D=0.05` 为边界解；constant_lift `C_D=0.238654,C_L=0.203952`；spin_factor_lift `C_D=0.050059,k_L=0.151837`。
+- ODE D_x 测试 RMSE：constant_lift=7.157 yd，spin_factor_lift=30.530 yd，drag=36.830 yd，vacuum=32.502 yd。
+- 第二问 best-fit ODE 自动确定为 `constant_lift`，第三问兼容轨迹单独输出 `spin_factor_lift` 且通过边界稳定性检查。
+- 最终采用前向距离 `D_x=x_land` 作为主 carry 定义；顺风/逆风方向已校正并通过带容差的平均 carry 顺序验证。
 
 原始题面与附件哈希清单见 `data/raw_manifest.csv`；提交前运行 `python scripts/snapshot_raw.py --verify`。

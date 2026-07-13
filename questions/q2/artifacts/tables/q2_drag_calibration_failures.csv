@@ -1,0 +1,2 @@
+model,record_id,stage,integration_status,solver_message
+drag,,calibration_representative,success,no calibration integration failures

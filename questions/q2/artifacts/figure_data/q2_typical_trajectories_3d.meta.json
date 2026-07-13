@@ -2,8 +2,8 @@
   "stem": "q2_typical_trajectories_3d",
   "title": "Q2 typical trajectories 3D - combined ODE role trajectories",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-13T04:18:23.993461+00:00",
-  "rows": 1538,
+  "generated_at": "2026-07-13T07:59:50.226279+00:00",
+  "rows": 1094,
   "columns": [
     "sample_id",
     "target_group",

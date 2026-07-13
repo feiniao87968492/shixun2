@@ -2,10 +2,11 @@
   "stem": "q2_ode_parameter_surface",
   "title": "Q2 ODE parameter surface",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-13T04:18:22.103828+00:00",
+  "generated_at": "2026-07-13T07:59:48.870729+00:00",
   "rows": 82,
   "columns": [
     "model",
+    "carry_definition",
     "cd",
     "cl",
     "lift_scale",

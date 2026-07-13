@@ -27,9 +27,11 @@ from ode_model import (  # noqa: E402
     PhysicalConstants,
     calibrate_drag_cd,
     calibrate_lift_parameters,
+    calibration_failure_rows,
     carry_definition_comparison,
     evaluate_ode_models,
     ode_sensitivity,
+    q3_boundary_stability_checks,
     typical_errors_and_trajectories,
     validation_checks as ode_validation_checks,
 )
@@ -86,6 +88,10 @@ def package_versions() -> dict[str, str]:
         except importlib_metadata.PackageNotFoundError:
             versions[package] = "not_installed"
     return versions
+
+
+def rel_posix(path: Path, root: Path) -> str:
+    return path.relative_to(root).as_posix()
 
 
 def parameter_boundary_row(
@@ -279,6 +285,9 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
     cd_bounds = tuple(float(value) for value in config["ode"]["parameter_bounds"]["cd"])
     cl_bounds = tuple(float(value) for value in config["ode"]["parameter_bounds"]["cl"])
     lift_scale_bounds = tuple(float(value) for value in config["ode"]["parameter_bounds"]["lift_scale"])
+    carry_definition = str(config["ode"]["carry_definition"])
+    failure_penalty = float(config["ode"]["calibration_failure_penalty"])
+    local_optimization = dict(config["ode"]["local_optimization"])
     calibration_solver = dict(config["ode"]["solver"])
     calibration_solver["max_step"] = float(config["ode"]["lift_calibration"].get("solver_max_step", calibration_solver["max_step"]))
     cd, drag_surface, drag_runs = calibrate_drag_cd(
@@ -287,6 +296,9 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         solver=calibration_solver,
         bounds=cd_bounds,
         grid_size=int(config["ode"]["drag_calibration"]["grid_size"]),
+        local_optimization=local_optimization,
+        carry_definition=carry_definition,
+        failure_penalty=failure_penalty,
         full_train_records=ode_train,
         return_runs=True,
     )
@@ -300,6 +312,9 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         model="constant_lift",
         side_sign=selected_sign,
         lateral_weight=float(config["ode"]["lift_calibration"]["lateral_weight"]),
+        local_optimization=local_optimization,
+        carry_definition=carry_definition,
+        failure_penalty=failure_penalty,
         full_train_records=ode_train,
         return_runs=True,
     )
@@ -313,6 +328,9 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         model="spin_factor_lift",
         side_sign=selected_sign,
         lateral_weight=float(config["ode"]["lift_calibration"]["lateral_weight"]),
+        local_optimization=local_optimization,
+        carry_definition=carry_definition,
+        failure_penalty=failure_penalty,
         full_train_records=ode_train,
         return_runs=True,
     )
@@ -335,14 +353,29 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         "constant_lift": constant_params,
         "spin_factor_lift": spin_params,
     }
-    q2_best_fit_ode = "constant_lift"
     q3_compatible_ode = "spin_factor_lift"
+    selected_runs = {
+        "drag": drag_runs[drag_runs["selected"].astype(bool)].iloc[0],
+        "constant_lift": constant_runs[constant_runs["selected"].astype(bool)].iloc[0],
+        "spin_factor_lift": spin_runs[spin_runs["selected"].astype(bool)].iloc[0],
+    }
+    candidate_models = ["drag", "constant_lift", "spin_factor_lift"]
+    valid_full_train_objectives = {
+        model: float(run["full_train_objective"])
+        for model, run in selected_runs.items()
+        if bool(run["accepted"]) and int(run["full_train_failed_count"]) == 0
+    }
+    if set(candidate_models) - set(valid_full_train_objectives):
+        missing = sorted(set(candidate_models) - set(valid_full_train_objectives))
+        raise RuntimeError(f"q2 ODE calibration has no accepted full-train result for: {missing}")
+    q2_best_fit_ode = min(candidate_models, key=lambda model: valid_full_train_objectives[model])
     model_variants = list(config["ode"]["model_variants"])
     ode_outputs = evaluate_ode_models(
         ode_test,
         constants=constants,
         solver=config["ode"]["solver"],
         parameters=model_parameters,
+        carry_definition=carry_definition,
         model_variants=model_variants,
         side_sign=selected_sign,
     )
@@ -354,10 +387,53 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
     ]:
         tables[stem] = save_table(ode_outputs[key], stem=stem, question_dir=question_dir)["csv"]
     tables["q2_carry_definition_comparison"] = save_table(
-        carry_definition_comparison(ode_outputs["predictions"]),
+        carry_definition_comparison(ode_outputs["predictions"], primary_definition=carry_definition),
         stem="q2_carry_definition_comparison",
         question_dir=question_dir,
     )["csv"]
+    failure_table_specs = [
+        (
+            "q2_drag_calibration_failures",
+            calibration_failure_rows(
+                drag_representative,
+                model="drag",
+                constants=constants,
+                solver=calibration_solver,
+                params=model_parameters["drag"],
+                side_sign=selected_sign,
+                carry_definition=carry_definition,
+                stage="calibration_representative",
+            ),
+        ),
+        (
+            "q2_constant_lift_calibration_failures",
+            calibration_failure_rows(
+                lift_representative,
+                model="constant_lift",
+                constants=constants,
+                solver=calibration_solver,
+                params=model_parameters["constant_lift"],
+                side_sign=selected_sign,
+                carry_definition=carry_definition,
+                stage="calibration_representative",
+            ),
+        ),
+        (
+            "q2_spin_factor_calibration_failures",
+            calibration_failure_rows(
+                lift_representative,
+                model="spin_factor_lift",
+                constants=constants,
+                solver=calibration_solver,
+                params=model_parameters["spin_factor_lift"],
+                side_sign=selected_sign,
+                carry_definition=carry_definition,
+                stage="calibration_representative",
+            ),
+        ),
+    ]
+    for stem, frame in failure_table_specs:
+        tables[stem] = save_table(frame, stem=stem, question_dir=question_dir)["csv"]
 
     typical_records = select_typical_records(ode_test, required_features=ODE_REQUIRED_FEATURES)
     typical_source = typical_records.merge(
@@ -375,8 +451,9 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         solver=config["ode"]["solver"],
         parameters=model_parameters,
         model_variants=model_variants,
-        trajectory_model=q2_best_fit_ode,
+        trajectory_model="constant_lift",
         side_sign=selected_sign,
+        carry_definition=carry_definition,
     )
     _spin_errors, spin_trajectories = typical_errors_and_trajectories(
         typical_source,
@@ -386,6 +463,7 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         model_variants=model_variants,
         trajectory_model=q3_compatible_ode,
         side_sign=selected_sign,
+        carry_definition=carry_definition,
     )
     trajectories = pd.concat([constant_trajectories, spin_trajectories], ignore_index=True)
     tables["q2_ode_typical_errors"] = save_table(
@@ -405,12 +483,13 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         constants=constants,
         solver=config["ode"]["solver"],
         baseline_params={
-            q2_best_fit_ode: model_parameters[q2_best_fit_ode],
+            "constant_lift": model_parameters["constant_lift"],
             q3_compatible_ode: model_parameters[q3_compatible_ode],
         },
         relative_changes=[float(value) for value in config["ode"]["sensitivity_relative_changes"]],
         side_sign=selected_sign,
-        models=[q2_best_fit_ode, q3_compatible_ode],
+        carry_definition=carry_definition,
+        models=["constant_lift", q3_compatible_ode],
         initial_heights_m=[0.001, 0.01, 0.05],
     )
     tables["q2_ode_sensitivity"] = save_table(
@@ -423,9 +502,9 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         float(ode_metric_frame.loc["drag", "carry_rmse"]) > float(ode_metric_frame.loc["vacuum", "carry_rmse"])
     )
     drag_status = "boundary_solution" if drag_lower_bound and drag_worse_than_vacuum else "ok"
-    best_drag_run = drag_runs.sort_values(["objective", "final_cd"]).iloc[0]
-    best_constant_run = constant_runs.sort_values(["objective", "final_cd", "final_lift"]).iloc[0]
-    best_spin_run = spin_runs.sort_values(["objective", "final_cd", "final_lift"]).iloc[0]
+    best_drag_run = selected_runs["drag"]
+    best_constant_run = selected_runs["constant_lift"]
+    best_spin_run = selected_runs["spin_factor_lift"]
     parameter_rows = [
         parameter_boundary_row(
             model="drag",
@@ -529,15 +608,20 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
     )["csv"]
     parameter_json = {
         "side_spin_sign": selected_sign,
+        "carry_definition": carry_definition,
         "best_fit_ode_model": q2_best_fit_ode,
+        "best_fit_selection_rule": "minimum_full_train_objective_among_accepted_models",
         "q3_compatible_ode_model": q3_compatible_ode,
         "model_parameters": model_parameters,
+        "full_train_objectives": valid_full_train_objectives,
         "calibration": {
             "drag_records": int(len(drag_representative)),
             "lift_records": int(len(lift_representative)),
             "drag_grid_size": int(config["ode"]["drag_calibration"]["grid_size"]),
             "lift_grid_size": int(config["ode"]["lift_calibration"]["grid_size"]),
             "solver": calibration_solver,
+            "local_optimization": local_optimization,
+            "failure_penalty": failure_penalty,
             "source": "train split representative records only; fixed test split excluded from calibration",
         },
     }
@@ -549,14 +633,24 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         ode_test.iloc[0],
         constants=constants,
         solver=config["ode"]["solver"],
+        carry_definition=carry_definition,
         cd=cd,
         cl=constant_params["cl"],
         lift_scale=spin_params["lift_scale"],
         side_sign=selected_sign,
     )
+    q3_boundary_checks = q3_boundary_stability_checks(
+        pd.concat([ode_train, ode_test], ignore_index=True),
+        constants=constants,
+        solver=config["ode"]["solver"],
+        params=model_parameters[q3_compatible_ode],
+        side_sign=selected_sign,
+        carry_definition=carry_definition,
+    )
     ode_check_frame = pd.concat(
         [
             ode_check_frame,
+            q3_boundary_checks,
             pd.DataFrame(
                 [
                     {
@@ -588,16 +682,20 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         "git_commit": current_git_commit(root),
         "python_version": platform.python_version(),
         "package_versions": package_versions(),
-        "config_path": str((root / config_path).relative_to(root)),
+        "config_path": rel_posix(root / config_path, root),
         "config_sha256": file_sha256(root / config_path),
-        "data_path": str((root / config["input_path"]).relative_to(root)),
+        "data_path": rel_posix(root / config["input_path"], root),
         "data_sha256": file_sha256(root / config["input_path"]),
         "train_ids_sha256": values_sha256(split.loc[split["split"] == "train", "record_id"]),
         "test_ids_sha256": values_sha256(split.loc[split["split"] == "test", "record_id"]),
         "drag_calibration_record_ids": drag_representative["record_id"].astype(int).tolist(),
         "lift_calibration_record_ids": lift_representative["record_id"].astype(int).tolist(),
+        "carry_definition": carry_definition,
         "best_fit_ode_model": q2_best_fit_ode,
+        "best_fit_selection_rule": "minimum_full_train_objective_among_accepted_models",
+        "full_train_objectives": valid_full_train_objectives,
         "q3_compatible_ode_model": q3_compatible_ode,
+        "q3_compatible_boundary_checks_passed": bool(q3_boundary_checks["passed"].astype(bool).all()),
         "train_n": int(len(train)),
         "test_n": int(len(test)),
         "ode_train_n": int(len(ode_train)),
@@ -615,14 +713,14 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         "initial_height_m": constants.initial_height_m,
         "initial_height_type": constants.initial_height_type,
         "optimization_runs": {
-            "drag": str(tables["q2_drag_optimization_runs"].relative_to(root)),
-            "constant_lift": str(tables["q2_constant_lift_optimization_runs"].relative_to(root)),
-            "spin_factor_lift": str(tables["q2_spin_factor_optimization_runs"].relative_to(root)),
+            "drag": rel_posix(tables["q2_drag_optimization_runs"], root),
+            "constant_lift": rel_posix(tables["q2_constant_lift_optimization_runs"], root),
+            "spin_factor_lift": rel_posix(tables["q2_spin_factor_optimization_runs"], root),
         },
-        "tables": {name: str(path.relative_to(root)) for name, path in tables.items()},
-        "models": {"q2_ode_parameters": str(parameters_json_path.relative_to(root))},
+        "tables": {name: rel_posix(path, root) for name, path in tables.items()},
+        "models": {"q2_ode_parameters": rel_posix(parameters_json_path, root)},
         "figures": {
-            name: {kind: str(path.relative_to(root)) for kind, path in paths.items()}
+            name: {kind: rel_posix(path, root) for kind, path in paths.items()}
             for name, paths in figure_outputs.items()
         },
     }

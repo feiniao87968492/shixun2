@@ -1,6 +1,6 @@
 question: q2
 status: done
-objective: "建立监督预测模型和三维 ODE 轨迹模型，完成 task3 后的 ODE 重标定、双角色轨迹、距离定义验证、灵敏度分析和最终验收。"
+objective: "建立监督预测模型和三维 ODE 轨迹模型，完成 task4 后的 forward_x carry 统一、真实局部优化状态记录、积分失败验收、双角色轨迹、灵敏度分析和最终验收。"
 
 inputs:
   raw_data:

@@ -9,7 +9,9 @@
 | q2-E05 | 2026-07-12 | 典型轨迹 | 测试集按实际 carry 近 100/150/200 yd 选择 | 典型误差；3D/side/top 轨迹 | sample_id=683/713/623；轨迹图和轨迹点已保存 | supported |
 | q2-E06 | 2026-07-12 | 灵敏度分析 | 30 次重复划分；ODE 参数/积分/假设扰动 | 均值/标准差；输出 delta | 监督模型稳定性和 ODE 敏感性表已生成 | supported |
 | q2-E07 | 2026-07-12 | artifact 验证 | `questions/q2/scripts/validate.py` | 自动检查项 | 69 项检查通过 | supported |
+| q2-E08 | 2026-07-13 | task4 ODE 最终整改 | forward_x carry + Powell 局部优化 + 失败惩罚 | optimizer status / accepted / failure counts | 选中运行均 accepted，标定/完整训练/测试失败数均为 0 | supported |
+| q2-E09 | 2026-07-13 | 第三问兼容 ODE 边界验收 | 16 个输入边界组合测试 `spin_factor_lift` | integration status / flight_time / apex / lateral | 全部稳定；最大飞行时间 8.611 s，最大最高点 93.551 yd，最大横向距离 152.335 yd | supported |
 
 ## 参数边界说明
 
-`drag` 的 `C_D=0.05` 位于下界，不能单独解释为真实阻力系数。含升力模型使用训练代表样本粗网格标定，参数应解释为当前简化 ODE 的有效参数。
+`drag` 的 `C_D=0.05` 位于下界，不能单独解释为真实阻力系数。task4 后含升力模型使用训练代表样本粗网格 + 有界 Powell 局部优化标定，参数为 constant_lift `C_D=0.238654,C_L=0.203952`、spin_factor_lift `C_D=0.050059,k_L=0.151837`，应解释为当前简化 ODE 的有效参数。

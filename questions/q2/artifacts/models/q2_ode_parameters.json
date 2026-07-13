@@ -1,6 +1,8 @@
 {
   "side_spin_sign": -1,
+  "carry_definition": "forward_x",
   "best_fit_ode_model": "constant_lift",
+  "best_fit_selection_rule": "minimum_full_train_objective_among_accepted_models",
   "q3_compatible_ode_model": "spin_factor_lift",
   "model_parameters": {
     "vacuum": {
@@ -14,15 +16,20 @@
       "lift_scale": 0.0
     },
     "constant_lift": {
-      "cd": 0.26999999999999996,
-      "cl": 0.18,
+      "cd": 0.23865389879466456,
+      "cl": 0.20395234754494648,
       "lift_scale": 0.0
     },
     "spin_factor_lift": {
-      "cd": 0.48999999999999994,
+      "cd": 0.05005882982069819,
       "cl": 0.0,
-      "lift_scale": 1.6
+      "lift_scale": 0.1518366675348651
     }
+  },
+  "full_train_objectives": {
+    "drag": 1.8767170050358932,
+    "constant_lift": 0.1339066021311711,
+    "spin_factor_lift": 1.3161158555968424
   },
   "calibration": {
     "drag_records": 36,
@@ -33,8 +40,17 @@
       "method": "DOP853",
       "rtol": 1e-07,
       "atol": 1e-09,
-      "max_step": 0.05
+      "max_step": 0.15
     },
+    "local_optimization": {
+      "method": "Powell",
+      "maxiter": 40,
+      "maxfev": 120,
+      "xtol": 0.0001,
+      "ftol": 1e-06,
+      "minimum_improvement": 1e-06
+    },
+    "failure_penalty": 100.0,
     "source": "train split representative records only; fixed test split excluded from calibration"
   }
 }

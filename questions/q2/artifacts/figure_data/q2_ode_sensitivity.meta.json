@@ -2,7 +2,7 @@
   "stem": "q2_ode_sensitivity",
   "title": "Q2 ODE sensitivity",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-13T04:18:35.594427+00:00",
+  "generated_at": "2026-07-13T08:00:02.692584+00:00",
   "rows": 160,
   "columns": [
     "model",
@@ -10,6 +10,7 @@
     "parameter",
     "relative_change",
     "metric",
+    "carry_definition",
     "baseline_value",
     "scenario_value",
     "delta",

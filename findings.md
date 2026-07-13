@@ -112,6 +112,32 @@
 - `run_metadata.json` now records git commit, data/config hashes, package versions, split hashes, calibration ids, model roles, and optimization run paths.
 - Repeated pipeline run matched major CSV SHA256 hashes.
 
+## Q2 Task4 Scope
+
+- `docs/plans/task4.md` is the current authoritative plan.
+- The task remains limited to q2 ODE final remediation.
+- Required changes beyond task3:
+  - Add configured primary carry definition `q2.ode.carry_definition=forward_x`.
+  - Use forward-x carry consistently in calibration objectives, ODE metrics, typical errors, sensitivity, and comparison tables.
+  - Replace `maxiter=1/maxfev=4` local optimization with configured Powell options and true optimizer termination status.
+  - Distinguish `optimizer_success`, `objective_finite`, and `accepted`; selected runs must have zero calibration/full-train failures.
+  - Penalize or reject integration failures instead of silently dropping failed samples.
+  - Emit per-model calibration failure sample tables.
+  - Determine q2 best-fit ODE from valid full-train objectives; q3-compatible model remains `spin_factor_lift` only if boundary stability checks pass.
+  - Add validation checks for optimizer termination, forward-x carry consistency, zero failures, q3 boundary stability, and POSIX metadata paths.
+
+## Q2 Task4 Performance Debugging
+
+- A full pipeline run with true Powell optimization timed out after 40 minutes.
+- Objective timing:
+  - drag representative objective: about 0.8 s for 36 records.
+  - constant-lift objective at calibration `max_step=0.05`: about 2.5 s for 24 records.
+  - spin-factor objective at calibration `max_step=0.05`: about 3.5 s for 24 records.
+- Powell timing at calibration `max_step=0.15`:
+  - constant-lift single start: success, 95 function evaluations, about 99 s.
+  - spin-factor single start: success, 111 function evaluations, about 120 s.
+- Decision: use `solver_max_step=0.15` only for calibration-time local search, while fixed test evaluation and validation still use the configured formal ODE solver.
+
 ## Phase 14 RED Evidence
 
 `python -m pytest tests\test_q2_full_task2.py -q` failed as expected:
