@@ -87,7 +87,7 @@ Phase 15 - q2 task3 recalibration and acceptance
 - [x] Extend q2 validation and metadata to cover task3 acceptance checks.
 - [x] Sync q2 docs, root status, evidence chain, figure registry, report text, findings, and progress.
 - [x] Run pipeline, validate, rerun pipeline, reproducibility checks, pytest, repo checks, raw snapshot verification, and whitespace check.
-- [ ] Stage with raw/PDF/Excel guard, commit task3 work, push, and verify remote SHA.
+- [x] Stage with raw/PDF/Excel guard, commit task3 work, push, and verify remote SHA.
 
 ## Git Safety
 
