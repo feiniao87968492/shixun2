@@ -32,18 +32,24 @@ from optimize import (  # noqa: E402
     differential_evolution_runs,
     evaluate_designs,
     local_refinement,
+    optimize_for_target,
     sampling_baseline,
     top_candidates,
 )
 from robustness import (  # noqa: E402
+    all_scenario_robustness_summary,
+    joint_model_parameter_robustness,
     model_crosscheck,
+    near_optimal_parameter_ranges,
     near_optimal_candidates,
     optimal_parameter_rows,
+    robust_candidate_pool,
     robustness_summary,
     simulate_parameter_robustness,
+    support_comparison,
     target_distance_sensitivity,
 )
-from support import fit_support_model, search_bounds  # noqa: E402
+from support import fit_full_input_support_model, fit_support_model, search_bounds  # noqa: E402
 from surrogate import fit_lateral_model, fit_surrogate_ensembles  # noqa: E402
 from validate import validate_outputs  # noqa: E402
 from visualize import create_visualizations  # noqa: E402
@@ -127,7 +133,7 @@ def objective_slice_data(
     support_model: Any,
     config: dict[str, Any],
 ) -> dict[str, pd.DataFrame]:
-    robust = optimal.set_index("candidate_type").loc["robust_recommended_optimum"]
+    robust = optimal.set_index("candidate_type").loc["joint_robust_recommended_optimum"]
     nominal = optimal.set_index("candidate_type").loc["nominal_optimum"]
     outputs: dict[str, pd.DataFrame] = {}
     grid_n = int(config["plotting"].get("slice_grid_size", 50))
@@ -162,7 +168,7 @@ def objective_slice_data(
             speed_angle,
             train[[*LAUNCH_FEATURES]].assign(row_type="train", objective_yd=np.nan),
             pd.DataFrame([nominal]).assign(row_type="nominal_optimum"),
-            pd.DataFrame([robust]).assign(row_type="robust_recommended_optimum"),
+            pd.DataFrame([robust]).assign(row_type="joint_robust_recommended_optimum"),
         ],
         ignore_index=True,
         sort=False,
@@ -199,7 +205,7 @@ def objective_slice_data(
             spin,
             train[[*LAUNCH_FEATURES]].assign(row_type="train", objective_yd=np.nan),
             pd.DataFrame([nominal]).assign(row_type="nominal_optimum"),
-            pd.DataFrame([robust]).assign(row_type="robust_recommended_optimum"),
+            pd.DataFrame([robust]).assign(row_type="joint_robust_recommended_optimum"),
         ],
         ignore_index=True,
         sort=False,
@@ -220,12 +226,19 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
     tables["q3_dependency_audit"] = save_table(deps.audit, stem="q3_dependency_audit", question_dir=question_dir)["csv"]
 
     support_model, support_threshold, training_support = fit_support_model(deps.train, config)
+    full_support_model, full_support_threshold, full_training_support = fit_full_input_support_model(deps.train, config)
     tables["q3_search_bounds"] = save_table(search_bounds(deps.train, config), stem="q3_search_bounds", question_dir=question_dir)["csv"]
     tables["q3_support_threshold"] = save_table(
         support_threshold, stem="q3_support_threshold", question_dir=question_dir
     )["csv"]
     tables["q3_training_support"] = save_table(
         training_support, stem="q3_training_support", question_dir=question_dir
+    )["csv"]
+    tables["q3_full_input_support_threshold"] = save_table(
+        full_support_threshold, stem="q3_full_input_support_threshold", question_dir=question_dir
+    )["csv"]
+    tables["q3_full_input_training_support"] = save_table(
+        full_training_support, stem="q3_full_input_training_support", question_dir=question_dir
     )["csv"]
 
     git_commit = current_git_commit(root)
@@ -300,6 +313,31 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         all_top, stem="q3_top_candidates", question_dir=question_dir
     )["csv"]
 
+    candidate_pool = robust_candidate_pool(all_top, config)
+    pool_columns = [
+        "candidate_id",
+        "nominal_rank",
+        "objective_yd",
+        "support_category",
+        "selection_method",
+        "cluster_id",
+        "selected_for_robustness",
+        *VARIABLES,
+        "launch_direction_deg",
+        "predicted_carry_yd",
+        "predicted_lateral_yd",
+        "predicted_apex_yd",
+        "support_knn_distance",
+        "support_threshold",
+        "source",
+        "rank",
+        "seed",
+    ]
+    tables["q3_robust_candidate_pool"] = save_table(
+        candidate_pool[[column for column in pool_columns if column in candidate_pool.columns]],
+        stem="q3_robust_candidate_pool",
+        question_dir=question_dir,
+    )["csv"]
     robust_candidates = near_optimal_candidates(all_top, config)
     robustness_detail = simulate_parameter_robustness(
         robust_candidates,
@@ -307,15 +345,50 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         lateral_model=lateral_model,
         apex_model=deps.apex_model,
         support_model=support_model,
+        full_support_model=full_support_model,
         config=config,
     )
-    tables["q3_parameter_robustness"] = save_table(
-        robustness_detail, stem="q3_parameter_robustness", question_dir=question_dir
+    robustness_metrics = robustness_summary(robustness_detail, config=config)
+    tables["q3_single_surrogate_parameter_robustness"] = save_table(
+        robustness_metrics, stem="q3_single_surrogate_parameter_robustness", question_dir=question_dir
     )["csv"]
-    robustness_metrics = robustness_summary(robustness_detail)
-    optimal = optimal_parameter_rows(all_top, robustness_metrics, config)
+    all_robustness_metrics = all_scenario_robustness_summary(robustness_detail)
+    support_compare = support_comparison(
+        robust_candidates,
+        robustness_detail,
+        full_support_model=full_support_model,
+    )
+    tables["q3_support_comparison"] = save_table(
+        support_compare, stem="q3_support_comparison", question_dir=question_dir
+    )["csv"]
+    joint_detail, joint_summary = joint_model_parameter_robustness(
+        robust_candidates,
+        carry_models=carry_ensemble,
+        lateral_models=lateral_ensemble,
+        apex_model=deps.apex_model,
+        support_comparison_table=support_compare,
+        config=config,
+    )
+    tables["q3_joint_robustness_detail"] = save_table(
+        joint_detail, stem="q3_joint_robustness_detail", question_dir=question_dir
+    )["csv"]
+    tables["q3_joint_robustness_summary"] = save_table(
+        joint_summary, stem="q3_joint_robustness_summary", question_dir=question_dir
+    )["csv"]
+    optimal = optimal_parameter_rows(all_top, robustness_metrics, all_robustness_metrics, joint_summary, config)
     tables["q3_optimal_parameters"] = save_table(
         optimal, stem="q3_optimal_parameters", question_dir=question_dir
+    )["csv"]
+    robustness_export_ids = set(optimal["candidate_id"].astype(str))
+    robustness_detail_export = robustness_detail[
+        robustness_detail["candidate_id"].astype(str).isin(robustness_export_ids)
+    ].copy()
+    tables["q3_parameter_robustness"] = save_table(
+        robustness_detail_export, stem="q3_parameter_robustness", question_dir=question_dir
+    )["csv"]
+    near_ranges = near_optimal_parameter_ranges(robust_candidates, joint_summary, config)
+    tables["q3_near_optimal_parameter_ranges"] = save_table(
+        near_ranges, stem="q3_near_optimal_parameter_ranges", question_dir=question_dir
     )["csv"]
 
     crosscheck = model_crosscheck(
@@ -328,7 +401,28 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
     tables["q3_model_crosscheck"] = save_table(
         crosscheck, stem="q3_model_crosscheck", question_dir=question_dir
     )["csv"]
-    target_sensitivity = target_distance_sensitivity(all_top, config)
+    target_run_frames: list[pd.DataFrame] = []
+    target_optimal_frames: list[pd.DataFrame] = []
+    for target_distance in config["target_distance_sensitivity_yd"]:
+        target_runs, target_optimal = optimize_for_target(
+            float(target_distance),
+            carry_model=deps.carry_model,
+            lateral_model=lateral_model,
+            apex_model=deps.apex_model,
+            support_model=support_model,
+            config=config,
+        )
+        target_run_frames.append(target_runs)
+        target_optimal_frames.append(target_optimal)
+    target_runs_all = pd.concat(target_run_frames, ignore_index=True, sort=False)
+    target_optimal_all = pd.concat(target_optimal_frames, ignore_index=True, sort=False)
+    tables["q3_target_optimization_runs"] = save_table(
+        target_runs_all, stem="q3_target_optimization_runs", question_dir=question_dir
+    )["csv"]
+    tables["q3_target_optimal_parameters"] = save_table(
+        target_optimal_all, stem="q3_target_optimal_parameters", question_dir=question_dir
+    )["csv"]
+    target_sensitivity = target_distance_sensitivity(target_optimal_all)
     tables["q3_target_distance_sensitivity"] = save_table(
         target_sensitivity, stem="q3_target_distance_sensitivity", question_dir=question_dir
     )["csv"]
@@ -379,7 +473,7 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         "fixed_inputs": config["fixed_inputs"],
         "nominal_candidate_id": str(optimal.set_index("candidate_type").loc["nominal_optimum", "candidate_id"]),
         "robust_candidate_id": str(
-            optimal.set_index("candidate_type").loc["robust_recommended_optimum", "candidate_id"]
+            optimal.set_index("candidate_type").loc["joint_robust_recommended_optimum", "candidate_id"]
         ),
         "lateral_model": {
             "path": "questions/q3/artifacts/models/q3_lateral_model.joblib",
@@ -415,10 +509,10 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         "test_n": int(len(deps.test)),
         "nominal_objective_yd": float(optimal.set_index("candidate_type").loc["nominal_optimum", "objective_yd"]),
         "robust_objective_yd": float(
-            optimal.set_index("candidate_type").loc["robust_recommended_optimum", "objective_yd"]
+            optimal.set_index("candidate_type").loc["joint_robust_recommended_optimum", "objective_yd"]
         ),
         "robust_p90_miss_yd": float(
-            optimal.set_index("candidate_type").loc["robust_recommended_optimum", "p90_miss_distance_yd"]
+            optimal.set_index("candidate_type").loc["joint_robust_recommended_optimum", "joint_p90_miss_distance_yd"]
         ),
         "selected_lateral_model": str(lateral_metrics[lateral_metrics["selected"].astype(bool)]["model"].iloc[0]),
     }

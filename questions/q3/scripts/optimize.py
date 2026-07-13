@@ -70,8 +70,12 @@ def evaluate_designs(
     apex_model: Any,
     support_model: SupportModel,
     config: dict[str, Any],
+    target_distance_yd: float | None = None,
+    target_lateral_yd: float | None = None,
 ) -> pd.DataFrame:
-    target_distance, target_lateral = _target(config)
+    config_target_distance, config_target_lateral = _target(config)
+    target_distance = config_target_distance if target_distance_yd is None else float(target_distance_yd)
+    target_lateral = config_target_lateral if target_lateral_yd is None else float(target_lateral_yd)
     return evaluate_candidates(
         designs,
         carry_model=carry_model,
@@ -166,12 +170,16 @@ def differential_evolution_runs(
         candidate = evaluated.to_dict()
         candidate.update({"candidate_id": candidate_id, "source": "differential_evolution", "seed": int(seed)})
         candidate_rows.append(candidate)
-        finite_objective = bool(np.isfinite(float(evaluated["objective_yd"])))
+        objective_finite = bool(np.isfinite(float(evaluated["objective_yd"])))
+        scipy_success = bool(result.success)
+        accepted = bool(scipy_success and objective_finite)
         run_rows.append(
             {
                 "seed": int(seed),
-                "success": finite_objective,
-                "scipy_success": bool(result.success),
+                "success": scipy_success,
+                "scipy_success": scipy_success,
+                "objective_finite": objective_finite,
+                "accepted": accepted,
                 "message": str(result.message),
                 "objective_yd": float(evaluated["objective_yd"]),
                 "ball_speed_mph": float(evaluated["ball_speed_mph"]),
@@ -242,3 +250,183 @@ def top_candidates(*frames: pd.DataFrame, limit: int = 500) -> pd.DataFrame:
     top = combined.head(int(limit)).copy()
     top["rank"] = np.arange(1, len(top) + 1)
     return top.reset_index(drop=True)
+
+
+def optimize_for_target(
+    target_distance_yd: float,
+    *,
+    carry_model: Any,
+    lateral_model: Any,
+    apex_model: Any,
+    support_model: SupportModel,
+    config: dict[str, Any],
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Run an independent LHS + DE + local-refinement optimization for one target."""
+    bounds = bounds_from_config(config)
+    target_lateral = float(config["target"]["lateral_yd"])
+    target_label = str(int(round(float(target_distance_yd))))
+    baseline_count = int(config["baseline"]["sample_count"])
+    seed_base = int(config["random_seed"]) + int(round(float(target_distance_yd) * 10))
+    de_config = config["differential_evolution"]
+    target_config = config.get("target_optimization", {})
+    de_seeds = list(target_config.get("seeds", de_config["seeds"][:3]))
+    if len(de_seeds) < 3:
+        raise ValueError("q3 target optimization requires at least three DE seeds")
+
+    run_rows: list[dict[str, Any]] = []
+    candidate_frames: list[pd.DataFrame] = []
+
+    lhs_designs = _lhs(bounds, baseline_count, seed=seed_base + 11)
+    lhs_evaluated = evaluate_designs(
+        lhs_designs,
+        carry_model=carry_model,
+        lateral_model=lateral_model,
+        apex_model=apex_model,
+        support_model=support_model,
+        config=config,
+        target_distance_yd=float(target_distance_yd),
+        target_lateral_yd=target_lateral,
+    )
+    lhs_evaluated["candidate_id"] = [f"target_{target_label}_lhs_{idx:06d}" for idx in range(len(lhs_evaluated))]
+    lhs_evaluated["source"] = "target_lhs_baseline"
+    lhs_evaluated["target_distance_yd"] = float(target_distance_yd)
+    candidate_frames.append(lhs_evaluated.sort_values(["objective_yd", "support_knn_distance"]).head(100))
+    lhs_best = lhs_evaluated.sort_values(["objective_yd", "support_knn_distance"]).iloc[0]
+    run_rows.append(
+        {
+            **lhs_best.to_dict(),
+            "target_distance_yd": float(target_distance_yd),
+            "seed": seed_base + 11,
+            "run_stage": "lhs_baseline",
+            "scipy_success": True,
+            "objective_finite": bool(np.isfinite(float(lhs_best["objective_yd"]))),
+            "accepted": bool(np.isfinite(float(lhs_best["objective_yd"]))),
+            "message": "lhs baseline best of regenerated target-specific sample",
+            "sample_count": baseline_count,
+        }
+    )
+
+    def score(values: np.ndarray) -> float | np.ndarray:
+        arr = np.asarray(values, dtype=float)
+        if arr.ndim == 2:
+            arr = arr.T
+        else:
+            arr = arr.reshape(1, -1)
+        evaluated = evaluate_designs(
+            candidate_frame(arr, launch_direction_deg=float(config["fixed_inputs"]["launch_direction_deg"])),
+            carry_model=carry_model,
+            lateral_model=lateral_model,
+            apex_model=apex_model,
+            support_model=support_model,
+            config=config,
+            target_distance_yd=float(target_distance_yd),
+            target_lateral_yd=target_lateral,
+        )
+        values_out = evaluated["objective_yd"].to_numpy(dtype=float)
+        return float(values_out[0]) if len(values_out) == 1 else values_out
+
+    local_sample_count = int(config["local_refinement"]["sample_count"])
+    half_widths = {
+        "ball_speed_mph": float(config["local_refinement"]["ball_speed_half_width_mph"]),
+        "launch_angle_deg": float(config["local_refinement"]["launch_angle_half_width_deg"]),
+        "spin_rate_rpm": float(config["local_refinement"]["spin_rate_half_width_rpm"]),
+        "spin_axis_deg": float(config["local_refinement"]["spin_axis_half_width_deg"]),
+    }
+    global_bounds = dict(zip(VARIABLES, bounds, strict=True))
+    de_candidates: list[dict[str, Any]] = []
+
+    for seed in de_seeds:
+        result = differential_evolution(
+            score,
+            bounds=bounds,
+            strategy=str(de_config["strategy"]),
+            maxiter=int(de_config["max_iterations"]),
+            popsize=int(de_config["population_size"]),
+            tol=float(de_config["tolerance"]),
+            seed=int(seed),
+            workers=int(de_config.get("workers", 1)),
+            polish=bool(de_config.get("polish", False)),
+            updating="deferred",
+            vectorized=True,
+        )
+        evaluated = evaluate_designs(
+            candidate_frame(result.x, launch_direction_deg=float(config["fixed_inputs"]["launch_direction_deg"])),
+            carry_model=carry_model,
+            lateral_model=lateral_model,
+            apex_model=apex_model,
+            support_model=support_model,
+            config=config,
+            target_distance_yd=float(target_distance_yd),
+            target_lateral_yd=target_lateral,
+        ).iloc[0]
+        candidate_id = f"target_{target_label}_de_seed_{int(seed)}"
+        candidate = evaluated.to_dict()
+        candidate.update({"candidate_id": candidate_id, "source": "target_differential_evolution", "seed": int(seed)})
+        de_candidates.append(candidate)
+        objective_finite = bool(np.isfinite(float(evaluated["objective_yd"])))
+        scipy_success = bool(result.success)
+        run_rows.append(
+            {
+                **candidate,
+                "target_distance_yd": float(target_distance_yd),
+                "run_stage": "differential_evolution",
+                "scipy_success": scipy_success,
+                "objective_finite": objective_finite,
+                "accepted": bool(scipy_success and objective_finite),
+                "message": str(result.message),
+                "iterations": int(getattr(result, "nit", 0)),
+                "function_evaluations": int(getattr(result, "nfev", 0)),
+                "sample_count": 1,
+            }
+        )
+
+        local_bounds = []
+        for variable in VARIABLES:
+            low, high = global_bounds[variable]
+            center = float(evaluated[variable])
+            width = half_widths[variable]
+            local_bounds.append((max(low, center - width), min(high, center + width)))
+        local_designs = _lhs(local_bounds, local_sample_count, seed=int(seed) + seed_base + 401)
+        local_evaluated = evaluate_designs(
+            local_designs,
+            carry_model=carry_model,
+            lateral_model=lateral_model,
+            apex_model=apex_model,
+            support_model=support_model,
+            config=config,
+            target_distance_yd=float(target_distance_yd),
+            target_lateral_yd=target_lateral,
+        )
+        local_evaluated["candidate_id"] = [
+            f"target_{target_label}_local_{int(seed)}_{idx:05d}" for idx in range(len(local_evaluated))
+        ]
+        local_evaluated["source"] = "target_local_refinement"
+        local_evaluated["seed"] = int(seed)
+        local_evaluated["target_distance_yd"] = float(target_distance_yd)
+        candidate_frames.append(local_evaluated.sort_values(["objective_yd", "support_knn_distance"]).head(100))
+        local_best = local_evaluated.sort_values(["objective_yd", "support_knn_distance"]).iloc[0]
+        run_rows.append(
+            {
+                **local_best.to_dict(),
+                "target_distance_yd": float(target_distance_yd),
+                "seed": int(seed),
+                "run_stage": "local_refinement",
+                "scipy_success": True,
+                "objective_finite": bool(np.isfinite(float(local_best["objective_yd"]))),
+                "accepted": bool(np.isfinite(float(local_best["objective_yd"]))),
+                "message": "local LHS refinement around target-specific DE solution",
+                "sample_count": local_sample_count,
+            }
+        )
+
+    if de_candidates:
+        candidate_frames.append(pd.DataFrame(de_candidates))
+    all_candidates = pd.concat(candidate_frames, ignore_index=True, sort=False)
+    supported = all_candidates[all_candidates["support_category"] == "supported"].copy()
+    if supported.empty:
+        raise RuntimeError(f"No supported target-specific q3 solution found for {target_distance_yd} yd")
+    best_supported = supported.sort_values(["objective_yd", "support_knn_distance"]).iloc[0].copy()
+    best_supported["solution_type"] = "best_supported"
+    best_supported["target_distance_yd"] = float(target_distance_yd)
+    optimal = pd.DataFrame([best_supported])
+    return pd.DataFrame(run_rows), optimal

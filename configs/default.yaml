@@ -201,14 +201,27 @@ q3:
   near_optimal_tolerance_yd: 0.5
   perturbation:
     simulations: 2000
+    bootstrap_iterations: 100
     ball_speed_sd_mph: 1.0
     launch_angle_sd_deg: 0.5
     spin_rate_sd_rpm: 150.0
     spin_axis_sd_deg: 1.0
+    launch_direction_scenarios:
+      ideal:
+        sd_deg: 0.0
+      stable_player:
+        sd_deg: 0.5
+      ordinary_player:
+        sd_deg: 1.0
   uncertainty:
     ensemble_members: 5
     stable_objective_std_yd: 0.5
     moderate_objective_std_yd: 2.0
+  target_optimization:
+    seeds:
+      - 2026
+      - 2027
+      - 2028
   target_distance_sensitivity_yd:
     - 195.0
     - 200.0

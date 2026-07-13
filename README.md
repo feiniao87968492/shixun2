@@ -50,7 +50,7 @@ tests/                   回归测试
 |---|---|---|---|
 | q1 | done | 数据审计、异常 0 值修正、飞行距离影响因素分层解释、review2 方法审查修复 | `python questions/q1/scripts/pipeline.py --config configs/default.yaml` |
 | q2 | done | 固定 70/30 划分、监督预测模型、四层 ODE 重标定、双角色轨迹、灵敏度与最终验收 | `python questions/q2/scripts/pipeline.py --config configs/default.yaml` |
-| q3 | done | 以 200 yd 目标为约束的稳健击球参数搜索、模型分歧分析和 ODE 轨迹复核 | `python questions/q3/scripts/pipeline.py --config configs/default.yaml` |
+| q3 | done | 以 200 yd 目标为约束的稳健击球参数搜索、联合模型-参数不确定性分析、目标距离重优化和 ODE 轨迹复核 | `python questions/q3/scripts/pipeline.py --config configs/default.yaml` |
 
 ## Q1 复现与验证
 
@@ -89,6 +89,7 @@ Q2 当前主结果：
 python questions/q3/scripts/pipeline.py --config configs/default.yaml
 python questions/q3/scripts/validate.py --config configs/default.yaml
 python -m pytest tests/test_q3_task5_inverse_design.py -q
+python -m pytest tests/test_q3_final_robustness.py -q
 ```
 
 Q3 当前主结果：
@@ -96,6 +97,8 @@ Q3 当前主结果：
 - q2 依赖审计全部通过，固定划分复用 train=514、test=221。
 - lateral 偏移模型：`hist_gradient_boosting`，测试 RMSE=5.475 yd，MAE=3.870 yd，R2=0.958。
 - 最佳观测训练记录：`record_id=609`，实测距洞口 5.351 yd。
-- 名义最优：球速 121.113 mph、发射角 19.616 度、自旋速率 2627.708 rpm、自旋轴偏角 -0.366 度，监督目标函数 0.010 yd。
-- 稳健推荐：球速 120.751 mph、发射角 19.482 度、自旋速率 2348.781 rpm、自旋轴偏角 0.450 度，监督目标函数 0.022 yd，扰动 p90 距洞 3.135 yd。
+- 名义最优：球速 121.113 mph、发射角 19.616 度、自旋速率 2627.708 rpm、自旋轴偏角 -0.366 度；选定监督代理模型内部的名义目标残差为 0.010 yd。
+- 单代理参数稳健解：球速 120.868 mph、发射角 18.978 度、自旋速率 2344.294 rpm、自旋轴偏角 0.118 度；stable_player 情景下单代理 p90 距洞 4.932 yd。
+- 最终论文推荐采用联合模型-参数稳健解：球速 122.958 mph、发射角 20.437 度、自旋速率 2720.784 rpm、自旋轴偏角 -1.255 度；监督目标函数 0.204 yd，stable_player 联合 p90 距洞 7.133 yd，5 yd 内模拟比例 0.724。该比例仅是在指定参数误差分布、发射方向误差情景和代理模型集合下的模拟比例，不是真实球员命中概率。
+- 支持区近优候选共 482 个，全部纳入稳健性分析；195/200/205 yd 均已独立重优化。考虑模型分歧后，真实策略不确定性明显大于 0.010 yd 的名义代理残差。
 - ODE 复核积分均成功，但与监督代理存在数 yd 级差异；第三问结论表述为监督代理下的稳健推荐策略。

@@ -1,5 +1,26 @@
 # Development Log
 
+## 2026-07-13 - q3 task6 最终稳健性整改
+
+- **目标**：完成 `docs/plans/task6.md`，在保留 q3 主反设计流程的前提下，修复稳健候选池过窄、缺少发射方向扰动、目标距离未独立重优化和单代理不确定性低估问题。
+- **完成**：
+  - 新增 `tests/test_q3_final_robustness.py`，RED 阶段确认缺少方向扰动配置、完整稳健候选池、联合稳健表、目标重优化表和近优范围表。
+  - 扩展 q3 配置，加入 `ideal/stable_player/ordinary_player` 发射方向扰动场景、bootstrap 次数和 195/200/205 yd 目标重优化种子。
+  - `candidate_frame()` 支持逐行发射方向；支持区诊断扩展到完整五维模型输入。
+  - 删除固定前 12 个候选限制，将 482 个 supported near-optimal 候选全部纳入稳健性分析。
+  - 稳健性分析使用共同随机数、p90 bootstrap CI、发射方向场景、扰动越界比例和联合模型-参数不确定性。
+  - 195/200/205 yd 目标距离均通过目标专属 LHS、至少 3 个 DE seed 和局部 refinement 独立重优化。
+  - DE 运行表区分 `scipy_success`、`objective_finite` 和 `accepted`。
+  - 更新 q3 文档、证据链、图表登记表、论文草稿、附录、决策日志、风险登记表、规划文件和进度记录。
+- **关键结果**：
+  - 名义最优监督代理残差为 0.010 yd。
+  - 单代理参数稳健解为球速 120.868 mph、发射角 18.978 度、自旋速率 2344.294 rpm、自旋轴偏角 0.118 度，stable_player 单代理 p90=4.932 yd。
+  - 最终论文推荐采用联合模型-参数稳健解：球速 122.958 mph、发射角 20.437 度、自旋速率 2720.784 rpm、自旋轴偏角 -1.255 度，监督目标函数 0.204 yd，stable_player 联合 p90=7.133 yd，5 yd 内模拟比例 0.724。
+  - 目标距离独立重优化 supported best：195 yd objective=0.011 yd，200 yd objective=0.010 yd，205 yd objective=0.016 yd。
+  - 近优非唯一性：482 个 supported near-optimal 参数组、256 个不同预测落点组、最大预测平台规模 20。
+- **局限**：5 yd 内比例只是指定参数误差分布、发射方向误差情景和代理模型集合下的模拟比例；不能写成真实球员命中概率。ODE 仍只作为交叉检查和轨迹展示。
+- **验证**：`python questions\q3\scripts\pipeline.py --config configs/default.yaml` 通过；主要 q3 CSV 重跑哈希一致；`python questions\q3\scripts\validate.py --config configs/default.yaml` 通过 31 项检查；`python -m pytest tests\test_q3_final_robustness.py -q` 5 passed；`python -m pytest tests\test_q3_task5_inverse_design.py -q` 6 passed；`python -m pytest -q` 51 passed；`python scripts\check_repo.py` 0 warnings；`python scripts\snapshot_raw.py --verify` 验证 3 个 raw 文件；`git diff --check` 无输出。
+
 ## 2026-07-13 - q2 task4 最终 ODE 整改
 
 - **目标**：完成 `docs/plans/task4.md`，统一 ODE carry 口径、修正优化器状态、纳入积分失败、验收第三问兼容 ODE。

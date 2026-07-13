@@ -34,6 +34,14 @@ python questions/q3/scripts/validate.py --config configs/default.yaml
 - `questions/q3/artifacts/tables/q3_optimization_runs.csv`
 - `questions/q3/artifacts/tables/q3_optimal_parameters.csv`
 - `questions/q3/artifacts/tables/q3_parameter_robustness.csv`
+- `questions/q3/artifacts/tables/q3_robust_candidate_pool.csv`
+- `questions/q3/artifacts/tables/q3_single_surrogate_parameter_robustness.csv`
+- `questions/q3/artifacts/tables/q3_joint_robustness_summary.csv`
+- `questions/q3/artifacts/tables/q3_joint_robustness_detail.csv`
+- `questions/q3/artifacts/tables/q3_support_comparison.csv`
+- `questions/q3/artifacts/tables/q3_near_optimal_parameter_ranges.csv`
+- `questions/q3/artifacts/tables/q3_target_optimization_runs.csv`
+- `questions/q3/artifacts/tables/q3_target_optimal_parameters.csv`
 - `questions/q3/artifacts/tables/q3_model_crosscheck.csv`
 - `questions/q3/artifacts/tables/q3_target_distance_sensitivity.csv`
 - `questions/q3/artifacts/tables/q3_ode_crosscheck.csv`

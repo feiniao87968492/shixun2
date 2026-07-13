@@ -18,12 +18,45 @@ def _unwrap_model(model: Any) -> Any:
     return model
 
 
-def candidate_frame(values: np.ndarray | list[float], *, launch_direction_deg: float = 0.0) -> pd.DataFrame:
-    arr = np.asarray(values, dtype=float)
-    if arr.ndim == 1:
-        arr = arr.reshape(1, -1)
-    frame = pd.DataFrame(arr, columns=VARIABLES)
-    frame.insert(2, "launch_direction_deg", float(launch_direction_deg))
+def candidate_frame(
+    values: pd.DataFrame | np.ndarray | list[float],
+    *,
+    launch_direction_deg: float | list[float] | np.ndarray | pd.Series = 0.0,
+) -> pd.DataFrame:
+    """Return a launch-feature frame for one or more candidate rows.
+
+    `values` may contain only the four decision variables or all five launch
+    features. When only four variables are provided, `launch_direction_deg` may
+    be a scalar or one value per candidate.
+    """
+    if isinstance(values, pd.DataFrame):
+        frame = values.copy()
+        if set(LAUNCH_FEATURES).issubset(frame.columns):
+            return frame[LAUNCH_FEATURES].astype(float)
+        missing = set(VARIABLES).difference(frame.columns)
+        if missing:
+            raise ValueError(f"Candidate frame missing decision variables: {sorted(missing)}")
+        frame = frame[VARIABLES].astype(float).copy()
+    else:
+        arr = np.asarray(values, dtype=float)
+        if arr.ndim == 1:
+            arr = arr.reshape(1, -1)
+        if arr.shape[1] == len(LAUNCH_FEATURES):
+            return pd.DataFrame(arr, columns=LAUNCH_FEATURES)[LAUNCH_FEATURES]
+        if arr.shape[1] != len(VARIABLES):
+            raise ValueError(
+                f"Candidate values must have {len(VARIABLES)} decision columns or {len(LAUNCH_FEATURES)} launch columns"
+            )
+        frame = pd.DataFrame(arr, columns=VARIABLES)
+
+    direction = np.asarray(launch_direction_deg, dtype=float)
+    if direction.ndim == 0:
+        direction_values = np.full(len(frame), float(direction), dtype=float)
+    else:
+        direction_values = direction.reshape(-1)
+        if len(direction_values) != len(frame):
+            raise ValueError("launch_direction_deg must be scalar or match the number of candidate rows")
+    frame.insert(2, "launch_direction_deg", direction_values)
     return frame[LAUNCH_FEATURES]
 
 

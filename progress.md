@@ -250,3 +250,61 @@
   - Committed q3 task5 implementation as `490f01d feat(q3): implement robust inverse design`.
   - Pushed `main` to GitHub over HTTPS.
   - Remote `refs/heads/main` verified at `490f01dfaf2ebd2158c82701fca5b5168a6a08d0`.
+
+## Session: 2026-07-13 - q3 task6 final remediation start
+
+- Current active goal is `docs/plans/task6.md`, which is q3 final remediation for robust candidates, model uncertainty, launch-direction perturbation, target-distance reoptimization, support coverage, and validation.
+- Required startup reads completed for q3: root README, problem statement, modeling contract, q3 README, q3 approach, q3 manifest, devlog tail, q3 evidence-chain records, planning files, and task6 plan.
+- Current branch is `main`; worktree started with untracked `docs/plans/task6.md`.
+- Temporarily downgraded q3 status to `conditionally_passed` in `README.md`, `questions/q3/README.md`, and `questions/q3/manifest.yaml`.
+- Confirmed current implementation gaps:
+  - `robustness.py` hard-codes `head(12)`;
+  - robustness noise is generated separately per candidate;
+  - `candidate_frame()` forces scalar launch direction;
+  - model crosscheck is post hoc and not used for final recommendation;
+  - target-distance sensitivity rescored the 200 yd candidate pool;
+  - `optimize.py` uses finite objective as DE `success`.
+- Added `tests/test_q3_final_robustness.py`.
+- RED command: `python -m pytest tests\test_q3_final_robustness.py -q`.
+- RED result: 5 expected failures for missing task6 config/artifacts/semantics: launch-direction scenarios, robust candidate pool, joint robustness tables, target optimization tables, and near-optimal range/support validation outputs.
+
+## Session: 2026-07-13 - q3 task6 implementation and docs sync
+
+- Added task6 q3 config for launch-direction scenarios and target reoptimization seeds.
+- Updated q3 code paths:
+  - `candidate_frame()` now supports row-wise launch direction and four- or five-column launch inputs.
+  - support diagnostics now include full model-input support.
+  - optimization run records distinguish `scipy_success`, `objective_finite`, and `accepted`.
+  - target distances 195/200/205 yd are independently optimized through LHS, at least three DE seeds, and local refinement.
+  - robustness covers all supported near-optimal candidates with common random numbers, bootstrap p90 CIs, launch-direction scenarios, support fractions, and joint model-parameter uncertainty.
+- Regenerated q3 artifacts with `python questions/q3/scripts/pipeline.py --config configs/default.yaml`.
+- Pipeline completed in about 436.7 s.
+- Key regenerated outputs:
+  - `q3_robust_candidate_pool.csv`: 482 selected supported candidates.
+  - `q3_optimal_parameters.csv`: nominal, single-surrogate robust, legacy robust, and joint robust recommendation rows.
+  - `q3_joint_robustness_summary.csv` / detail.
+  - `q3_near_optimal_parameter_ranges.csv`.
+  - `q3_target_optimization_runs.csv` and `q3_target_optimal_parameters.csv`.
+- Final recommendation moved from the legacy single-surrogate robust row to `joint_robust_recommended_optimum`.
+- Current key numbers:
+  - nominal objective=0.010 yd.
+  - single-surrogate stable_player p90=4.932 yd.
+  - joint stable_player p90=7.133 yd.
+  - joint within-5-yd simulated proportion=0.724.
+  - target objectives: 195=0.011 yd, 200=0.010 yd, 205=0.016 yd.
+- `python questions\q3\scripts\validate.py --config configs/default.yaml --skip-status-docs`: 31 checks passed.
+- `python -m pytest tests\test_q3_final_robustness.py -q`: 4 passed and 1 failed before final status-doc restoration; root cause is q3 README/manifest still contained `conditionally_passed`.
+- Updated q3 README/manifest/results/experiments/evidence/approach, root-level evidence chain, registry, decision/risk logs, paper draft, appendix, findings, progress, and task plan toward final `done` restoration.
+- Initial major-CSV reproducibility check after a full pipeline rerun found `q3_joint_robustness_summary.csv` hash drift.
+- Systematic debugging result: a reduced repeated ensemble probe showed only floating roundoff-scale differences (`~3e-14`), traced to parallel ExtraTrees training in q3 surrogate ensemble members.
+- Fix: set q3 `ExtraTreesRegressor(n_jobs=1)` so seeded ensemble artifacts are deterministic across reruns.
+- Regenerated q3 artifacts and reran major-CSV reproducibility:
+  - `Q3_REPRO_HASH_MATCH` for `q3_optimal_parameters.csv`, `q3_robust_candidate_pool.csv`, `q3_joint_robustness_summary.csv`, `q3_target_optimal_parameters.csv`, `q3_near_optimal_parameter_ranges.csv`, and `q3_validation_checks.csv`.
+- Final verification after deterministic fix:
+  - `python questions\q3\scripts\validate.py --config configs/default.yaml`: 31 checks passed.
+  - `python -m pytest tests\test_q3_final_robustness.py -q`: 5 passed.
+  - `python -m pytest tests\test_q3_task5_inverse_design.py -q`: 6 passed.
+  - `python -m pytest -q`: 51 passed.
+  - `python scripts\check_repo.py`: passed with 0 warnings.
+  - `python scripts\snapshot_raw.py --verify`: verified 3 raw files.
+  - `git diff --check`: no output.

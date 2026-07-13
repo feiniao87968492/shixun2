@@ -1,0 +1,2 @@
+neighbors,threshold_quantile,support_threshold,borderline_threshold,training_n,features,source
+5,0.95,1.40896007673,1.76120009591,514,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg,q2 fixed train split leave-one-out kNN distance in full launch-feature space

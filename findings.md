@@ -148,6 +148,40 @@
 - Model crosscheck classifies both nominal and robust candidates as `highly_model_sensitive`; this is a required q3 limitation.
 - ODE crosscheck integrates successfully for `constant_lift` and `spin_factor_lift`. For robust recommendation, constant_lift predicts D_x=193.187 yd and spin_factor_lift predicts D_x=195.032 yd, so ODE is crosscheck evidence only.
 
+## Q3 Task6 Scope
+
+- `docs/plans/task6.md` is the current authoritative plan.
+- The task is final q3 remediation, not a replacement of the existing inverse-design flow.
+- q3 must remain on the q2 fixed split: train=514, test=221. Do not reshuffle data, change q2 carry/apex models, change q3 lateral split evaluation, relax hard search bounds, change the 200 yd target function, shrink the 20,000 LHS baseline, remove the five DE seeds, replace the kNN support framework, or alter the q2 ODE interface.
+- q3 is temporarily downgraded to `conditionally_passed` until the new robustness and validation evidence passes.
+- Current task5 limitations to fix:
+  - robustness candidate selection is hard-coded to the top 12 supported near-optimal candidates;
+  - perturbations do not use common random numbers across candidates;
+  - launch direction is fixed and absent from perturbation scenarios;
+  - final robust recommendation is based on single-surrogate parameter noise instead of joint model-parameter uncertainty;
+  - 195/205 yd sensitivity rescored the original 200 yd pool instead of independently reoptimizing;
+  - parameter conclusions are too point-estimate precise for a plateaued surrogate;
+  - support diagnostics use decision-space support only, not full five-feature model input support;
+  - q3 validation does not cover the above acceptance criteria.
+
+## Q3 Task6 Results
+
+- Task6 retains the q2 fixed split train=514/test=221, q2 carry/apex models, q3 lateral fixed-test evaluation, hard search bounds, 20,000 point LHS baseline, five DE seeds, kNN support framework, and q2 ODE interface.
+- Robust candidate selection now covers all 482 supported near-optimal candidates because the supported near-optimal set is below the 500-candidate full-computation threshold.
+- Parameter robustness uses common random numbers and three launch-direction scenarios:
+  - `ideal`: launch direction sd=0.0 deg.
+  - `stable_player`: launch direction sd=0.5 deg.
+  - `ordinary_player`: launch direction sd=1.0 deg.
+- Single-surrogate robust optimum: ball_speed=120.868 mph, launch_angle=18.978 deg, spin_rate=2344.294 rpm, spin_axis=0.118 deg, objective=0.156 yd, stable_player single-surrogate p90=4.932 yd.
+- Final joint robust recommendation: ball_speed=122.958 mph, launch_angle=20.437 deg, spin_rate=2720.784 rpm, spin_axis=-1.255 deg, objective=0.204 yd, stable_player joint p90=7.133 yd, p95=8.332 yd, within-5-yd simulated proportion=0.724.
+- The within-3/5 yd values are simulated proportions under the configured parameter error distribution, launch-direction scenario, and surrogate ensemble; they are not true golfer hit probabilities.
+- Target-distance reoptimization produced supported best solutions for:
+  - 195 yd: objective=0.011 yd, predicted carry=194.990 yd.
+  - 200 yd: objective=0.010 yd, predicted carry=199.992 yd.
+  - 205 yd: objective=0.016 yd, predicted carry=205.005 yd.
+- Near-optimal non-uniqueness diagnostics: 482 supported near-optimal parameter sets, 256 distinct predicted landing pairs, largest prediction plateau size 20.
+- Full-input support comparison reports the final joint robust recommendation as supported in both decision-space and full model-input support, with out_of_support_fraction=0.
+
 ## Q2 Task4 Performance Debugging
 
 - A full pipeline run with true Powell optimization timed out after 40 minutes.

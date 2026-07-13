@@ -5,9 +5,12 @@
 - 主优化器为 q2 carry 监督模型 + q3 lateral 监督模型，目标函数为 $\sqrt{(\hat D-200)^2+\hat L^2}$。
 - lateral 模型使用 q2 固定训练集训练、固定测试集评价，按训练集 5 折 CV RMSE 选模。
 - 搜索证据由最佳观测训练记录、20,000 点 LHS 基线、5 个随机种子的差分进化和每个 DE 解附近 5,000 点局部 LHS 组成。
-- 训练支持区使用 q2 训练集四维发射状态空间 kNN 距离计算，稳健推荐必须为 `supported`。
+- 训练支持区使用 q2 训练集四维发射状态空间 kNN 距离计算，并额外检查五维模型输入支持区；最终推荐必须为 `supported`。
+- 稳健性分析覆盖全部 supported near-optimal 候选（本轮为 482 个），使用共同随机数、p90 bootstrap 区间和 `ideal`/`stable_player`/`ordinary_player` 发射方向扰动场景。
+- 最终论文推荐由 stable_player 场景下的联合模型-参数 p90 选择；单代理参数稳健解只作为比较和历史兼容输出。
+- 195/200/205 yd 目标距离必须分别独立重优化，不复用 200 yd 候选池。
 - `constant_lift` 和 `spin_factor_lift` ODE 只用于交叉检查与轨迹图，不作为主优化器，也不写成真实击球实验验证。
-- 扰动范围为情景假设；模型分歧检查显示最优区为 `highly_model_sensitive`，论文中必须保留该局限。
+- 扰动范围为情景假设；联合稳健性模拟比例不能写成真实球员命中概率，论文中必须保留模型分歧和非唯一性局限。
 
 ## 1. 题意解释
 
@@ -67,23 +70,27 @@
 ## 7. 验证与诊断
 
 - 基线比较：主优化结果 vs 粗网格/随机采样最好结果。
-- 主验证方法：约束可行性检查、多起点重复、目标函数复算、最优解邻域扰动。
+- 主验证方法：约束可行性检查、多起点重复、目标函数复算、稳健候选池覆盖、共同随机数扰动、联合模型-参数稳健性、目标距离独立重优化和 full-input support 检查。
 - 通过标准：最优结果可复现，目标值优于基线，参数不依赖单一随机初值。
 - 失败案例：若最优解总在边界，需报告边界驱动现象并检查模型外推风险。
 
 ## 8. 灵敏度与不确定性
 
-- 关键参数：q2 模型选择、$C_D,C_L$、变量边界、目标函数是否包含横向偏移权重。
-- 扰动范围：决策变量小扰动、空气动力系数 ±10%/±20%、目标距离 ±5 yd。
-- 稳健性指标：落点距离变化、最优参数变化、是否仍满足约束。
-- 极端场景：低自旋/高球速、高自旋/中等球速、横向偏移目标权重提高。
+- 关键参数：q2/q3 代理模型选择、决策变量扰动、发射方向扰动、变量边界和目标距离。
+- 扰动范围：决策变量小扰动；发射方向按 `ideal=0.0 deg`、`stable_player=0.5 deg`、`ordinary_player=1.0 deg` 三种情景；目标距离为 195/200/205 yd。
+- 稳健性指标：mean/median/p90/p95 miss distance、p90 CI、within 3/5 yd 模拟比例、out-of-support fraction、模型成员间 objective prediction std。
+- 非唯一性指标：近优候选参数分位范围、不同预测落点数量和最大预测平台规模。
 
 ## 9. 计划产物
 
 | 产物 ID | 类型 | 内容 | 生成脚本 | 数据文件 |
 |---|---|---|---|---|
 | q3-T01 | table | 最优击球参数和目标函数值 | `questions/q3/scripts/pipeline.py` | `questions/q3/artifacts/tables/q3_optimal_parameters.csv` |
-| q3-T02 | table | 参数灵敏度分析 | `questions/q3/scripts/validate.py` | `questions/q3/artifacts/tables/q3_sensitivity.csv` |
+| q3-T02 | table | 依赖审计与横向模型评价 | `questions/q3/scripts/pipeline.py` | `questions/q3/artifacts/tables/q3_dependency_audit.csv`、`q3_lateral_model_metrics.csv` |
+| q3-T03 | table | 稳健候选池与参数扰动稳健性 | `questions/q3/scripts/pipeline.py` | `questions/q3/artifacts/tables/q3_robust_candidate_pool.csv`、`q3_parameter_robustness.csv` |
+| q3-T04 | table | 联合模型-参数稳健性 | `questions/q3/scripts/pipeline.py` | `questions/q3/artifacts/tables/q3_joint_robustness_summary.csv` |
+| q3-T05 | table | 195/200/205 yd 目标距离独立重优化 | `questions/q3/scripts/pipeline.py` | `questions/q3/artifacts/tables/q3_target_optimal_parameters.csv` |
+| q3-T06 | table | 近优参数范围与非唯一性 | `questions/q3/scripts/pipeline.py` | `questions/q3/artifacts/tables/q3_near_optimal_parameter_ranges.csv` |
 | q3-F01 | figure | 最优参数三维轨迹图 | `questions/q3/scripts/visualize.py` | `questions/q3/artifacts/figure_data/q3_optimal_trajectory.csv` |
 | q3-F02 | figure | 目标函数局部等高线或切片图 | `questions/q3/scripts/visualize.py` | `questions/q3/artifacts/figure_data/q3_objective_slice.csv` |
 

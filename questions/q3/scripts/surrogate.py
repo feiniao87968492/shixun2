@@ -48,7 +48,7 @@ def make_model(name: str, *, seed: int):
                 n_estimators=140,
                 min_samples_leaf=3,
                 random_state=int(seed),
-                n_jobs=-1,
+                n_jobs=1,
             ),
         )
     if name == "hist_gradient_boosting":

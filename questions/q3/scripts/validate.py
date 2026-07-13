@@ -129,9 +129,26 @@ def validate_outputs(
             len(runs),
         )
     )
+    rows.append(
+        _row(
+            "scipy_success_all_true",
+            not runs.empty
+            and {"scipy_success", "objective_finite", "accepted"}.issubset(runs.columns)
+            and runs["scipy_success"].astype(bool).all()
+            and runs["objective_finite"].astype(bool).all()
+            and runs["accepted"].astype(bool).all()
+            and not runs["message"].astype(str).str.contains("fail|abnormal|maxiter|maxfev", case=False).any(),
+            len(runs),
+        )
+    )
 
     optimal = _read_csv(tables / "q3_optimal_parameters.csv")
-    required_optima = {"nominal_optimum", "robust_recommended_optimum"}
+    required_optima = {
+        "nominal_optimum",
+        "robust_recommended_optimum",
+        "single_surrogate_robust_optimum",
+        "joint_robust_recommended_optimum",
+    }
     rows.append(
         _row(
             "task5_nominal_and_robust_optima_reported",
@@ -160,6 +177,74 @@ def validate_outputs(
             )
     rows.append(_row("task5_robust_metrics_recomputable", robust_ok, len(robustness)))
 
+    pool = _read_csv(tables / "q3_robust_candidate_pool.csv")
+    pool_ok = False
+    not_12 = False
+    if not pool.empty and not sampling.empty:
+        selected = pool[pool["selected_for_robustness"].astype(bool)]
+        not_12 = len(selected) != 12
+        top = _read_csv(tables / "q3_top_candidates.csv")
+        nominal_top = top.sort_values(["objective_yd", "support_knn_distance"]).iloc[0]
+        supported_near = top[
+            (top["support_category"] == "supported")
+            & (top["objective_yd"] <= float(nominal_top["objective_yd"]) + float(q3_config["near_optimal_tolerance_yd"]))
+        ]
+        if len(supported_near) <= 500:
+            pool_ok = set(selected["candidate_id"].astype(str)) == set(supported_near["candidate_id"].astype(str))
+        else:
+            pool_ok = 50 <= len(selected) <= 100
+        pool_ok = pool_ok and selected["support_category"].eq("supported").all()
+    rows.append(_row("all_supported_near_candidates_accounted_for", pool_ok, len(pool)))
+    rows.append(_row("robust_candidate_pool_not_hardcoded_to_12", not_12, len(pool)))
+
+    crn_ok = False
+    launch_scenarios_ok = False
+    support_fraction_ok = False
+    if not robustness.empty and not pool.empty:
+        selected_ids = set(pool.loc[pool["selected_for_robustness"].astype(bool), "candidate_id"].astype(str))
+        scenarios = set(robustness.get("parameter_scenario", pd.Series(dtype=str)).astype(str))
+        launch_scenarios_ok = {"ideal", "stable_player", "ordinary_player"}.issubset(scenarios)
+        required_noise_cols = {
+            "common_noise_draw_id",
+            "parameter_scenario",
+            "launch_direction_sd_deg",
+            "full_model_input_support_category",
+            "p90_ci_low",
+            "p90_ci_high",
+            "robustness_statistical_tie",
+        }
+        if required_noise_cols.issubset(robustness.columns):
+            crn_ok = True
+            for scenario, subset in robustness.groupby("parameter_scenario"):
+                expected = None
+                for candidate_id, candidate_subset in subset.groupby("candidate_id"):
+                    if str(candidate_id) not in selected_ids:
+                        continue
+                    noise_ids = tuple(candidate_subset["common_noise_draw_id"].astype(int).sort_values())
+                    if expected is None:
+                        expected = noise_ids
+                    elif noise_ids != expected:
+                        crn_ok = False
+                        break
+        support_fraction_ok = "full_model_input_support_category" in robustness.columns
+    rows.append(_row("common_random_numbers_used", crn_ok, len(robustness)))
+    rows.append(_row("launch_direction_perturbation_present", launch_scenarios_ok, len(robustness)))
+
+    support_compare = _read_csv(tables / "q3_support_comparison.csv")
+    full_support_ok = (
+        not support_compare.empty
+        and {
+            "decision_space_support",
+            "full_model_input_support",
+            "supported_fraction",
+            "borderline_fraction",
+            "out_of_support_fraction",
+        }.issubset(support_compare.columns)
+    )
+    fraction_ok = bool(full_support_ok and support_compare["out_of_support_fraction"].between(0.0, 1.0).all())
+    rows.append(_row("full_input_support_checked", full_support_ok, len(support_compare)))
+    rows.append(_row("perturbation_out_of_support_fraction_reported", support_fraction_ok and fraction_ok, len(support_compare)))
+
     crosscheck = _read_csv(tables / "q3_model_crosscheck.csv")
     rows.append(
         _row(
@@ -170,6 +255,32 @@ def validate_outputs(
             len(crosscheck),
         )
     )
+    joint_summary = _read_csv(tables / "q3_joint_robustness_summary.csv")
+    joint_detail = _read_csv(tables / "q3_joint_robustness_detail.csv")
+    joint_complete = (
+        not joint_summary.empty
+        and not joint_detail.empty
+        and {"ideal", "stable_player", "ordinary_player"}.issubset(set(joint_summary["parameter_scenario"].astype(str)))
+        and joint_summary["model_member_count"].astype(int).ge(5).all()
+        and joint_summary["simulation_count"].astype(int).gt(0).all()
+    )
+    rows.append(_row("joint_model_parameter_robustness_complete", joint_complete, len(joint_summary)))
+    recommendation_ok = False
+    if not optimal.empty and not joint_summary.empty and "joint_robust_recommended_optimum" in set(optimal["candidate_type"]):
+        rec = optimal.set_index("candidate_type").loc["joint_robust_recommended_optimum"]
+        stable = joint_summary[joint_summary["parameter_scenario"] == "stable_player"].copy()
+        if not stable.empty:
+            best_nominal = float(stable["objective_yd"].min())
+            eligible = stable[
+                (stable["support_category"] == "supported")
+                & (stable["objective_yd"] <= best_nominal + 0.5 + 1e-12)
+                & (stable["out_of_support_fraction"] <= 0.05 + 1e-12)
+            ]
+            if not eligible.empty:
+                expected = eligible.sort_values(["p90_miss_distance_yd", "support_knn_distance", "candidate_id"]).iloc[0]
+                recommendation_ok = str(rec["candidate_id"]) == str(expected["candidate_id"])
+    rows.append(_row("robust_recommendation_matches_joint_p90_minimum", recommendation_ok, len(joint_summary)))
+
     sensitivity = _read_csv(tables / "q3_target_distance_sensitivity.csv")
     rows.append(
         _row(
@@ -178,6 +289,50 @@ def validate_outputs(
             len(sensitivity),
         )
     )
+    target_runs = _read_csv(tables / "q3_target_optimization_runs.csv")
+    target_optimal = _read_csv(tables / "q3_target_optimal_parameters.csv")
+    for target in [195.0, 200.0, 205.0]:
+        target_run = target_runs[target_runs.get("target_distance_yd", pd.Series(dtype=float)).astype(float) == target]
+        target_opt = target_optimal[target_optimal.get("target_distance_yd", pd.Series(dtype=float)).astype(float) == target]
+        independent = (
+            not target_run.empty
+            and target_run["run_stage"].eq("lhs_baseline").any()
+            and target_run.loc[target_run["run_stage"].eq("differential_evolution"), "seed"].nunique() >= 3
+            and target_run["run_stage"].eq("local_refinement").any()
+            and not target_opt.empty
+            and target_opt["support_category"].eq("supported").any()
+        )
+        rows.append(_row(f"target_{int(target)}_independently_optimized", independent, len(target_run)))
+    beats_lhs = False
+    if not target_runs.empty and not target_optimal.empty:
+        beats = []
+        for target, target_run in target_runs.groupby("target_distance_yd"):
+            lhs_best = target_run.loc[target_run["run_stage"].eq("lhs_baseline"), "objective_yd"].min()
+            target_opt = target_optimal[target_optimal["target_distance_yd"].astype(float) == float(target)]
+            supported_best = target_opt.loc[target_opt["support_category"].eq("supported"), "objective_yd"].min()
+            beats.append(float(supported_best) <= float(lhs_best) + 1e-9)
+        beats_lhs = bool(beats and all(beats))
+    rows.append(_row("target_specific_solution_beats_target_lhs", beats_lhs, len(target_optimal)))
+
+    ranges = _read_csv(tables / "q3_near_optimal_parameter_ranges.csv")
+    ranges_ok = (
+        not ranges.empty
+        and {
+            "variable",
+            "min",
+            "q10",
+            "median",
+            "q90",
+            "max",
+            "distinct_parameter_count",
+            "distinct_prediction_pair_count",
+            "largest_prediction_plateau_size",
+            "solution_non_unique_under_surrogate",
+        }.issubset(ranges.columns)
+    )
+    non_unique_ok = bool(ranges_ok and ranges["solution_non_unique_under_surrogate"].astype(bool).any())
+    rows.append(_row("near_optimal_parameter_ranges_generated", ranges_ok, len(ranges)))
+    rows.append(_row("solution_non_uniqueness_reported", non_unique_ok, len(ranges)))
     ode = _read_csv(tables / "q3_ode_crosscheck.csv")
     rows.append(
         _row(

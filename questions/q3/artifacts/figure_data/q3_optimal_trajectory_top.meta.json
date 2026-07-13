@@ -2,8 +2,8 @@
   "stem": "q3_optimal_trajectory_top",
   "title": "Q3 robust optimum trajectory top view",
   "source_script": "questions/q3/scripts/visualize.py",
-  "generated_at": "2026-07-13T10:22:16.880290+00:00",
-  "rows": 493,
+  "generated_at": "2026-07-13T12:51:06.252610+00:00",
+  "rows": 972,
   "columns": [
     "candidate_id",
     "candidate_type",

@@ -1,6 +1,6 @@
 question: q3
 status: done
-objective: "在 200 yd 目标下求解最优击球参数并生成最优三维轨迹"
+objective: "在 200 yd 目标下求解监督代理名义最优与联合模型-参数稳健击球策略，并生成最优三维轨迹"
 
 inputs:
   raw_data:

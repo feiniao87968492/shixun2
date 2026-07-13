@@ -8,7 +8,7 @@ import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 
-from dependencies import SUPPORT_FEATURES
+from dependencies import LAUNCH_FEATURES, SUPPORT_FEATURES
 
 
 @dataclass
@@ -18,12 +18,19 @@ class SupportModel:
     threshold: float
     borderline_threshold: float
     k: int
+    features: list[str]
 
 
-def fit_support_model(train: pd.DataFrame, config: dict[str, Any]) -> tuple[SupportModel, pd.DataFrame, pd.DataFrame]:
+def _fit_support_model_for_features(
+    train: pd.DataFrame,
+    config: dict[str, Any],
+    *,
+    features: list[str],
+    source_label: str,
+) -> tuple[SupportModel, pd.DataFrame, pd.DataFrame]:
     k = int(config["support"]["neighbors"])
     quantile = float(config["support"]["threshold_quantile"])
-    matrix = train[SUPPORT_FEATURES].to_numpy(dtype=float)
+    matrix = train[features].to_numpy(dtype=float)
     scaler = StandardScaler().fit(matrix)
     scaled = scaler.transform(matrix)
     loo_neighbors = NearestNeighbors(n_neighbors=k + 1)
@@ -41,8 +48,9 @@ def fit_support_model(train: pd.DataFrame, config: dict[str, Any]) -> tuple[Supp
         threshold=threshold,
         borderline_threshold=borderline_threshold,
         k=k,
+        features=list(features),
     )
-    training_support = train[["record_id", *SUPPORT_FEATURES]].copy()
+    training_support = train[["record_id", *features]].copy()
     training_support["loo_knn_distance"] = loo_distance
     training_support["support_threshold"] = threshold
     training_support["support_category"] = np.where(
@@ -58,15 +66,38 @@ def fit_support_model(train: pd.DataFrame, config: dict[str, Any]) -> tuple[Supp
                 "support_threshold": threshold,
                 "borderline_threshold": borderline_threshold,
                 "training_n": int(len(train)),
-                "source": "q2 fixed train split leave-one-out kNN distance",
+                "features": ";".join(features),
+                "source": source_label,
             }
         ]
     )
     return model, threshold_table, training_support
 
 
+def fit_support_model(train: pd.DataFrame, config: dict[str, Any]) -> tuple[SupportModel, pd.DataFrame, pd.DataFrame]:
+    return _fit_support_model_for_features(
+        train,
+        config,
+        features=SUPPORT_FEATURES,
+        source_label="q2 fixed train split leave-one-out kNN distance in decision space",
+    )
+
+
+def fit_full_input_support_model(
+    train: pd.DataFrame,
+    config: dict[str, Any],
+) -> tuple[SupportModel, pd.DataFrame, pd.DataFrame]:
+    return _fit_support_model_for_features(
+        train,
+        config,
+        features=LAUNCH_FEATURES,
+        source_label="q2 fixed train split leave-one-out kNN distance in full launch-feature space",
+    )
+
+
 def evaluate_support(model: SupportModel, candidates: pd.DataFrame) -> pd.DataFrame:
-    matrix = candidates[SUPPORT_FEATURES].to_numpy(dtype=float)
+    features = getattr(model, "features", SUPPORT_FEATURES)
+    matrix = candidates[features].to_numpy(dtype=float)
     scaled = model.scaler.transform(matrix)
     distances, _indices = model.neighbors.kneighbors(scaled)
     mean_distance = distances.mean(axis=1)
@@ -80,6 +111,17 @@ def evaluate_support(model: SupportModel, candidates: pd.DataFrame) -> pd.DataFr
     output["support_threshold"] = model.threshold
     output["support_category"] = categories
     return output
+
+
+def support_columns(model: SupportModel, candidates: pd.DataFrame, *, prefix: str) -> pd.DataFrame:
+    supported = evaluate_support(model, candidates)
+    return pd.DataFrame(
+        {
+            f"{prefix}_knn_distance": supported["support_knn_distance"].to_numpy(dtype=float),
+            f"{prefix}_support_threshold": supported["support_threshold"].to_numpy(dtype=float),
+            f"{prefix}_support_category": supported["support_category"].astype(str).to_numpy(),
+        }
+    )
 
 
 def search_bounds(train: pd.DataFrame, config: dict[str, Any]) -> pd.DataFrame:

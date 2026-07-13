@@ -116,7 +116,9 @@ def create_visualizations(*, root: Path, dpi: int = 300) -> dict[str, dict[str, 
         train = data[data["row_type"] == "train"]
         ax.scatter(train[x_col], train[y_col], s=8, alpha=0.22, color="#ffffff", edgecolor="none", label="train")
         nominal = data[data["row_type"] == "nominal_optimum"]
-        robust = data[data["row_type"] == "robust_recommended_optimum"]
+        robust = data[data["row_type"] == "joint_robust_recommended_optimum"]
+        if robust.empty:
+            robust = data[data["row_type"] == "robust_recommended_optimum"]
         ax.scatter(nominal[x_col], nominal[y_col], marker="x", s=80, color="#b42318", label="nominal")
         ax.scatter(robust[x_col], robust[y_col], marker="o", s=65, facecolors="none", edgecolors="#111111", label="robust")
         ax.set_xlabel(x_col)

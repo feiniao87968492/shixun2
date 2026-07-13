@@ -2,17 +2,17 @@
 
 ## Goal
 
-Complete the full scope of `docs/plans/task5.md` for q3 inverse-design:
-repair q3 dependencies on final q2 artifacts, train and validate a lateral
-landing surrogate on the fixed q2 split, build train-only support diagnostics,
-run sampling and multi-seed differential evolution baselines, report nominal and
-robust 200 yd optima, generate robustness/model-disagreement/target-distance
-sensitivity and ODE crosscheck artifacts, publish figures/docs/evidence, then
-commit, push, and verify the remote SHA.
+Complete the full scope of `docs/plans/task6.md` for q3 final remediation:
+preserve the current q3 main inverse-design flow while replacing the narrow
+single-surrogate robustness decision with a full supported near-optimal
+candidate pool, common random number perturbations, launch-direction scenarios,
+joint model-parameter robustness, independent 195/200/205 yd re-optimization,
+near-optimal parameter range reporting, expanded validation, updated
+docs/evidence, then commit, push, and verify the remote SHA.
 
 ## Current Phase
 
-Phase 17 - q3 task5 inverse-design implementation
+Phase 18 - q3 task6 final robustness remediation
 
 ## Completed Phases
 
@@ -24,6 +24,7 @@ Phase 17 - q3 task5 inverse-design implementation
 - [x] Phase 14: q2 full task2 ODE/lift continuation, committed and pushed.
 - [x] Phase 15: q2 task3 recalibration and acceptance, committed and pushed.
 - [x] Phase 16: q2 task4 final ODE remediation, committed and pushed.
+- [x] Phase 17: q3 task5 inverse-design implementation, committed and pushed.
 
 ## Phase 13: q2 task2 first stage
 
@@ -129,6 +130,45 @@ Phase 17 - q3 task5 inverse-design implementation
   - `python -m pytest tests\test_q3_task5_inverse_design.py -q`
 - Current q3 result: nominal objective=0.010 yd; robust objective=0.022 yd; robust p90 miss=3.135 yd.
 - Implementation commit: `490f01dfaf2ebd2158c82701fca5b5168a6a08d0`, pushed to `origin/main` and verified by `git ls-remote`.
+
+## Phase 18: q3 task6 final robustness remediation
+
+- [x] Read `docs/plans/task6.md` and required q3 startup context.
+- [x] Temporarily downgrade q3 status to `conditionally_passed` in root/q3 status docs and manifest.
+- [x] Add RED tests in `tests/test_q3_final_robustness.py`.
+- [x] Remove the hard-coded first-12 robustness candidate limit and write `q3_robust_candidate_pool.csv`.
+- [x] Use common random numbers and bootstrap p90 CIs across robustness candidates.
+- [x] Add launch-direction perturbation scenarios: `ideal`, `stable_player`, and `ordinary_player`.
+- [x] Add full-model-input support checks and perturbation out-of-support fractions.
+- [x] Add joint model-parameter robustness tables and select the final recommendation by stable-player joint p90.
+- [x] Reoptimize targets 195/200/205 yd independently with LHS, at least 3 DE seeds, local refinement, and supported solution selection.
+- [x] Report near-optimal parameter ranges and non-uniqueness diagnostics.
+- [x] Fix DE success semantics to distinguish `scipy_success`, `objective_finite`, and `accepted`.
+- [x] Extend q3 validation checks for all task6 acceptance criteria.
+- [x] Regenerate q3 artifacts, figures, run metadata, and validation table.
+- [x] Update q3/root docs, evidence chain, figure/table registry, report, appendix, decision/risk logs, findings, devlog, and progress.
+- [x] Run q3 pipeline, q3 validation, task6 tests, task5 tests, full pytest, repo check, raw snapshot verify, diff check, and reproducibility checks.
+- [ ] Restore q3 status to `done`, stage with raw/PDF/Excel guard, commit, push, and verify remote SHA.
+
+## Phase 18 RED/GREEN Result
+
+- RED command: `python -m pytest tests\test_q3_final_robustness.py -q`.
+- RED result: 5 expected failures:
+  - `q3.perturbation.launch_direction_scenarios` is missing.
+  - `q3_robust_candidate_pool.csv` is missing.
+  - `q3_joint_robustness_summary.csv` / detail are missing.
+  - `q3_target_optimization_runs.csv` is missing.
+  - `q3_near_optimal_parameter_ranges.csv` and related support/validation outputs are missing.
+- GREEN commands:
+  - `python questions\q3\scripts\pipeline.py --config configs/default.yaml`
+  - `python questions\q3\scripts\validate.py --config configs/default.yaml`
+  - `python -m pytest tests\test_q3_final_robustness.py -q`
+  - `python -m pytest tests\test_q3_task5_inverse_design.py -q`
+  - `python -m pytest -q`
+  - `python scripts\check_repo.py`
+  - `python scripts\snapshot_raw.py --verify`
+  - `git diff --check`
+- Reproducibility: major q3 CSV hash check passed after setting q3 ExtraTrees ensemble members to `n_jobs=1`.
 
 ## Git Safety
 
