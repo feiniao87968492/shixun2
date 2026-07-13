@@ -2,7 +2,7 @@
   "stem": "q2_residuals_apex",
   "title": "Q2 apex residual plot",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-12T15:59:02.638814+00:00",
+  "generated_at": "2026-07-13T04:18:19.566433+00:00",
   "rows": 221,
   "columns": [
     "record_id",

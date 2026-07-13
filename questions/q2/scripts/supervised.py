@@ -324,6 +324,7 @@ def run_repeated_split_stability(clean: pd.DataFrame, config: dict[str, Any]) ->
                     "std": float(subset[metric].std(ddof=1)),
                     "runs": int(runs),
                     "model_win_frequency": float(subset["is_winner"].mean()),
+                    "split_comparison_win_frequency": float(subset["is_winner"].mean()),
                 }
             )
     return pd.DataFrame(summary_rows).sort_values(["target", "metric", "mean"]).reset_index(drop=True)

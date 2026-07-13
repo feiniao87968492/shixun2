@@ -2,8 +2,8 @@
   "stem": "q2_ode_parameter_surface",
   "title": "Q2 ODE parameter surface",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-12T15:59:05.246489+00:00",
-  "rows": 78,
+  "generated_at": "2026-07-13T04:18:22.103828+00:00",
+  "rows": 82,
   "columns": [
     "model",
     "cd",
@@ -11,7 +11,8 @@
     "lift_scale",
     "objective",
     "calibration_n",
-    "failed_count"
+    "failed_count",
+    "coarse_grid_rank"
   ],
   "notes": "Train-only representative grid scans for drag, constant lift, and spin-factor lift."
 }

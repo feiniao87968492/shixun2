@@ -1,0 +1,20 @@
+{
+  "stem": "q2_typical_trajectories_spin_factor_side",
+  "title": "Q2 typical trajectories side view - spin_factor_lift",
+  "source_script": "questions/q2/scripts/visualize.py",
+  "generated_at": "2026-07-13T04:18:32.696181+00:00",
+  "rows": 945,
+  "columns": [
+    "sample_id",
+    "target_group",
+    "model",
+    "time_s",
+    "x_m",
+    "y_m",
+    "z_m",
+    "x_yd",
+    "y_yd",
+    "z_yd"
+  ],
+  "notes": "x-z side view for spin_factor_lift fixed-test typical records."
+}

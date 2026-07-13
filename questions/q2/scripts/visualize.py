@@ -128,64 +128,76 @@ def create_visualizations(*, root: Path, dpi: int = 300) -> dict[str, dict[str, 
     )
     plt.close(fig)
 
-    trajectories_path = tables / "q2_typical_trajectories.csv"
-    if trajectories_path.exists():
+    trajectory_specs = [
+        ("q2_typical_trajectories", "combined ODE role trajectories"),
+        ("q2_typical_trajectories_constant_lift", "constant_lift"),
+        ("q2_typical_trajectories_spin_factor", "spin_factor_lift"),
+    ]
+    for trajectory_stem, model_note in trajectory_specs:
+        trajectories_path = tables / f"{trajectory_stem}.csv"
+        if not trajectories_path.exists():
+            continue
         trajectories = pd.read_csv(trajectories_path)
+        group_columns = ["model", "target_group"] if "model" in trajectories.columns else ["target_group"]
+
         fig = plt.figure(figsize=(6.0, 4.8))
         ax = fig.add_subplot(111, projection="3d")
-        for label, data in trajectories.groupby("target_group"):
-            ax.plot(data["x_yd"], data["y_yd"], data["z_yd"], label=str(label))
+        for label_values, data in trajectories.groupby(group_columns):
+            label = " / ".join(map(str, label_values if isinstance(label_values, tuple) else (label_values,)))
+            ax.plot(data["x_yd"], data["y_yd"], data["z_yd"], label=label)
         ax.set_xlabel("x (yd)")
         ax.set_ylabel("y (yd)")
         ax.set_zlabel("z (yd)")
-        ax.set_title("Typical trajectories")
+        ax.set_title(f"Typical trajectories: {model_note}")
         ax.legend()
-        outputs["q2_typical_trajectories_3d"] = save_figure_bundle(
+        outputs[f"{trajectory_stem}_3d"] = save_figure_bundle(
             fig=fig,
             data=trajectories,
-            stem="q2_typical_trajectories_3d",
+            stem=f"{trajectory_stem}_3d",
             question_dir=question_dir,
-            title="Q2 typical trajectories 3D",
+            title=f"Q2 typical trajectories 3D - {model_note}",
             source_script="questions/q2/scripts/visualize.py",
-            notes="Spin-factor-lift trajectories for fixed-test 100/150/200 yd typical records.",
+            notes=f"{model_note} trajectories for fixed-test 100/150/200 yd typical records.",
             dpi=dpi,
         )
         plt.close(fig)
 
         fig, ax = plt.subplots(figsize=(5.8, 4.0))
-        for label, data in trajectories.groupby("target_group"):
-            ax.plot(data["x_yd"], data["z_yd"], label=str(label))
+        for label_values, data in trajectories.groupby(group_columns):
+            label = " / ".join(map(str, label_values if isinstance(label_values, tuple) else (label_values,)))
+            ax.plot(data["x_yd"], data["z_yd"], label=label)
         ax.set_xlabel("x (yd)")
         ax.set_ylabel("z (yd)")
-        ax.set_title("Typical trajectories side view")
+        ax.set_title(f"Typical trajectories side view: {model_note}")
         ax.legend()
-        outputs["q2_typical_trajectories_side"] = save_figure_bundle(
+        outputs[f"{trajectory_stem}_side"] = save_figure_bundle(
             fig=fig,
             data=trajectories,
-            stem="q2_typical_trajectories_side",
+            stem=f"{trajectory_stem}_side",
             question_dir=question_dir,
-            title="Q2 typical trajectories side view",
+            title=f"Q2 typical trajectories side view - {model_note}",
             source_script="questions/q2/scripts/visualize.py",
-            notes="x-z side view for fixed-test 100/150/200 yd typical records.",
+            notes=f"x-z side view for {model_note} fixed-test typical records.",
             dpi=dpi,
         )
         plt.close(fig)
 
         fig, ax = plt.subplots(figsize=(5.8, 4.0))
-        for label, data in trajectories.groupby("target_group"):
-            ax.plot(data["x_yd"], data["y_yd"], label=str(label))
+        for label_values, data in trajectories.groupby(group_columns):
+            label = " / ".join(map(str, label_values if isinstance(label_values, tuple) else (label_values,)))
+            ax.plot(data["x_yd"], data["y_yd"], label=label)
         ax.set_xlabel("x (yd)")
         ax.set_ylabel("y (yd)")
-        ax.set_title("Typical trajectories top view")
+        ax.set_title(f"Typical trajectories top view: {model_note}")
         ax.legend()
-        outputs["q2_typical_trajectories_top"] = save_figure_bundle(
+        outputs[f"{trajectory_stem}_top"] = save_figure_bundle(
             fig=fig,
             data=trajectories,
-            stem="q2_typical_trajectories_top",
+            stem=f"{trajectory_stem}_top",
             question_dir=question_dir,
-            title="Q2 typical trajectories top view",
+            title=f"Q2 typical trajectories top view - {model_note}",
             source_script="questions/q2/scripts/visualize.py",
-            notes="x-y top view for fixed-test 100/150/200 yd typical records.",
+            notes=f"x-y top view for {model_note} fixed-test typical records.",
             dpi=dpi,
         )
         plt.close(fig)

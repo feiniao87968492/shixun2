@@ -1,6 +1,7 @@
 {
   "side_spin_sign": -1,
-  "trajectory_model": "spin_factor_lift",
+  "best_fit_ode_model": "constant_lift",
+  "q3_compatible_ode_model": "spin_factor_lift",
   "model_parameters": {
     "vacuum": {
       "cd": 0.0,
@@ -18,14 +19,16 @@
       "lift_scale": 0.0
     },
     "spin_factor_lift": {
-      "cd": 0.26999999999999996,
+      "cd": 0.48999999999999994,
       "cl": 0.0,
-      "lift_scale": 0.8
+      "lift_scale": 1.6
     }
   },
   "calibration": {
-    "records": 24,
-    "grid_size": 6,
+    "drag_records": 36,
+    "lift_records": 24,
+    "drag_grid_size": 10,
+    "lift_grid_size": 6,
     "solver": {
       "method": "DOP853",
       "rtol": 1e-07,

@@ -1,9 +1,9 @@
 {
   "stem": "q2_typical_trajectories_3d",
-  "title": "Q2 typical trajectories 3D",
+  "title": "Q2 typical trajectories 3D - combined ODE role trajectories",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-12T15:59:06.491276+00:00",
-  "rows": 698,
+  "generated_at": "2026-07-13T04:18:23.993461+00:00",
+  "rows": 1538,
   "columns": [
     "sample_id",
     "target_group",
@@ -16,5 +16,5 @@
     "y_yd",
     "z_yd"
   ],
-  "notes": "Spin-factor-lift trajectories for fixed-test 100/150/200 yd typical records."
+  "notes": "combined ODE role trajectories trajectories for fixed-test 100/150/200 yd typical records."
 }

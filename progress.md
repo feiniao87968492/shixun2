@@ -103,3 +103,48 @@
   - `python scripts\check_repo.py`: passed with 1 expected q3 scaffold warning.
   - `python scripts\snapshot_raw.py --verify`: verified 3 raw files.
   - `git diff --check`: no output.
+
+## Session: 2026-07-13 - q2 task3 recalibration restart
+
+- Current active goal is `docs/plans/task3.md`, which is a q2 recalibration and final acceptance task, not q3 implementation.
+- Confirmed current branch is `main`; remote `origin/main` equals local `HEAD` at `1a30506`.
+- Current worktree has untracked `docs/plans/task3.md`; it is the authoritative task3 plan and should be committed with the task3 work.
+- Updated `task_plan.md` current goal/current phase to Phase 15 for q2 task3.
+- Added `tests/test_q2_task3_recalibration.py` before production code changes.
+- RED command: `python -m pytest tests\test_q2_task3_recalibration.py -q`.
+- RED result: 6 expected failures for task3 gaps:
+  - `physics.initial_height_type` missing.
+  - `q2_drag_calibration_records.csv` and `q2_lift_calibration_records.csv` missing.
+  - ODE parameter boundary metadata missing.
+  - separate constant-lift and spin-factor trajectory artifacts missing.
+  - sensitivity lacks `model` scope and task3 wind/carry-definition validation.
+  - `run_metadata.json` lacks task3 reproducibility fields.
+- Initial task3 pipeline attempts timed out after 20 minutes while still inside ODE calibration.
+- Systematic debugging evidence:
+  - Representative-set drag objective call: about 0.8 s.
+  - Full-train drag objective call: about 11.6 s.
+  - Original constant-lift calibration with full-train objective per optimization run: about 7.3 min.
+  - Original spin-factor calibration with full-train objective per optimization run: about 6.6 min.
+- Root cause: local optimization attempted too many ODE objective evaluations and computed full-train objectives for every initial point.
+- Fix: keep coarse-grid plus bounded `scipy.optimize.minimize`, but use short Powell local searches and compute full-train objective only for the selected optimization run marked by `selected=True`.
+- Implemented task3 q2 recalibration and regenerated artifacts:
+  - drag/lift representative records: 36/24.
+  - optimization run tables for drag, constant_lift, and spin_factor_lift.
+  - boundary-aware `q2_ode_parameters.csv`.
+  - `q2_carry_definition_comparison.csv`.
+  - separate `q2_typical_trajectories_constant_lift.*` and `q2_typical_trajectories_spin_factor.*` figure bundles.
+  - model-scoped `q2_ode_sensitivity.csv`.
+  - expanded `run_metadata.json`.
+- Recalibrated parameters:
+  - drag `C_D=0.05`, boundary_solution.
+  - constant_lift `C_D=0.27,C_L=0.18`.
+  - spin_factor_lift `C_D=0.49,k_L=1.6`.
+- Verification after implementation:
+  - `python questions\q2\scripts\pipeline.py --config configs/default.yaml`: passed.
+  - repeated pipeline major CSV hash check: `REPRO_HASH_MATCH`.
+  - `python questions\q2\scripts\validate.py --config configs/default.yaml`: 121 checks passed.
+  - `python -m pytest tests\test_q2_task3_recalibration.py -q`: 6 passed.
+  - `python -m pytest -q`: 33 passed.
+  - `python scripts\check_repo.py`: passed with expected q3 scaffold warning.
+  - `python scripts\snapshot_raw.py --verify`: verified 3 raw files.
+  - `git diff --check`: no output.

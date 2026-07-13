@@ -402,7 +402,7 @@ record_id,target,feature_set,model,actual,predicted,residual,absolute_error,abso
 612,apex_height_yd,full_shot_model,extra_trees,21.12,19.7740028439,-1.34599715608,1.34599715608,6.3730925951
 618,apex_height_yd,full_shot_model,extra_trees,31.42,33.9254366071,2.50543660714,2.50543660714,7.97401848231
 623,apex_height_yd,full_shot_model,extra_trees,24.92,23.302543254,-1.61745674603,1.61745674603,6.49059689419
-627,apex_height_yd,full_shot_model,extra_trees,18.57,18.5682802249,-0.00171977513229,0.00171977513229,0.00926104002308
+627,apex_height_yd,full_shot_model,extra_trees,18.57,18.5682802249,-0.00171977513228,0.00171977513228,0.00926104002307
 637,apex_height_yd,full_shot_model,extra_trees,13.22,13.8661191468,0.646119146825,0.646119146825,4.88743681411
 639,apex_height_yd,full_shot_model,extra_trees,16.08,16.3169486111,0.236948611111,0.236948611111,1.47356101437
 646,apex_height_yd,full_shot_model,extra_trees,23.55,21.5935926587,-1.95640734127,1.95640734127,8.307462171
@@ -1545,7 +1545,7 @@ record_id,target,feature_set,model,actual,predicted,residual,absolute_error,abso
 730,apex_height_yd,launch_state_model,extra_trees,19.2,18.0070703704,-1.19292962963,1.19292962963,6.21317515432
 731,apex_height_yd,launch_state_model,extra_trees,1.95,1.59162374339,-0.358376256614,0.358376256614,18.3782695699
 732,apex_height_yd,launch_state_model,extra_trees,3.43,4.62870629833,1.19870629833,1.19870629833,34.9477054907
-735,apex_height_yd,launch_state_model,extra_trees,10.38,10.3108654281,-0.0691345719096,0.0691345719096,0.666036338243
+735,apex_height_yd,launch_state_model,extra_trees,10.38,10.3108654281,-0.0691345719096,0.0691345719096,0.666036338242
 1,apex_height_yd,launch_state_model,hist_gradient_boosting,3.62,2.78152372471,-0.838476275285,0.838476275285,23.1623280466
 3,apex_height_yd,launch_state_model,hist_gradient_boosting,14.16,16.3657484601,2.20574846005,2.20574846005,15.5773196331
 6,apex_height_yd,launch_state_model,hist_gradient_boosting,6.77,8.73668698187,1.96668698187,1.96668698187,29.0500292743
@@ -2452,7 +2452,7 @@ record_id,target,feature_set,model,actual,predicted,residual,absolute_error,abso
 58,carry_distance_yd,full_shot_model,extra_trees,150.9186,146.945193297,-3.97340670337,3.97340670337,2.63281444658
 60,carry_distance_yd,full_shot_model,extra_trees,158.738,148.746343353,-9.99165664744,9.99165664744,6.29443274291
 62,carry_distance_yd,full_shot_model,extra_trees,166.6776,157.379967804,-9.2976321961,9.2976321961,5.57821338686
-63,carry_distance_yd,full_shot_model,extra_trees,134.6785,134.653407784,-0.0250922156085,0.0250922156085,0.0186311962255
+63,carry_distance_yd,full_shot_model,extra_trees,134.6785,134.653407784,-0.0250922156085,0.0250922156085,0.0186311962254
 72,carry_distance_yd,full_shot_model,extra_trees,157.7209,164.67788915,6.95698915046,6.95698915046,4.41094943692
 77,carry_distance_yd,full_shot_model,extra_trees,171.7192,164.104611433,-7.61458856746,7.61458856746,4.4343256709
 79,carry_distance_yd,full_shot_model,extra_trees,107.4584,107.822479914,0.364079913691,0.364079913691,0.338810101109
@@ -2497,7 +2497,7 @@ record_id,target,feature_set,model,actual,predicted,residual,absolute_error,abso
 204,carry_distance_yd,full_shot_model,extra_trees,117.5416,114.127329944,-3.41427005556,3.41427005556,2.9047333502
 206,carry_distance_yd,full_shot_model,extra_trees,133.2349,131.423417559,-1.81148244147,1.81148244147,1.35961556729
 208,carry_distance_yd,full_shot_model,extra_trees,133.4864,131.825380242,-1.66101975794,1.66101975794,1.24433632036
-212,carry_distance_yd,full_shot_model,extra_trees,144.3241,141.017845063,-3.3062549375,3.3062549375,2.29085436008
+212,carry_distance_yd,full_shot_model,extra_trees,144.3241,141.017845062,-3.3062549375,3.3062549375,2.29085436008
 213,carry_distance_yd,full_shot_model,extra_trees,146.0193,144.529784647,-1.48951535335,1.48951535335,1.0200811491
 219,carry_distance_yd,full_shot_model,extra_trees,160.4221,156.905947464,-3.51615253571,3.51615253571,2.191813058
 221,carry_distance_yd,full_shot_model,extra_trees,181.8679,173.383637357,-8.48426264286,8.48426264286,4.66506879051
@@ -2607,7 +2607,7 @@ record_id,target,feature_set,model,actual,predicted,residual,absolute_error,abso
 589,carry_distance_yd,full_shot_model,extra_trees,112.8718,114.916196698,2.04439669841,2.04439669841,1.81125551149
 598,carry_distance_yd,full_shot_model,extra_trees,128.3793,125.497439647,-2.88186035284,2.88186035284,2.24480142269
 599,carry_distance_yd,full_shot_model,extra_trees,185.0284,173.20456382,-11.8238361796,11.8238361796,6.39028180515
-607,carry_distance_yd,full_shot_model,extra_trees,100.4921,100.502459366,0.0103593657407,0.0103593657407,0.0103086369384
+607,carry_distance_yd,full_shot_model,extra_trees,100.4921,100.502459366,0.0103593657408,0.0103593657408,0.0103086369384
 608,carry_distance_yd,full_shot_model,extra_trees,151.7935,148.693023608,-3.10047639205,3.10047639205,2.04256202805
 612,carry_distance_yd,full_shot_model,extra_trees,205.5884,191.16374645,-14.4246535496,14.4246535496,7.01627793669
 618,carry_distance_yd,full_shot_model,extra_trees,205.6759,202.389488159,-3.28641184127,3.28641184127,1.59785946787
@@ -3636,7 +3636,7 @@ record_id,target,feature_set,model,actual,predicted,residual,absolute_error,abso
 332,carry_distance_yd,launch_state_model,extra_trees,124.4313,120.357911694,-4.07338830632,4.07338830632,3.27360423489
 337,carry_distance_yd,launch_state_model,extra_trees,123.9064,120.233700817,-3.67269918254,3.67269918254,2.96409159054
 348,carry_distance_yd,launch_state_model,extra_trees,109.416,107.785084695,-1.6309153054,1.6309153054,1.49056381644
-349,carry_distance_yd,launch_state_model,extra_trees,105.3696,104.4160678,-0.953532199735,0.953532199735,0.904940513901
+349,carry_distance_yd,launch_state_model,extra_trees,105.3696,104.4160678,-0.953532199736,0.953532199736,0.904940513901
 350,carry_distance_yd,launch_state_model,extra_trees,103.0402,98.877047968,-4.163152032,4.163152032,4.04031827578
 355,carry_distance_yd,launch_state_model,extra_trees,114.5451,106.158932393,-8.38616760714,8.38616760714,7.32128009591
 358,carry_distance_yd,launch_state_model,extra_trees,95.7349,92.5780970498,-3.1568029502,3.1568029502,3.29744215558
@@ -3647,7 +3647,7 @@ record_id,target,feature_set,model,actual,predicted,residual,absolute_error,abso
 373,carry_distance_yd,launch_state_model,extra_trees,158.7708,155.343215702,-3.42758429834,3.42758429834,2.15882536231
 375,carry_distance_yd,launch_state_model,extra_trees,164.8185,163.421399743,-1.39710025658,1.39710025658,0.847659854069
 376,carry_distance_yd,launch_state_model,extra_trees,184.6894,178.478921814,-6.21047818643,6.21047818643,3.36266087086
-378,carry_distance_yd,launch_state_model,extra_trees,184.5691,192.453494956,7.88439495585,7.88439495585,4.27178490649
+378,carry_distance_yd,launch_state_model,extra_trees,184.5691,192.453494956,7.88439495584,7.88439495584,4.27178490649
 380,carry_distance_yd,launch_state_model,extra_trees,170.8661,165.338627904,-5.52747209647,5.52747209647,3.23497293873
 387,carry_distance_yd,launch_state_model,extra_trees,115.4528,113.941273178,-1.51152682203,1.51152682203,1.3092162529
 390,carry_distance_yd,launch_state_model,extra_trees,147.0582,141.335305132,-5.72289486839,5.72289486839,3.89158501082
@@ -3755,7 +3755,7 @@ record_id,target,feature_set,model,actual,predicted,residual,absolute_error,abso
 730,carry_distance_yd,launch_state_model,extra_trees,173.1299,180.008031075,6.87813107468,6.87813107468,3.97281525299
 731,carry_distance_yd,launch_state_model,extra_trees,101.6842,94.2362131988,-7.44798680116,7.44798680116,7.32462545918
 732,carry_distance_yd,launch_state_model,extra_trees,79.7135,98.0031925569,18.2896925569,18.2896925569,22.9442849165
-735,carry_distance_yd,launch_state_model,extra_trees,168.0665,168.009545033,-0.0569549665521,0.0569549665521,0.0338883516656
+735,carry_distance_yd,launch_state_model,extra_trees,168.0665,168.009545033,-0.056954966552,0.056954966552,0.0338883516656
 1,carry_distance_yd,launch_state_model,hist_gradient_boosting,106.6601,109.929994338,3.26989433786,3.26989433786,3.0657146748
 3,carry_distance_yd,launch_state_model,hist_gradient_boosting,185.444,183.394724898,-2.0492751023,2.0492751023,1.10506411763
 6,carry_distance_yd,launch_state_model,hist_gradient_boosting,164.5888,160.119857529,-4.46894247149,4.46894247149,2.71521663169

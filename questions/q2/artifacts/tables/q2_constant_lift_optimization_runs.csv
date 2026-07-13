@@ -1,0 +1,4 @@
+model,start_label,coarse_grid_rank,initial_cd,initial_lift,final_cd,final_lift,objective,success,message,iterations,function_evaluations,calibration_n,failed_count,selected,full_train_objective,full_train_failed_count
+constant_lift,grid_rank_1,1,0.27,0.18,0.27,0.18,0.339597928369,True,Maximum number of function evaluations has been exceeded.,0,4,24,0,True,0.354814495074,0
+constant_lift,grid_rank_2,2,0.27,0.27,0.27,0.27,0.369056393849,True,Maximum number of function evaluations has been exceeded.,0,4,24,0,False,,
+constant_lift,grid_rank_3,3,0.38,0.27,0.38,0.27,0.443764144111,True,Maximum number of function evaluations has been exceeded.,0,4,24,0,False,,

@@ -1,9 +1,9 @@
 {
   "stem": "q2_typical_trajectories_side",
-  "title": "Q2 typical trajectories side view",
+  "title": "Q2 typical trajectories side view - combined ODE role trajectories",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-12T15:59:07.724235+00:00",
-  "rows": 698,
+  "generated_at": "2026-07-13T04:18:25.318595+00:00",
+  "rows": 1538,
   "columns": [
     "sample_id",
     "target_group",
@@ -16,5 +16,5 @@
     "y_yd",
     "z_yd"
   ],
-  "notes": "x-z side view for fixed-test 100/150/200 yd typical records."
+  "notes": "x-z side view for combined ODE role trajectories fixed-test typical records."
 }

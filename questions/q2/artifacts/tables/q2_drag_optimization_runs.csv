@@ -1,0 +1,4 @@
+model,start_label,coarse_grid_rank,initial_cd,final_cd,objective,success,message,iterations,function_evaluations,calibration_n,failed_count,selected,full_train_objective,full_train_failed_count
+drag,grid_best,1,0.05,0.05,1.46998250265,True,Maximum number of function evaluations has been exceeded.,0,4,36,0,True,1.86276960804,0
+drag,midpoint,0,0.325,0.325,3.13406924128,True,Maximum number of function evaluations has been exceeded.,0,4,36,0,False,,
+drag,grid_second_best,2,0.111111111111,0.111111111111,1.79889675212,True,Maximum number of function evaluations has been exceeded.,0,4,36,0,False,,

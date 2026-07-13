@@ -7,5 +7,5 @@ drag_model_reduces_vacuum_carry,True,2.72558301254
 ground_event_success,True,1
 positive_backspin_lifts_up,True,6.63670342668
 zero_sidespin_zero_direction_lateral_near_zero,True,0
-spin_factor_lift_integrates,True,2.88074395829
+spin_factor_lift_integrates,True,5.22807263435
 full_ode_variants_present,True,4

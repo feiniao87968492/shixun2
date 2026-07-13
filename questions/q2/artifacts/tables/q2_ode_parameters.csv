@@ -1,10 +1,11 @@
-model,parameter,value,lower_bound,upper_bound,calibration_stage,source
-drag,C_D,0.05,0.05,0.6,train_representative_grid,train split representative grid scan; final drag-only baseline
-constant_lift,C_D,0.27,0.05,0.6,train_representative_grid,train split representative grid scan with constant C_L
-constant_lift,C_L,0.18,0.0,0.45,train_representative_grid,train split representative grid scan with constant C_L
-spin_factor_lift,C_D,0.27,0.05,0.6,train_representative_grid,train split representative grid scan with C_L(S)=k_L*S
-spin_factor_lift,k_L,0.8,0.0,4.0,train_representative_grid,train split representative grid scan with C_L(S)=k_L*S
-physics,mass_kg,0.0456,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表
-physics,radius_m,0.021335,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表
-physics,air_density_kg_m3,1.225,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表
-physics,gravity_m_s2,9.80665,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表
+model,parameter,value,lower_bound,upper_bound,calibration_stage,source,at_lower_bound,at_upper_bound,distance_to_lower_bound,distance_to_upper_bound,boundary_warning,parameter_status,full_train_objective
+drag,C_D,0.05,0.05,0.6,coarse_grid_plus_bounded_local_optimization,train split drag representative records; fixed test split excluded,True,False,0.0,0.5499999999999999,within_1pct_of_bound,boundary_solution,1.8627696080436382
+constant_lift,C_D,0.27,0.05,0.6,coarse_grid_plus_bounded_local_optimization,train split lift representative records with constant C_L,False,False,0.21999999999999997,0.33,,ok,0.354814495074304
+constant_lift,C_L,0.18,0.0,0.45,coarse_grid_plus_bounded_local_optimization,train split lift representative records with constant C_L,False,False,0.18,0.27,,ok,0.354814495074304
+spin_factor_lift,C_D,0.49,0.05,0.6,coarse_grid_plus_bounded_local_optimization,train split lift representative records with C_L(S)=k_L*S,False,False,0.43999999999999995,0.11000000000000004,,ok,1.5980488411618612
+spin_factor_lift,k_L,1.6,0.0,4.0,coarse_grid_plus_bounded_local_optimization,train split lift representative records with C_L(S)=k_L*S,False,False,1.6,2.4,,ok,1.5980488411618612
+physics,mass_kg,0.0456,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表,False,False,,,,ok,
+physics,radius_m,0.021335,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表,False,False,,,,ok,
+physics,air_density_kg_m3,1.225,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表,False,False,,,,ok,
+physics,gravity_m_s2,9.80665,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表,False,False,,,,ok,
+physics,initial_height_m,0.01,,,numerical_convention,Numerical convention to avoid immediate ground-event detection; not measured tee height.,False,False,,,,ok,

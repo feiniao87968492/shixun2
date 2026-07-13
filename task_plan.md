@@ -2,13 +2,15 @@
 
 ## Goal
 
-Complete the full scope of `docs/plans/task2.md` for q2, including supervised prediction,
-the full ODE hierarchy through lift models, train-only parameter calibration, typical
-trajectories, sensitivity analysis, validation, documentation, commit, and push.
+Complete the full scope of `docs/plans/task3.md` for q2 recalibration and final
+acceptance: fix ODE calibration configuration wiring, representative sampling,
+bounded local optimization, wind directions, ODE model roles, carry definition
+validation, initial-height sensitivity, metadata, validation coverage, documentation,
+reproducibility checks, commit, and push.
 
 ## Current Phase
 
-Phase 14 - q2 full task2 ODE/lift continuation
+Phase 15 - q2 task3 recalibration and acceptance
 
 ## Completed Phases
 
@@ -17,6 +19,7 @@ Phase 14 - q2 full task2 ODE/lift continuation
 - [x] Phase 11: q1 review1 reproducibility audit closeout.
 - [x] Phase 12: q1 review2 method audit closeout.
 - [x] Phase 13: q2 first-stage stop point from `docs/plans/task2.md` section 26.
+- [x] Phase 14: q2 full task2 ODE/lift continuation, committed and pushed.
 
 ## Phase 13: q2 task2 first stage
 
@@ -69,6 +72,22 @@ Phase 14 - q2 full task2 ODE/lift continuation
 - [x] `python scripts\check_repo.py`
 - [x] `python scripts\snapshot_raw.py --verify`
 - [x] `git diff --check`
+
+## Phase 15: q2 task3 recalibration and final acceptance
+
+- [x] Audit current q2 code, artifacts, docs, and validators against `docs/plans/task3.md`.
+- [x] Add RED tests for task3 deliverables and confirm they fail for the current missing scope.
+- [x] Implement separate drag/lift representative sampling and config wiring.
+- [x] Add coarse-search plus bounded local optimization for drag, constant-lift, and spin-factor-lift models.
+- [x] Add parameter boundary metadata and warnings, including drag boundary status.
+- [x] Correct headwind/tailwind direction and extend sensitivity to both ODE role models.
+- [x] Generate separate constant-lift and spin-factor typical trajectory artifact sets.
+- [x] Compare forward carry and horizontal Euclidean carry definitions.
+- [x] Record initial-height type and sensitivity results.
+- [x] Extend q2 validation and metadata to cover task3 acceptance checks.
+- [x] Sync q2 docs, root status, evidence chain, figure registry, report text, findings, and progress.
+- [x] Run pipeline, validate, rerun pipeline, reproducibility checks, pytest, repo checks, raw snapshot verification, and whitespace check.
+- [ ] Stage with raw/PDF/Excel guard, commit task3 work, push, and verify remote SHA.
 
 ## Git Safety
 

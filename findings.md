@@ -82,6 +82,36 @@
   - `q2_supervised_repeated_split.csv`
 - q2 validation passes 69 checks; full pytest passes 27 tests.
 
+## Q2 Task3 Recalibration Scope
+
+- `docs/plans/task3.md` is the current authoritative plan.
+- The task is q2整改/重标定/最终验收, not q3 implementation.
+- Existing task2 artifacts are insufficient for task3 because they still use a shared representative table, grid-only ODE calibration, one typical trajectory set, reversed wind direction semantics in sensitivity, incomplete carry-definition comparison, and incomplete run metadata.
+- Completion requires regenerated ODE artifacts, expanded validation coverage, synchronized q2/root status docs, repeated-run reproducibility evidence, commit, push, and remote SHA verification.
+
+## Q2 Task3 Results
+
+- Drag calibration now uses `ode.drag_calibration`: 36 representative records and 10 coarse-grid points.
+- Lift calibration now uses `ode.lift_calibration`: 24 representative records and 6x6 coarse-grid points.
+- Representative records are selected by multidimensional KMeans coverage over ball speed, launch angle, spin rate, and carry distance.
+- ODE parameter calibration uses coarse search plus bounded `scipy.optimize.minimize` local optimization; selected runs record full-train objectives.
+- Recalibrated parameters:
+  - drag: `C_D=0.05`, `boundary_solution`.
+  - constant_lift: `C_D=0.27, C_L=0.18`.
+  - spin_factor_lift: `C_D=0.49, k_L=1.6`.
+- ODE test carry RMSE:
+  - vacuum=32.233 yd.
+  - drag=36.465 yd.
+  - constant_lift=16.506 yd.
+  - spin_factor_lift=31.996 yd.
+- Model roles are explicit:
+  - `best_fit_ode_model=constant_lift`.
+  - `q3_compatible_ode_model=spin_factor_lift`.
+- Carry definition comparison supports adopting forward distance `D_x=x_land`.
+- Wind sensitivity now uses `tailwind_1mps=(1,0,0)` and `headwind_1mps=(-1,0,0)`; average carry satisfies tailwind > no_wind > headwind for both role models.
+- `run_metadata.json` now records git commit, data/config hashes, package versions, split hashes, calibration ids, model roles, and optimization run paths.
+- Repeated pipeline run matched major CSV SHA256 hashes.
+
 ## Phase 14 RED Evidence
 
 `python -m pytest tests\test_q2_full_task2.py -q` failed as expected:

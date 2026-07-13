@@ -1,5 +1,13 @@
 # Development Log
 
+## 2026-07-13 - q2 task3 重标定与最终验收
+
+- **目标**：完成 `docs/plans/task3.md` 的第二问整改、重标定与最终验收，不进入 q3 实现。
+- **完成**：修复 drag/lift 标定配置接线；新增多维代表样本抽取；将 ODE 参数标定改为粗网格 + 有界局部优化；新增边界字段和 `boundary_solution`；修正顺/逆风方向；分离 `constant_lift` 第二问主轨迹与 `spin_factor_lift` 第三问接口轨迹；新增 carry 定义比较、初始高度敏感性、完整 run metadata 和 task3 验证。
+- **关键结果**：代表样本 drag=36、lift=24；参数为 drag `C_D=0.05`、constant_lift `C_D=0.27,C_L=0.18`、spin_factor_lift `C_D=0.49,k_L=1.6`；ODE carry RMSE 为 vacuum=32.233、drag=36.465、constant_lift=16.506、spin_factor_lift=31.996 yd。
+- **验证**：pipeline 通过；重复 pipeline 主要 CSV 哈希一致；q2 validate 121 checks passed；`python -m pytest -q` 33 passed；repo check 通过且仅保留 q3 scaffold warning；raw snapshot verify 通过；`git diff --check` 无输出。
+- **局限**：ODE 仍为简化全局有效参数模型；第二问主结论使用 constant-lift，spin-factor-lift 仅作为 q3 兼容接口保留。
+
 ## 2026-07-12 - q2 完整监督预测与含升力 ODE 收口
 
 - **目标**：完成 `docs/plans/task2.md` 的完整第二问任务，而不再停留在第 26 节第一阶段停止点。

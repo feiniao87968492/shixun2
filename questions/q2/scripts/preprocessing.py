@@ -7,7 +7,9 @@ from typing import Any
 import numpy as np
 import pandas as pd
 import yaml
+from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 
 TARGETS = ["carry_distance_yd", "apex_height_yd"]
@@ -17,6 +19,12 @@ ODE_REQUIRED_FEATURES = [
     "launch_direction_deg",
     "spin_rate_rpm",
     "spin_axis_deg",
+]
+CALIBRATION_COVERAGE_FEATURES = [
+    "ball_speed_mph",
+    "launch_angle_deg",
+    "spin_rate_rpm",
+    "carry_distance_yd",
 ]
 
 
@@ -138,22 +146,111 @@ def spin_geometry_check(clean: pd.DataFrame) -> pd.DataFrame:
     )
 
 
+def select_calibration_records(
+    train: pd.DataFrame,
+    *,
+    required_features: list[str],
+    representative_count: int,
+    calibration_type: str,
+    random_seed: int,
+) -> pd.DataFrame:
+    frame = train.dropna(subset=[*required_features, *TARGETS]).copy()
+    frame = frame.sort_values("record_id").reset_index(drop=True)
+    if frame.empty:
+        raise ValueError(f"No complete records are available for {calibration_type} calibration")
+
+    coverage_features = [feature for feature in CALIBRATION_COVERAGE_FEATURES if feature in frame.columns]
+    if len(frame) <= int(representative_count):
+        selected = frame.copy()
+        selected["cluster_or_stratum"] = [f"all_{index:03d}" for index in range(len(selected))]
+    else:
+        matrix = StandardScaler().fit_transform(frame[coverage_features].to_numpy(dtype=float))
+        cluster_count = min(int(representative_count), len(frame))
+        kmeans = KMeans(n_clusters=cluster_count, random_state=int(random_seed), n_init=20)
+        labels = kmeans.fit_predict(matrix)
+        selected_positions: list[int] = []
+        selected_position_set: set[int] = set()
+        cluster_labels: dict[int, str] = {}
+        for cluster_id in range(cluster_count):
+            member_positions = np.flatnonzero(labels == cluster_id)
+            if len(member_positions) == 0:
+                continue
+            distances = np.linalg.norm(matrix[member_positions] - kmeans.cluster_centers_[cluster_id], axis=1)
+            member_frame = pd.DataFrame(
+                {
+                    "position": member_positions,
+                    "distance": distances,
+                    "record_id": frame.iloc[member_positions]["record_id"].to_numpy(dtype=int),
+                }
+            ).sort_values(["distance", "record_id"])
+            for candidate_position in member_frame["position"].astype(int):
+                if candidate_position not in selected_position_set:
+                    selected_positions.append(candidate_position)
+                    selected_position_set.add(candidate_position)
+                    cluster_labels[int(candidate_position)] = f"cluster_{cluster_id:03d}"
+                    break
+
+        if len(selected_positions) < int(representative_count):
+            center_distances = np.min(
+                np.linalg.norm(matrix[:, None, :] - kmeans.cluster_centers_[None, :, :], axis=2),
+                axis=1,
+            )
+            fallback = pd.DataFrame(
+                {
+                    "position": np.arange(len(frame)),
+                    "distance": center_distances,
+                    "record_id": frame["record_id"].to_numpy(dtype=int),
+                }
+            ).sort_values(["distance", "record_id"])
+            for candidate_position in fallback["position"].astype(int):
+                if len(selected_positions) >= int(representative_count):
+                    break
+                if candidate_position not in selected_position_set:
+                    selected_positions.append(candidate_position)
+                    selected_position_set.add(candidate_position)
+                    cluster_labels[int(candidate_position)] = f"fallback_{len(selected_positions) - 1:03d}"
+
+        selected = frame.iloc[selected_positions].copy()
+        selected["cluster_or_stratum"] = [
+            cluster_labels[int(position)] for position in selected_positions
+        ]
+
+    selected.insert(1, "calibration_type", calibration_type)
+    columns = [
+        "record_id",
+        "calibration_type",
+        "cluster_or_stratum",
+        "ball_speed_mph",
+        "launch_angle_deg",
+        "spin_rate_rpm",
+        "spin_axis_deg",
+        "carry_distance_yd",
+        "apex_height_yd",
+        *[feature for feature in required_features if feature not in {
+            "ball_speed_mph",
+            "launch_angle_deg",
+            "spin_rate_rpm",
+            "spin_axis_deg",
+        }],
+    ]
+    if "lateral_offset_yd" in selected.columns:
+        columns.append("lateral_offset_yd")
+    return selected[columns].sort_values("record_id").reset_index(drop=True)
+
+
 def select_drag_calibration_records(
     train: pd.DataFrame,
     *,
     required_features: list[str],
     representative_count: int,
 ) -> pd.DataFrame:
-    frame = train.dropna(subset=[*required_features, *TARGETS]).sort_values("carry_distance_yd")
-    if len(frame) <= representative_count:
-        selected = frame
-    else:
-        positions = np.linspace(0, len(frame) - 1, representative_count).round().astype(int)
-        selected = frame.iloc[np.unique(positions)]
-    columns = ["record_id", "carry_distance_yd", "apex_height_yd", *required_features]
-    if "lateral_offset_yd" in selected.columns:
-        columns.append("lateral_offset_yd")
-    return selected[columns].reset_index(drop=True)
+    return select_calibration_records(
+        train,
+        required_features=required_features,
+        representative_count=representative_count,
+        calibration_type="drag",
+        random_seed=2026,
+    )
 
 
 def select_typical_records(
