@@ -116,8 +116,8 @@ Phase 17 - q3 task5 inverse-design implementation
 - [x] Implement q3 pipeline modules and config.
 - [x] Generate q3 artifacts and figures.
 - [x] Update q3/root docs, evidence chain, registry, report, findings, devlog, and progress.
-- [ ] Run q3 pipeline, q3 validation, task tests, full pytest, repo/raw/diff checks, reproducibility checks.
-- [ ] Set q3 status to `done`, stage with raw/PDF/Excel guard, commit, push, and verify remote SHA.
+- [x] Run q3 pipeline, q3 validation, task tests, full pytest, repo/raw/diff checks, reproducibility checks.
+- [x] Set q3 status to `done`, stage with raw/PDF/Excel guard, commit, push, and verify remote SHA.
 
 ## Phase 17 RED/GREEN Result
 
@@ -128,6 +128,7 @@ Phase 17 - q3 task5 inverse-design implementation
   - `python questions\q3\scripts\validate.py --config configs/default.yaml`
   - `python -m pytest tests\test_q3_task5_inverse_design.py -q`
 - Current q3 result: nominal objective=0.010 yd; robust objective=0.022 yd; robust p90 miss=3.135 yd.
+- Implementation commit: `490f01dfaf2ebd2158c82701fca5b5168a6a08d0`, pushed to `origin/main` and verified by `git ls-remote`.
 
 ## Git Safety
 

@@ -245,3 +245,8 @@
   - robust perturbation p90=3.135 yd.
   - ODE crosscheck success for constant_lift and spin_factor_lift.
 - Updated q3 README/approach/experiments/results/evidence, root README, evidence chain, figure registry, decision log, risk register, report draft, appendix, devlog, task plan, findings, and progress.
+- Git:
+  - Raw/PDF/Excel staged-file guard produced no matches.
+  - Committed q3 task5 implementation as `490f01d feat(q3): implement robust inverse design`.
+  - Pushed `main` to GitHub over HTTPS.
+  - Remote `refs/heads/main` verified at `490f01dfaf2ebd2158c82701fca5b5168a6a08d0`.
