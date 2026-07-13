@@ -1,0 +1,20 @@
+{
+  "stem": "q3_optimal_trajectory_side",
+  "title": "Q3 robust optimum trajectory side view",
+  "source_script": "questions/q3/scripts/visualize.py",
+  "generated_at": "2026-07-13T10:22:15.585477+00:00",
+  "rows": 493,
+  "columns": [
+    "candidate_id",
+    "candidate_type",
+    "model",
+    "time_s",
+    "x_m",
+    "y_m",
+    "z_m",
+    "x_yd",
+    "y_yd",
+    "z_yd"
+  ],
+  "notes": "Side view marks apex, landing point, and hole x-position."
+}

@@ -140,3 +140,84 @@ q2:
       - 0.20
   plotting:
     dpi: 300
+
+q3:
+  input_path: data/processed/golf_shots_clean.csv
+  output_dir: questions/q3/artifacts
+  random_seed: 2026
+  target:
+    forward_distance_yd: 200.0
+    lateral_yd: 0.0
+  fixed_inputs:
+    launch_direction_deg: 0.0
+  variables:
+    ball_speed_mph:
+      lower: 80.0
+      upper: 140.0
+    launch_angle_deg:
+      lower: 5.0
+      upper: 30.0
+    spin_rate_rpm:
+      lower: 1000.0
+      upper: 10000.0
+    spin_axis_deg:
+      lower: -30.0
+      upper: 30.0
+  cross_validation:
+    folds: 5
+  lateral:
+    models:
+      - dummy
+      - linear
+      - ridge
+      - hist_gradient_boosting
+      - extra_trees
+  support:
+    neighbors: 5
+    threshold_quantile: 0.95
+  baseline:
+    sample_count: 20000
+    method: lhs
+  differential_evolution:
+    strategy: best1bin
+    population_size: 20
+    max_iterations: 300
+    tolerance: 1.0e-7
+    workers: 1
+    polish: false
+    seeds:
+      - 2026
+      - 2027
+      - 2028
+      - 2029
+      - 2030
+  local_refinement:
+    sample_count: 5000
+    ball_speed_half_width_mph: 2.0
+    launch_angle_half_width_deg: 1.0
+    spin_rate_half_width_rpm: 300.0
+    spin_axis_half_width_deg: 2.0
+  top_candidate_count: 500
+  near_optimal_tolerance_yd: 0.5
+  perturbation:
+    simulations: 2000
+    ball_speed_sd_mph: 1.0
+    launch_angle_sd_deg: 0.5
+    spin_rate_sd_rpm: 150.0
+    spin_axis_sd_deg: 1.0
+  uncertainty:
+    ensemble_members: 5
+    stable_objective_std_yd: 0.5
+    moderate_objective_std_yd: 2.0
+  target_distance_sensitivity_yd:
+    - 195.0
+    - 200.0
+    - 205.0
+  ode_verification:
+    required: true
+    models:
+      - constant_lift
+      - spin_factor_lift
+  plotting:
+    dpi: 300
+    slice_grid_size: 50

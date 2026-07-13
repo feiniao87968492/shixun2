@@ -1,0 +1,2 @@
+candidate_id,candidate_type,record_id,ball_speed_mph,launch_angle_deg,launch_direction_deg,spin_rate_rpm,spin_axis_deg,observed_carry_yd,observed_lateral_yd,observed_objective_yd,source
+observed_609,best_observed_baseline,609,125.4027,13.54,-2.85,4059.02,4.01,198.4033,-5.1072,5.35097586707,q2 fixed train split actual record

@@ -1,0 +1,14 @@
+check,passed,value,notes
+q2_carry_model_loadable,True,true,D:/Users/zty/数学建模/赛题集/实训2/questions/q2/artifacts/models/q2_carry_model.joblib
+q2_apex_model_loadable,True,true,D:/Users/zty/数学建模/赛题集/实训2/questions/q2/artifacts/models/q2_apex_model.joblib
+q2_train_count,True,514,
+q2_test_count,True,221,
+q2_split_overlap_count,True,0,
+q2_metadata_readable,True,true,
+q2_validation_has_no_blocking_failures,True,0,
+q2_ode_parameters_valid,True,true,
+input_record_count,True,735,
+input_key_fields_complete,True,true,
+q2_feature_order_matches_carry_model,True,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg,
+q3_supervised_ready,True,true,
+q3_ode_verified,True,true,

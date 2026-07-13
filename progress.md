@@ -194,3 +194,54 @@
   - `python scripts\check_repo.py`: passed with expected q3 scaffold warning.
   - `python scripts\snapshot_raw.py --verify`: verified 3 raw files.
   - `git diff --check`: no output.
+
+## Session: 2026-07-13 - q3 task5 inverse-design start
+
+- Current active goal is `docs/plans/task5.md`, which is q3 robust inverse-design for a 200 yd target.
+- Restored planning context and found root `task_plan.md` still pointed at completed q2 task4; updated it to Phase 17 for q3 task5.
+- Required startup reads completed for q3: root README, problem statement, modeling contract, q3 README, q3 approach, q3 manifest, devlog tail, and q3 evidence-chain records.
+- Confirmed q3 scripts are scaffolds: `pipeline.py` has `IMPLEMENTED = False`, while `validate.py` and `visualize.py` raise placeholder errors.
+- Confirmed q3 manifest has stale q2 dependency paths and must be repaired to final q2 artifacts.
+- Confirmed q2 task4 is complete enough for q3 ODE crosscheck: q2 metadata reports `q3_compatible_boundary_checks_passed = true`, `carry_definition = forward_x`, `best_fit_ode_model = constant_lift`, and `q3_compatible_ode_model = spin_factor_lift`.
+- Inspection error: a quick processed-data summary referenced `apex_height_yd` directly and failed with `KeyError`; root cause is the processed CSV still names the column `max_height_yd`, while q2 creates the `apex_height_yd` alias in its loader.
+
+## Session: 2026-07-13 - q3 task5 implementation and validation
+
+- Added `tests/test_q3_task5_inverse_design.py`.
+- RED command: `python -m pytest tests\test_q3_task5_inverse_design.py -q`.
+- RED result: 6 expected failures because q3 config, q3 artifacts, q3 validation, and q3 docs/status were absent.
+- Implemented q3 modules:
+  - `dependencies.py`
+  - `surrogate.py`
+  - `support.py`
+  - `objective.py`
+  - `optimize.py`
+  - `robustness.py`
+  - `ode_verify.py`
+  - real `pipeline.py`, `validate.py`, and `visualize.py`
+- Added `q3` config to `configs/default.yaml`.
+- Updated q3 manifest to use final q2 dependencies and set status to `done`.
+- First full pipeline generated core artifacts but failed at final validation because q2 scripts shadowed q3 `validate.py` in `sys.path`.
+- Fixed import root cause by appending q2 scripts in `ode_verify.py` instead of inserting at the front.
+- Second rerun exposed DE performance issue: scalar one-row sklearn prediction inside SciPy DE caused a 30-minute timeout.
+- Fixed performance root cause by using SciPy vectorized differential evolution population scoring with explicit deferred updating.
+- Clean pipeline command passed in about 89 seconds:
+  - `python questions\q3\scripts\pipeline.py --config configs/default.yaml`
+- Final q3 validation passed:
+  - `python questions\q3\scripts\validate.py --config configs/default.yaml`
+- q3 task5 tests passed:
+  - `python -m pytest tests\test_q3_task5_inverse_design.py -q`: 6 passed.
+- Broader verification:
+  - `python -m pytest -q`: 46 passed.
+  - `python scripts\check_repo.py`: passed with 0 warnings.
+  - `python scripts\snapshot_raw.py --verify`: verified 3 raw files.
+  - `git diff --check`: no output.
+  - q3 repeated pipeline major CSV hash check: `REPRO_HASH_MATCH`.
+  - Final standalone q3 validation with status-doc checks: 16 checks passed.
+- Key q3 outputs:
+  - lateral HGB test RMSE=5.475 yd, R2=0.958.
+  - nominal objective=0.010 yd.
+  - robust objective=0.022 yd.
+  - robust perturbation p90=3.135 yd.
+  - ODE crosscheck success for constant_lift and spin_factor_lift.
+- Updated q3 README/approach/experiments/results/evidence, root README, evidence chain, figure registry, decision log, risk register, report draft, appendix, devlog, task plan, findings, and progress.

@@ -1,0 +1,6 @@
+target,features,model,cv_rmse,cv_rmse_std,cv_mae,cv_r2,test_rmse,test_mae,test_r2,test_bias,selected,selection_metric,test_n
+lateral_offset_yd,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg,hist_gradient_boosting,5.36853687132,0.644593950862,3.63239301938,0.956958008976,5.47530317936,3.87030786209,0.957504237778,0.938991841499,True,cv_rmse,221
+lateral_offset_yd,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg,extra_trees,5.64829638554,0.641906584621,3.82324504182,0.952533003246,5.77322999228,3.91383548854,0.952753787645,0.347619978319,False,cv_rmse,221
+lateral_offset_yd,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg,ridge,9.37001002091,0.878005472312,6.74124817533,0.8701858218,11.4719607377,7.34299475456,0.813445992324,1.84870792486,False,cv_rmse,221
+lateral_offset_yd,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg,linear,9.37368829481,0.904741366564,6.73128051801,0.870105879067,11.5473721725,7.34697952189,0.81098528922,1.85207779491,False,cv_rmse,221
+lateral_offset_yd,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg,dummy,26.3587170495,1.27360557081,21.2888038675,-0.0290363252486,26.5789062617,21.546772532,-0.00139055372224,0.990442451186,False,cv_rmse,221

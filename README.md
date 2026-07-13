@@ -4,7 +4,7 @@
 - 小问数量：3
 - 初始化时间：2026-07-12T16:10:49+08:00
 - 文档语言：zh-CN
-- 当前状态：`q2_done`
+- 当前状态：`q3_done`
 
 ## 项目目标
 
@@ -50,7 +50,7 @@ tests/                   回归测试
 |---|---|---|---|
 | q1 | done | 数据审计、异常 0 值修正、飞行距离影响因素分层解释、review2 方法审查修复 | `python questions/q1/scripts/pipeline.py --config configs/default.yaml` |
 | q2 | done | 固定 70/30 划分、监督预测模型、四层 ODE 重标定、双角色轨迹、灵敏度与最终验收 | `python questions/q2/scripts/pipeline.py --config configs/default.yaml` |
-| q3 | planned | 以 200 yd 目标为约束的最优击球参数搜索与轨迹绘制 | `python questions/q3/scripts/pipeline.py --dry-run` |
+| q3 | done | 以 200 yd 目标为约束的稳健击球参数搜索、模型分歧分析和 ODE 轨迹复核 | `python questions/q3/scripts/pipeline.py --config configs/default.yaml` |
 
 ## Q1 复现与验证
 
@@ -82,3 +82,20 @@ Q2 当前主结果：
 - 最终采用前向距离 `D_x=x_land` 作为主 carry 定义；顺风/逆风方向已校正并通过带容差的平均 carry 顺序验证。
 
 原始题面与附件哈希清单见 `data/raw_manifest.csv`；提交前运行 `python scripts/snapshot_raw.py --verify`。
+
+## Q3 复现与验证
+
+```bash
+python questions/q3/scripts/pipeline.py --config configs/default.yaml
+python questions/q3/scripts/validate.py --config configs/default.yaml
+python -m pytest tests/test_q3_task5_inverse_design.py -q
+```
+
+Q3 当前主结果：
+
+- q2 依赖审计全部通过，固定划分复用 train=514、test=221。
+- lateral 偏移模型：`hist_gradient_boosting`，测试 RMSE=5.475 yd，MAE=3.870 yd，R2=0.958。
+- 最佳观测训练记录：`record_id=609`，实测距洞口 5.351 yd。
+- 名义最优：球速 121.113 mph、发射角 19.616 度、自旋速率 2627.708 rpm、自旋轴偏角 -0.366 度，监督目标函数 0.010 yd。
+- 稳健推荐：球速 120.751 mph、发射角 19.482 度、自旋速率 2348.781 rpm、自旋轴偏角 0.450 度，监督目标函数 0.022 yd，扰动 p90 距洞 3.135 yd。
+- ODE 复核积分均成功，但与监督代理存在数 yd 级差异；第三问结论表述为监督代理下的稳健推荐策略。

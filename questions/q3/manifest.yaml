@@ -1,5 +1,5 @@
 question: q3
-status: planned
+status: done
 objective: "在 200 yd 目标下求解最优击球参数并生成最优三维轨迹"
 
 inputs:
@@ -8,8 +8,12 @@ inputs:
   processed_data:
     - data/processed/golf_shots_clean.csv
   upstream_artifacts:
-    - questions/q2/artifacts/models/q2_prediction_model.joblib
-    - questions/q2/artifacts/tables/q2_ode_parameters.csv
+    - questions/q2/artifacts/models/q2_carry_model.joblib
+    - questions/q2/artifacts/models/q2_apex_model.joblib
+    - questions/q2/artifacts/models/q2_ode_parameters.json
+    - questions/q2/artifacts/run_metadata.json
+    - questions/q2/artifacts/tables/q2_data_split.csv
+    - questions/q2/artifacts/tables/q2_validation_checks.csv
 
 entrypoints:
   pipeline: questions/q3/scripts/pipeline.py
@@ -23,8 +27,8 @@ outputs:
   models: questions/q3/artifacts/models
 
 quality_gates:
-  baseline: false
-  validation: false
-  sensitivity: false
-  evidence_chain: false
-  reproducible: false
+  baseline: true
+  validation: true
+  sensitivity: true
+  evidence_chain: true
+  reproducible: true

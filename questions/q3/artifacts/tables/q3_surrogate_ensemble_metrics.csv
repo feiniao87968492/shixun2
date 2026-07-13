@@ -1,0 +1,11 @@
+target,ensemble_member,model,bootstrap_seed,test_rmse,test_mae,test_r2,test_bias,features
+carry_distance_yd,1,hist_gradient_boosting,2126,8.485055982,5.8576668922,0.944872359537,0.438869512688,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg
+carry_distance_yd,2,extra_trees,2127,8.71956141113,5.50236136911,0.941783075068,0.275727901093,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg
+carry_distance_yd,3,hist_gradient_boosting,2128,10.2090571386,6.44059117943,0.920194789131,0.37597445089,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg
+carry_distance_yd,4,extra_trees,2129,8.49886979133,5.3983503344,0.944692716032,0.525342441113,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg
+carry_distance_yd,5,hist_gradient_boosting,2130,9.62624805997,6.39299123696,0.929046458344,0.267166396508,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg
+lateral_offset_yd,1,hist_gradient_boosting,2126,6.4030888973,4.47294239293,0.941882310264,1.13258555765,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg
+lateral_offset_yd,2,extra_trees,2127,5.86081558072,4.01400743908,0.95130937031,0.490035445655,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg
+lateral_offset_yd,3,hist_gradient_boosting,2128,6.34794599312,4.47487623812,0.942879010012,1.09211161752,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg
+lateral_offset_yd,4,extra_trees,2129,6.31833322937,4.35534311775,0.943410698527,0.772424513913,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg
+lateral_offset_yd,5,hist_gradient_boosting,2130,6.33619920672,4.37660843654,0.943090217619,1.14302817608,ball_speed_mph;launch_angle_deg;launch_direction_deg;spin_rate_rpm;spin_axis_deg

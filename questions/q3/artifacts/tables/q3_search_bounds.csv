@@ -1,0 +1,5 @@
+variable,hard_lower,hard_upper,train_min,train_q05,train_q50,train_q95,train_max,source
+ball_speed_mph,80,140,70.3293,83.212915,108.771,131.04197,141.6652,hard bounds from task5/problem statement; support statistics from q2 train split
+launch_angle_deg,5,30,2.35,5.0895,15.075,24.914,41.82,hard bounds from task5/problem statement; support statistics from q2 train split
+spin_rate_rpm,1000,10000,526.3,1270.2815,3613.90005,6807.4859,15368.3604,hard bounds from task5/problem statement; support statistics from q2 train split
+spin_axis_deg,-30,30,-80.49,-43.969,3.645,31.625,81.1,hard bounds from task5/problem statement; support statistics from q2 train split

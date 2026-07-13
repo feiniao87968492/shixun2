@@ -2,15 +2,17 @@
 
 ## Goal
 
-Complete the full scope of `docs/plans/task4.md` for q2 final ODE remediation:
-make forward-x carry the configured primary definition, run real local
-optimization with trustworthy termination status, penalize integration failures,
-validate the q3-compatible ODE boundary behavior, regenerate artifacts and docs,
-then restore q2 to `done`, commit, push, and verify the remote SHA.
+Complete the full scope of `docs/plans/task5.md` for q3 inverse-design:
+repair q3 dependencies on final q2 artifacts, train and validate a lateral
+landing surrogate on the fixed q2 split, build train-only support diagnostics,
+run sampling and multi-seed differential evolution baselines, report nominal and
+robust 200 yd optima, generate robustness/model-disagreement/target-distance
+sensitivity and ODE crosscheck artifacts, publish figures/docs/evidence, then
+commit, push, and verify the remote SHA.
 
 ## Current Phase
 
-Phase 16 - q2 task4 final ODE remediation
+Phase 17 - q3 task5 inverse-design implementation
 
 ## Completed Phases
 
@@ -21,6 +23,7 @@ Phase 16 - q2 task4 final ODE remediation
 - [x] Phase 13: q2 first-stage stop point from `docs/plans/task2.md` section 26.
 - [x] Phase 14: q2 full task2 ODE/lift continuation, committed and pushed.
 - [x] Phase 15: q2 task3 recalibration and acceptance, committed and pushed.
+- [x] Phase 16: q2 task4 final ODE remediation, committed and pushed.
 
 ## Phase 13: q2 task2 first stage
 
@@ -103,6 +106,28 @@ Phase 16 - q2 task4 final ODE remediation
 - [x] Regenerate q2 artifacts, docs, evidence chain, registry, report text, findings, and progress.
 - [x] Run pipeline, validate, task tests, full pytest, repo/raw/diff checks, reproducibility checks.
 - [x] Restore q2 status to `done`, stage with raw/PDF/Excel guard, commit, push, and verify remote SHA.
+
+## Phase 17: q3 task5 inverse-design implementation
+
+- [x] Read `docs/plans/task5.md` and confirm scope is q3 robust inverse-design.
+- [x] Confirm q2 task4 is complete, so q3 may include ODE crosschecks instead of stopping at supervised-only status.
+- [x] Restore q3 context from README, problem statement, modeling contract, q3 docs, devlog, evidence chain, and planning files.
+- [x] Add RED tests for q3 dependencies, lateral surrogate, support diagnostics, optimization, robustness, ODE crosscheck, figures, validation, docs, and metadata.
+- [x] Implement q3 pipeline modules and config.
+- [x] Generate q3 artifacts and figures.
+- [x] Update q3/root docs, evidence chain, registry, report, findings, devlog, and progress.
+- [ ] Run q3 pipeline, q3 validation, task tests, full pytest, repo/raw/diff checks, reproducibility checks.
+- [ ] Set q3 status to `done`, stage with raw/PDF/Excel guard, commit, push, and verify remote SHA.
+
+## Phase 17 RED/GREEN Result
+
+- RED command: `python -m pytest tests\test_q3_task5_inverse_design.py -q`.
+- RED result: 6 expected failures for missing q3 config, missing q3 artifacts, and unsynced q3 docs/status.
+- GREEN commands so far:
+  - `python questions\q3\scripts\pipeline.py --config configs/default.yaml`
+  - `python questions\q3\scripts\validate.py --config configs/default.yaml`
+  - `python -m pytest tests\test_q3_task5_inverse_design.py -q`
+- Current q3 result: nominal objective=0.010 yd; robust objective=0.022 yd; robust p90 miss=3.135 yd.
 
 ## Git Safety
 

@@ -1,0 +1,91 @@
+{
+  "timestamp": "2026-07-13T10:22:19.910129+00:00",
+  "git_commit": "1fa0a856399ae99d0f2d5f17aa8db88e7128f11f",
+  "python_version": "3.10.11",
+  "package_versions": {
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scipy": "1.15.3",
+    "scikit-learn": "1.7.2",
+    "matplotlib": "3.10.8",
+    "PyYAML": "6.0.3"
+  },
+  "config_path": "configs/default.yaml",
+  "config_sha256": "951c04538b7b7c31d0e6f8745904d6bb9dd7dddb6c396ad5879843de5bbaab35",
+  "data_path": "data/processed/golf_shots_clean.csv",
+  "data_sha256": "1b0546e153d3676f0164efe5846124c96b93553545717dcd6daa619b08567bcd",
+  "train_ids_sha256": "ed5db0c042125bd2cebde098505d9c916b9c14d03dc859877bf57e5ba1ed87b5",
+  "test_ids_sha256": "1fcf5dc5d2c862a1c0388267527d37d9f8e2875fe9761b49dd82d268d71fc674",
+  "train_design_sha256": "edb451dcf56f732b0f6fae19490dbeaa74fc98a593578caeb4a35c31faf3644d",
+  "q3_status": "done",
+  "q2_dependency_audit_passed": true,
+  "q3_ode_verified": true,
+  "target": {
+    "forward_distance_yd": 200.0,
+    "lateral_yd": 0.0
+  },
+  "fixed_inputs": {
+    "launch_direction_deg": 0.0
+  },
+  "nominal_candidate_id": "de_seed_2026",
+  "robust_candidate_id": "local_2026_04651",
+  "lateral_model": {
+    "path": "questions/q3/artifacts/models/q3_lateral_model.joblib",
+    "selected_model": "hist_gradient_boosting",
+    "selection_metric": "cv_rmse"
+  },
+  "q2": {
+    "git_commit": "07c7d7c00a34f87fb89c64d2d5b0c05026b8e99f",
+    "carry_definition": "forward_x",
+    "best_fit_ode_model": "constant_lift",
+    "q3_compatible_ode_model": "spin_factor_lift"
+  },
+  "tables": {
+    "q3_dependency_audit": "questions/q3/artifacts/tables/q3_dependency_audit.csv",
+    "q3_search_bounds": "questions/q3/artifacts/tables/q3_search_bounds.csv",
+    "q3_support_threshold": "questions/q3/artifacts/tables/q3_support_threshold.csv",
+    "q3_training_support": "questions/q3/artifacts/tables/q3_training_support.csv",
+    "q3_lateral_model_metrics": "questions/q3/artifacts/tables/q3_lateral_model_metrics.csv",
+    "q3_lateral_predictions": "questions/q3/artifacts/tables/q3_lateral_predictions.csv",
+    "q3_surrogate_ensemble_metrics": "questions/q3/artifacts/tables/q3_surrogate_ensemble_metrics.csv",
+    "q3_best_observed_baseline": "questions/q3/artifacts/tables/q3_best_observed_baseline.csv",
+    "q3_sampling_baseline": "questions/q3/artifacts/tables/q3_sampling_baseline.csv",
+    "q3_optimization_runs": "questions/q3/artifacts/tables/q3_optimization_runs.csv",
+    "q3_top_candidates": "questions/q3/artifacts/tables/q3_top_candidates.csv",
+    "q3_parameter_robustness": "questions/q3/artifacts/tables/q3_parameter_robustness.csv",
+    "q3_optimal_parameters": "questions/q3/artifacts/tables/q3_optimal_parameters.csv",
+    "q3_model_crosscheck": "questions/q3/artifacts/tables/q3_model_crosscheck.csv",
+    "q3_target_distance_sensitivity": "questions/q3/artifacts/tables/q3_target_distance_sensitivity.csv",
+    "q3_ode_crosscheck": "questions/q3/artifacts/tables/q3_ode_crosscheck.csv",
+    "q3_optimal_trajectory": "questions/q3/artifacts/tables/q3_optimal_trajectory.csv",
+    "q3_objective_slice_speed_angle": "questions/q3/artifacts/tables/q3_objective_slice_speed_angle.csv",
+    "q3_objective_slice_spin": "questions/q3/artifacts/tables/q3_objective_slice_spin.csv"
+  },
+  "figures": {
+    "q3_optimal_trajectory_3d": {
+      "figure": "questions/q3/artifacts/figures/q3_optimal_trajectory_3d.png",
+      "data": "questions/q3/artifacts/figure_data/q3_optimal_trajectory_3d.csv",
+      "metadata": "questions/q3/artifacts/figure_data/q3_optimal_trajectory_3d.meta.json"
+    },
+    "q3_optimal_trajectory_side": {
+      "figure": "questions/q3/artifacts/figures/q3_optimal_trajectory_side.png",
+      "data": "questions/q3/artifacts/figure_data/q3_optimal_trajectory_side.csv",
+      "metadata": "questions/q3/artifacts/figure_data/q3_optimal_trajectory_side.meta.json"
+    },
+    "q3_optimal_trajectory_top": {
+      "figure": "questions/q3/artifacts/figures/q3_optimal_trajectory_top.png",
+      "data": "questions/q3/artifacts/figure_data/q3_optimal_trajectory_top.csv",
+      "metadata": "questions/q3/artifacts/figure_data/q3_optimal_trajectory_top.meta.json"
+    },
+    "q3_objective_slice_speed_angle": {
+      "figure": "questions/q3/artifacts/figures/q3_objective_slice_speed_angle.png",
+      "data": "questions/q3/artifacts/figure_data/q3_objective_slice_speed_angle.csv",
+      "metadata": "questions/q3/artifacts/figure_data/q3_objective_slice_speed_angle.meta.json"
+    },
+    "q3_objective_slice_spin": {
+      "figure": "questions/q3/artifacts/figures/q3_objective_slice_spin.png",
+      "data": "questions/q3/artifacts/figure_data/q3_objective_slice_spin.csv",
+      "metadata": "questions/q3/artifacts/figure_data/q3_objective_slice_spin.meta.json"
+    }
+  }
+}

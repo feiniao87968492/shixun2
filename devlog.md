@@ -205,3 +205,28 @@
   - q2/q3 仍为后续小问，当前仓库检查保留预期 scaffold warning。
 - **下一步**：
   - 进入 q2 前以 review2 后的 q1 artifacts 和 `data/processed/golf_shots_clean.csv` 为共享入口。
+
+---
+
+## 2026-07-13 — q3 task5 稳健反设计完成
+
+- **目标**：完成 `docs/plans/task5.md`，在 200 yd 目标下求解名义最优和稳健推荐击球参数，并生成 q3 证据链、图表和验证结果。
+- **完成**：
+  - 新增 q3 配置、依赖审计、lateral 代理模型、训练支持区诊断、目标函数、采样/差分进化/局部采样优化、扰动稳健性、模型分歧、目标距离灵敏度和 q2 ODE 复核模块。
+  - 修正 q3 manifest 的 q2 依赖路径，改用 `q2_carry_model.joblib`、`q2_apex_model.joblib`、`q2_ode_parameters.json`、q2 metadata、q2 split 和 q2 validation。
+  - 生成 q3 表格、模型、轨迹、目标函数切片图和同名 figure_data/meta。
+  - 更新 q3 README/approach/experiments/results/evidence、root README、证据链、图表登记表、决策日志、风险登记表和论文草稿。
+- **关键结果**：
+  - lateral 模型：HistGradientBoosting，测试 RMSE=5.475 yd，R2=0.958。
+  - 最佳观测训练记录：`record_id=609`，实测距洞口 5.351 yd。
+  - 名义最优：球速 121.113 mph、发射角 19.616 度、自旋速率 2627.708 rpm、自旋轴偏角 -0.366 度，监督目标函数 0.010 yd。
+  - 稳健推荐：球速 120.751 mph、发射角 19.482 度、自旋速率 2348.781 rpm、自旋轴偏角 0.450 度，监督目标函数 0.022 yd，扰动 p90 距洞 3.135 yd。
+  - ODE 复核全部积分成功，但监督代理与简化 ODE 在最优区存在数 yd 级差异，结论只写作监督代理下的稳健推荐。
+- **失败与修正**：
+  - RED 测试首先确认 q3 缺 config/artifacts/docs。
+  - 首次 pipeline 在最终验证处导入了 q2 `validate.py`；根因是 q2 scripts 被插到 `sys.path` 首位，已改为 append。
+  - scalar DE 逐点 sklearn 预测导致 pipeline 超时；改为 SciPy vectorized population 评价后完整 pipeline 约 89 秒。
+- **验证**：
+  - `python questions\q3\scripts\pipeline.py --config configs/default.yaml` 通过。
+  - `python questions\q3\scripts\validate.py --config configs/default.yaml --skip-status-docs` 通过 16 项检查；最终文档同步后需重跑无 skip 版本。
+  - `python -m pytest tests\test_q3_task5_inverse_design.py -q` 目前仅剩文档状态同步检查待最终验证。

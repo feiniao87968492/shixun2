@@ -126,6 +126,28 @@
   - Determine q2 best-fit ODE from valid full-train objectives; q3-compatible model remains `spin_factor_lift` only if boundary stability checks pass.
   - Add validation checks for optimizer termination, forward-x carry consistency, zero failures, q3 boundary stability, and POSIX metadata paths.
 
+## Q3 Task5 Scope
+
+- `docs/plans/task5.md` is the current authoritative plan.
+- The task is q3 robust inverse-design for a 200 yd target, using the final q2 carry/apex models and q2 ODE parameters.
+- q3 scripts are currently scaffolds, and q3 manifest still references stale q2 dependency paths.
+- q2 task4 is complete: q2 status is `done`, q2 carry definition is `forward_x`, q2 best-fit ODE is `constant_lift`, q3-compatible ODE is `spin_factor_lift`, and q3 boundary stability checks pass.
+- Because q2 ODE remediation is complete, q3 should include ODE crosschecks and optimal trajectory figures rather than stopping at supervised-only status.
+- q3 must preserve the q2 fixed split: train=514, test=221. Lateral model training, support thresholds, best-observed baseline, and optimizer support diagnostics must use train-only data.
+- Processed data stores apex as `max_height_yd`; q2 loaders create the `apex_height_yd` alias. q3 should follow that convention instead of assuming the raw alias exists.
+- Required output families include dependency audit, lateral model metrics/predictions, support tables, observed/sampling/DE optimization tables, nominal and robust optimum rows, parameter robustness, model crosscheck, target-distance sensitivity, ODE crosscheck, optimal trajectory, validation checks, run metadata, and paper-level figures with source CSV/meta.
+
+## Q3 Task5 Results
+
+- q3 dependency audit passes all 13 checks: q2 carry/apex models load, q2 split is train=514/test=221/no overlap, q2 validation has no blocking failures, q2 ODE parameters are valid, input has 735 complete key records, and q2 carry feature order matches q3 feature order.
+- Lateral model selection: `hist_gradient_boosting` selected by train 5-fold CV RMSE; fixed-test RMSE=5.475 yd, MAE=3.870 yd, R2=0.958, bias=0.939 yd.
+- Best observed train baseline: `record_id=609`, observed carry=198.403 yd, lateral=-5.107 yd, objective=5.351 yd.
+- Nominal optimum: ball_speed=121.113 mph, launch_angle=19.616 deg, spin_rate=2627.708 rpm, spin_axis=-0.366 deg, predicted carry=199.992 yd, lateral=-0.007 yd, objective=0.010 yd, support=supported.
+- Robust recommended optimum: ball_speed=120.751 mph, launch_angle=19.482 deg, spin_rate=2348.781 rpm, spin_axis=0.450 deg, predicted carry=200.006 yd, lateral=-0.021 yd, objective=0.022 yd, support=supported, perturbation p90=3.135 yd.
+- Five DE runs completed with finite accepted outputs; vectorized population scoring avoids scalar sklearn prediction timeouts.
+- Model crosscheck classifies both nominal and robust candidates as `highly_model_sensitive`; this is a required q3 limitation.
+- ODE crosscheck integrates successfully for `constant_lift` and `spin_factor_lift`. For robust recommendation, constant_lift predicts D_x=193.187 yd and spin_factor_lift predicts D_x=195.032 yd, so ODE is crosscheck evidence only.
+
 ## Q2 Task4 Performance Debugging
 
 - A full pipeline run with true Powell optimization timed out after 40 minutes.
