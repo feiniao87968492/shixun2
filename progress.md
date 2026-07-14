@@ -312,3 +312,42 @@
   - Raw/PDF/Excel staged-file guard produced no matches.
   - Committed task6 implementation as `42e61c7 feat(q3): complete final robustness remediation`.
   - Pushed `main` to GitHub over HTTPS; a follow-up planning closeout commit records the final checklist state.
+
+## Session: 2026-07-14 - q2/q3 task7 joint release start
+
+- Active goal is `docs/plans/task7.md`.
+- Restored planning context and found root `task_plan.md` still pointed at completed q3 task6; updated it to Phase 19 for task7.
+- Required startup reads completed for the joint task: root README, problem statement, modeling contract, q2 README/approach/manifest, q3 README/approach/manifest, recent devlog, q2/q3 evidence-chain records, planning files, and task7 plan.
+- Current branch is `main`; local branch is ahead of `origin/main` by one planning closeout commit, with untracked `docs/plans/task7.md`.
+- Initial audit:
+  - Existing q2/q3 task4/task6 modeling features cover most task7 P0 requirements.
+  - Missing release-level deliverables are `docs/reproducibility/q2_q3_release_manifest.json` and `tests/test_q2_q3_integration.py`.
+  - Q2 solver still has a hard-coded 12 s solve horizon; task7 requires configured `q2.ode.solver.max_flight_time_s=20.0` and `time_horizon_exceeded` status.
+  - Existing q2/q3 metadata were generated against older commits/config hashes and must be regenerated together after implementation.
+
+## Session: 2026-07-14 - q2/q3 task7 implementation and verification
+
+- Added `tests/test_q2_q3_integration.py`.
+- RED command: `python -m pytest tests\test_q2_q3_integration.py -q`.
+- RED result: 3 expected failures for missing `max_flight_time_s`, missing release manifest, and missing q2 metadata hash in q3 metadata.
+- Implemented:
+  - `q2.ode.solver.max_flight_time_s=20.0`.
+  - `simulate_shot()` configured horizon and `time_horizon_exceeded` status.
+  - failure-penalty contribution for non-success ODE integrations in q2 calibration objectives.
+  - q3 dependency audit q2 metadata/ODE hash rows.
+  - q3 run metadata q2 hash fields.
+  - `src/modeling_common/reproducibility.py`.
+  - `docs/reproducibility/q2_q3_release_manifest.json` generation from q3 pipeline.
+- First q2 pipeline run regenerated artifacts but failed final validation at `task4_status_files_synced`.
+- Root cause: q2 validator still required the root current-status marker ``q2_done`` even though the project-level current status is now ``q3_done``. The q2 table row and q2 docs were already synchronized.
+- Fix: q2 validator status sync now checks the q2 table row plus q2 README/manifest, without coupling q2 validity to the overall current-status marker.
+- Regenerated official artifacts:
+  - `python questions\q2\scripts\pipeline.py --config configs/default.yaml`: passed.
+  - `python questions\q2\scripts\validate.py --config configs/default.yaml`: 166 checks passed.
+  - `python questions\q3\scripts\pipeline.py --config configs/default.yaml`: passed; nominal objective=0.010114, joint robust objective=0.203974, joint p90=7.132856.
+  - `python questions\q3\scripts\validate.py --config configs/default.yaml`: 31 checks passed.
+  - `python -m pytest tests\test_q2_q3_integration.py -q`: 5 passed.
+  - `python -m pytest tests\test_q2_full_task2.py -q`: 4 passed.
+  - `python -m pytest tests\test_q3_task5_inverse_design.py -q`: 6 passed.
+  - `python -m pytest tests\test_q2_task4_final_remediation.py tests\test_q2_task3_recalibration.py tests\test_q3_final_robustness.py -q`: 18 passed.
+- Updated README, q2/q3 docs, evidence chain, registry, decision/risk logs, report draft, appendix, reproduction notes, findings, progress, and task plan for task7 release evidence.

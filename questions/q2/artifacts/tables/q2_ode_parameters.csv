@@ -2,8 +2,8 @@ model,parameter,value,lower_bound,upper_bound,calibration_stage,source,at_lower_
 drag,C_D,0.05,0.05,0.6,coarse_grid_plus_bounded_local_optimization,train split drag representative records; fixed test split excluded,True,False,0.0,0.5499999999999999,within_1pct_of_bound,boundary_solution,1.8767170050358932
 constant_lift,C_D,0.238653898795,0.05,0.6,coarse_grid_plus_bounded_local_optimization,train split lift representative records with constant C_L,False,False,0.18865389879466454,0.3613461012053354,,ok,0.1339066021311711
 constant_lift,C_L,0.203952347545,0.0,0.45,coarse_grid_plus_bounded_local_optimization,train split lift representative records with constant C_L,False,False,0.20395234754494648,0.24604765245505353,,ok,0.1339066021311711
-spin_factor_lift,C_D,0.0500588298207,0.05,0.6,coarse_grid_plus_bounded_local_optimization,train split lift representative records with C_L(S)=k_L*S,False,False,5.882982069818632e-05,0.5499411701793018,within_1pct_of_bound,ok,1.3161158555968424
-spin_factor_lift,k_L,0.151836667535,0.0,4.0,coarse_grid_plus_bounded_local_optimization,train split lift representative records with C_L(S)=k_L*S,False,False,0.1518366675348651,3.848163332465135,,ok,1.3161158555968424
+spin_factor_lift,C_D,0.0500588298207,0.05,0.6,coarse_grid_plus_bounded_local_optimization,train split lift representative records with C_L(S)=k_L*S,False,False,5.882982069818632e-05,0.5499411701793018,within_1pct_of_bound,ok,1.3161153965205052
+spin_factor_lift,k_L,0.151836829497,0.0,4.0,coarse_grid_plus_bounded_local_optimization,train split lift representative records with C_L(S)=k_L*S,False,False,0.15183682949707672,3.8481631705029233,,ok,1.3161153965205052
 physics,mass_kg,0.0456,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表,False,False,,,,ok,
 physics,radius_m,0.021335,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表,False,False,,,,ok,
 physics,air_density_kg_m3,1.225,,,fixed_from_problem_statement,题面 raw OCR 第 9 行；docs/references.md 物理常数表,False,False,,,,ok,

@@ -2,7 +2,7 @@
   "stem": "q3_optimal_trajectory_3d",
   "title": "Q3 robust optimum trajectory 3D",
   "source_script": "questions/q3/scripts/visualize.py",
-  "generated_at": "2026-07-13T12:51:05.072452+00:00",
+  "generated_at": "2026-07-14T04:07:27.086716+00:00",
   "rows": 972,
   "columns": [
     "candidate_id",

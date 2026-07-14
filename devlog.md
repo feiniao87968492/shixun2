@@ -251,3 +251,27 @@
   - `python questions\q3\scripts\pipeline.py --config configs/default.yaml` 通过。
   - `python questions\q3\scripts\validate.py --config configs/default.yaml --skip-status-docs` 通过 16 项检查；最终文档同步后需重跑无 skip 版本。
   - `python -m pytest tests\test_q3_task5_inverse_design.py -q` 目前仅剩文档状态同步检查待最终验证。
+
+---
+
+## 2026-07-14 — Q2/Q3 task7 联合复现发布整改
+
+- **目标**：完成 `docs/plans/task7.md`，让 Q2/Q3 代码、产物、metadata、文档和验证属于同一可复现发布版本。
+- **完成**：
+  - 新增 `tests/test_q2_q3_integration.py`，覆盖 Q2 求解时间上限、release manifest hash、Q3 使用当前 Q2 metadata hash、README 参数可由 CSV 复算和 Q3 ODE 复核积分成功。
+  - 将 `q2.ode.solver.max_flight_time_s` 接入配置，正式值为 20.0 s；达到时间上限未触地时记录 `time_horizon_exceeded`。
+  - Q2 标定目标对非成功积分追加失败惩罚，不再让失败样本从 loss 中消失。
+  - Q3 依赖审计和 run metadata 增加当前 Q2 run metadata SHA256、Q2 ODE 参数 SHA256、配置/数据 hash 和 carry 定义。
+  - 新增 `src/modeling_common/reproducibility.py`，由 Q3 pipeline 生成 `docs/reproducibility/q2_q3_release_manifest.json`。
+  - 重新运行 Q2/Q3 正式 pipeline，刷新 artifacts、figures、metadata 和 release manifest。
+  - 更新 README、q2/q3 文档、证据链、图表登记表、决策记录、风险登记、论文草稿、附录、复现说明、findings/progress/task_plan。
+- **失败与修正**：
+  - RED 集成测试首先出现 3 项预期失败：缺 `max_flight_time_s`、缺 release manifest、Q3 metadata 缺当前 Q2 metadata hash。
+  - 首次 Q2 pipeline 最终验证失败于 `task4_status_files_synced`；根因是 q2 validator 将 q2 状态与项目当前状态 `q2_done` 绑定，而当前项目状态已经是 `q3_done`。已改为只检查 q2 表格行、q2 README 和 q2 manifest 的同步。
+- **验证**：
+  - `python questions\q2\scripts\pipeline.py --config configs/default.yaml` 通过。
+  - `python questions\q2\scripts\validate.py --config configs/default.yaml` 通过 166 项检查。
+  - `python questions\q3\scripts\pipeline.py --config configs/default.yaml` 通过。
+  - `python questions\q3\scripts\validate.py --config configs/default.yaml` 通过 31 项检查。
+  - `python -m pytest tests\test_q2_q3_integration.py -q` 通过 5 项检查。
+  - 旧任务回归：q2 full、q2 task3/task4、q3 task5/task6 定向测试均通过。

@@ -2,17 +2,15 @@
 
 ## Goal
 
-Complete the full scope of `docs/plans/task6.md` for q3 final remediation:
-preserve the current q3 main inverse-design flow while replacing the narrow
-single-surrogate robustness decision with a full supported near-optimal
-candidate pool, common random number perturbations, launch-direction scenarios,
-joint model-parameter robustness, independent 195/200/205 yd re-optimization,
-near-optimal parameter range reporting, expanded validation, updated
-docs/evidence, then commit, push, and verify the remote SHA.
+Complete the full scope of `docs/plans/task7.md` for the Q2/Q3 joint release
+remediation: make Q2 and Q3 code, artifacts, metadata, docs, and validation
+belong to the same reproducible version; add a release manifest; add Q2-Q3
+integration verification; rerun the official pipelines; then commit, push, and
+verify the remote SHA.
 
 ## Current Phase
 
-Phase 18 - q3 task6 final robustness remediation
+Phase 19 - q2/q3 task7 joint release remediation
 
 ## Completed Phases
 
@@ -26,6 +24,7 @@ Phase 18 - q3 task6 final robustness remediation
 - [x] Phase 16: q2 task4 final ODE remediation, committed and pushed.
 - [x] Phase 17: q3 task5 inverse-design implementation, committed and pushed.
 - [x] Phase 18: q3 task6 final robustness remediation, committed and pushed.
+- [x] Phase 19: q2/q3 task7 joint release remediation.
 
 ## Phase 13: q2 task2 first stage
 
@@ -179,3 +178,31 @@ Before commit, ensure no raw/PDF/Excel files are staged:
 ```powershell
 git diff --cached --name-only | Select-String -Pattern '(^|/)data/raw/problem/|\.xlsx$|\.xls$|\.pdf$'
 ```
+
+## Phase 19: q2/q3 task7 joint release remediation
+
+- [x] Read `docs/plans/task7.md` and required Q2/Q3 startup context.
+- [x] Restore planning context and identify that task7 is broader than the completed task6 plan.
+- [x] Audit current gaps: release manifest absent, Q2 solver lacks configured `max_flight_time_s`, Q2/Q3 metadata hashes are stale relative to current config until rerun, and `tests/test_q2_q3_integration.py` is absent.
+- [x] Add RED integration/release tests.
+- [x] Implement configured ODE time horizon, release manifest generation, and integration checks.
+- [x] Regenerate Q2 and Q3 artifacts from official scripts.
+- [x] Update docs/evidence/planning logs.
+- [x] Run final full validation, stage with raw/PDF/Excel guard, commit, push, and verify remote SHA.
+
+## Phase 19 RED/GREEN Result
+
+- RED command: `python -m pytest tests\test_q2_q3_integration.py -q`.
+- RED result: 3 expected failures:
+  - `q2.ode.solver.max_flight_time_s` missing.
+  - `docs/reproducibility/q2_q3_release_manifest.json` missing.
+  - q3 metadata missing current q2 `run_metadata_sha256`.
+- GREEN commands so far:
+  - `python questions\q2\scripts\pipeline.py --config configs/default.yaml`
+  - `python questions\q2\scripts\validate.py --config configs/default.yaml` -> 166 checks passed.
+  - `python questions\q3\scripts\pipeline.py --config configs/default.yaml`
+  - `python questions\q3\scripts\validate.py --config configs/default.yaml` -> 31 checks passed.
+  - `python -m pytest tests\test_q2_q3_integration.py -q` -> 5 passed.
+  - `python -m pytest tests\test_q2_full_task2.py -q` -> 4 passed.
+  - `python -m pytest tests\test_q3_task5_inverse_design.py -q` -> 6 passed.
+  - `python -m pytest tests\test_q2_task4_final_remediation.py tests\test_q2_task3_recalibration.py tests\test_q3_final_robustness.py -q` -> 18 passed.

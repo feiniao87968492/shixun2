@@ -2,7 +2,7 @@
   "stem": "q2_typical_trajectories_constant_lift_side",
   "title": "Q2 typical trajectories side view - constant_lift",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-13T07:59:55.841435+00:00",
+  "generated_at": "2026-07-14T04:02:51.214832+00:00",
   "rows": 660,
   "columns": [
     "sample_id",

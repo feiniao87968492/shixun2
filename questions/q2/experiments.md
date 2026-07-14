@@ -11,6 +11,7 @@
 | q2-E07 | 2026-07-12 | artifact 验证 | `questions/q2/scripts/validate.py` | 自动检查项 | 69 项检查通过 | supported |
 | q2-E08 | 2026-07-13 | task4 ODE 最终整改 | forward_x carry + Powell 局部优化 + 失败惩罚 | optimizer status / accepted / failure counts | 选中运行均 accepted，标定/完整训练/测试失败数均为 0 | supported |
 | q2-E09 | 2026-07-13 | 第三问兼容 ODE 边界验收 | 16 个输入边界组合测试 `spin_factor_lift` | integration status / flight_time / apex / lateral | 全部稳定；最大飞行时间 8.611 s，最大最高点 93.551 yd，最大横向距离 152.335 yd | supported |
+| q2-E10 | 2026-07-14 | task7 求解器时间上限与联合复现 | `max_flight_time_s=20.0` + Q2/Q3 metadata hash 集成检查 | q2 validation / q2_q3 integration | 166 项 q2 validation 通过；达到时间上限会记录 `time_horizon_exceeded` | supported |
 
 ## 参数边界说明
 

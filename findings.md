@@ -182,6 +182,36 @@
 - Near-optimal non-uniqueness diagnostics: 482 supported near-optimal parameter sets, 256 distinct predicted landing pairs, largest prediction plateau size 20.
 - Full-input support comparison reports the final joint robust recommendation as supported in both decision-space and full model-input support, with out_of_support_fraction=0.
 
+## Q2/Q3 Task7 Scope
+
+- `docs/plans/task7.md` is the current authoritative plan.
+- The task is a joint Q2/Q3 release remediation, not a replacement of the completed q2 task4 or q3 task6 modeling logic.
+- Most P0 modeling requirements are already present in current scripts/artifacts:
+  - q2 drag/lift representative records are read from separate config branches and selected with KMeans over the six required features.
+  - q2 carry uses `forward_x`, with `predicted_x_carry_yd`, `predicted_radial_carry_yd`, and configured `predicted_carry_yd`.
+  - q2 optimization records local optimizer status, objective finiteness, acceptance, boundary flags, and failure counts.
+  - q3 robust candidate pool, common random numbers, launch-direction scenarios, joint robustness, target reoptimization, full-input support, and near-optimal ranges are implemented.
+- Remaining task7 gaps found at session start:
+  - `docs/reproducibility/q2_q3_release_manifest.json` does not exist.
+  - `tests/test_q2_q3_integration.py` does not exist.
+  - `configs/default.yaml` lacks `q2.ode.solver.max_flight_time_s`, while q2 ODE currently uses a hard-coded 12 s solve horizon and boundary validation limit.
+  - Existing q2/q3 run metadata were generated at older commits/config hashes, so Q2 and Q3 artifacts must be regenerated together before final release.
+
+## Q2/Q3 Task7 Results
+
+- Added `q2.ode.solver.max_flight_time_s=20.0`.
+- `simulate_shot()` now solves to the configured horizon and reports `integration_status=time_horizon_exceeded` when the solver succeeds but no ground event occurs before the horizon.
+- Q2 calibration objectives now append a failure-penalty loss for non-success integrations instead of silently dropping them from the loss list.
+- Q3 dependency audit now records current q2 run metadata SHA256, q2 ODE parameter SHA256, and q2 carry definition.
+- Q3 run metadata now records current q2 `run_metadata_sha256`, q2 ODE parameter hash, q2 config/data hashes, and q2 carry/ODE role fields.
+- Added `src/modeling_common/reproducibility.py` and `docs/reproducibility/q2_q3_release_manifest.json`, covering config/data/Q2 metadata/Q3 metadata/all Q2-Q3 table hashes.
+- Added `tests/test_q2_q3_integration.py`.
+- Regenerated artifacts with official Q2 and Q3 pipelines:
+  - Q2 validation: 166 checks passed.
+  - Q3 validation: 31 checks passed.
+  - Q2-Q3 integration: 5 tests passed.
+- Release manifest currently records base git commit `31c554b6bb47b9ded69b59328776fa861457c216`; after task7 commit, the committed manifest still proves the regenerated artifact hashes, while the final commit SHA must be reported separately in closeout.
+
 ## Q2 Task4 Performance Debugging
 
 - A full pipeline run with true Powell optimization timed out after 40 minutes.

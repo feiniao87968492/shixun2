@@ -2,7 +2,7 @@
   "stem": "q2_typical_trajectories_spin_factor_3d",
   "title": "Q2 typical trajectories 3D - spin_factor_lift",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-13T07:59:58.425668+00:00",
+  "generated_at": "2026-07-14T04:02:52.407940+00:00",
   "rows": 434,
   "columns": [
     "sample_id",

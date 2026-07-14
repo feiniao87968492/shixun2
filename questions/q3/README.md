@@ -10,6 +10,7 @@
 在给定击球参数边界内，求解 200 yd 目标下使落点到洞口欧氏距离最小的最优击球参数组合。
 
 > `docs/plans/task6.md` 最终整改已完成：稳健候选池扩展、发射方向扰动、联合模型-参数不确定性、195/200/205 yd 独立重优化和验证覆盖均已纳入正式产物。
+> `docs/plans/task7.md` 联合复现整改已完成：q3 metadata 记录当前 q2 run metadata hash，版本清单写入 `docs/reproducibility/q2_q3_release_manifest.json`，并由 `tests/test_q2_q3_integration.py` 验证。
 
 ## 输入
 
@@ -27,6 +28,7 @@
 ## 主结果
 
 - q2 依赖审计全部通过：固定划分 train=514、test=221，q2 carry/apex 模型、ODE 参数、q2 validation 和特征顺序均可追溯。
+- q2 依赖审计扩展到 16 项，包含当前 q2 run metadata SHA256、q2 ODE 参数 SHA256 和 `forward_x` carry 定义一致性。
 - 横向偏移代理模型由 `hist_gradient_boosting` 胜出，测试 RMSE=5.475 yd，MAE=3.870 yd，R2=0.958。
 - 最佳观测训练记录为 `record_id=609`，实测距洞口 5.351 yd。
 - 名义最优：球速 121.113 mph、发射角 19.616 度、自旋速率 2627.708 rpm、自旋轴偏角 -0.366 度；选定监督代理模型内部的名义目标残差为 0.010 yd。

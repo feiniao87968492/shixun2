@@ -18,6 +18,7 @@
 | q3-E12 | 2026-07-13 | 联合模型-参数稳健推荐 | q3 robust pool | paired 5 carry + 5 lateral members | stable_player joint p90 | 联合 p90=7.133 yd | final recommendation |
 | q3-E13 | 2026-07-13 | 目标距离独立重优化 | q2 final models | LHS + 3 DE seeds + local refinement | objective_yd | 195/200/205 yd 均有 supported best | adopt |
 | q3-E14 | 2026-07-13 | 近优非唯一性诊断 | q3 robust pool | parameter range summary | distinct counts, plateau | 482 参数组、256 落点组、最大平台 20 | report range |
+| q3-E15 | 2026-07-14 | Q2/Q3 联合复现发布 | q2/q3 当前 artifacts | metadata SHA256 + release manifest + integration pytest | hash consistency / ODE crosscheck | q3 dependency audit=16 项；release manifest 已生成 | adopt |
 
 ## 失败与修正
 
@@ -43,6 +44,7 @@
 ```bash
 python questions/q3/scripts/pipeline.py --config configs/default.yaml
 python questions/q3/scripts/validate.py --config configs/default.yaml
+python -m pytest tests/test_q2_q3_integration.py -q
 python -m pytest tests/test_q3_final_robustness.py -q
 python -m pytest tests/test_q3_task5_inverse_design.py -q
 ```

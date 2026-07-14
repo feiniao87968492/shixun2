@@ -21,8 +21,11 @@
 第三问正式入口：
 
 ```bash
+python questions/q2/scripts/pipeline.py --config configs/default.yaml
+python questions/q2/scripts/validate.py --config configs/default.yaml
 python questions/q3/scripts/pipeline.py --config configs/default.yaml
 python questions/q3/scripts/validate.py --config configs/default.yaml
+python -m pytest tests/test_q2_q3_integration.py -q
 ```
 
 核心结果表：
@@ -46,3 +49,4 @@ python questions/q3/scripts/validate.py --config configs/default.yaml
 - `questions/q3/artifacts/tables/q3_target_distance_sensitivity.csv`
 - `questions/q3/artifacts/tables/q3_ode_crosscheck.csv`
 - `questions/q3/artifacts/tables/q3_validation_checks.csv`
+- `docs/reproducibility/q2_q3_release_manifest.json`

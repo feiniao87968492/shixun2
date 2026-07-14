@@ -115,6 +115,8 @@ def load_dependencies(root: Path, config_path: str | Path) -> Q3Dependencies:
     q2_metadata = _safe_json(q2_metadata_path)
     q2_ode_parameters = _safe_json(ode_params_path)
     q2_validation = pd.read_csv(q2_validation_path)
+    q2_metadata_sha256 = file_sha256(q2_metadata_path)
+    q2_ode_parameters_sha256 = file_sha256(ode_params_path)
 
     train_count = int((split["split"] == "train").sum())
     test_count = int((split["split"] == "test").sum())
@@ -135,6 +137,14 @@ def load_dependencies(root: Path, config_path: str | Path) -> Q3Dependencies:
         _row("q2_test_count", test_count == 221, test_count),
         _row("q2_split_overlap_count", overlap == 0, overlap),
         _row("q2_metadata_readable", bool(q2_metadata), "true"),
+        _row("q2_run_metadata_sha256", True, q2_metadata_sha256, q2_metadata_path.as_posix()),
+        _row("q2_ode_parameters_sha256", True, q2_ode_parameters_sha256, ode_params_path.as_posix()),
+        _row(
+            "q2_carry_definition",
+            q2_metadata.get("carry_definition") == "forward_x"
+            and q2_ode_parameters.get("carry_definition") == "forward_x",
+            str(q2_metadata.get("carry_definition", "unknown")),
+        ),
         _row("q2_validation_has_no_blocking_failures", blocking_failures.empty, int(len(blocking_failures))),
         _row("q2_ode_parameters_valid", bool(q2_ode_parameters.get("model_parameters")), "true"),
         _row("input_record_count", len(clean) == 735, int(len(clean))),

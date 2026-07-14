@@ -22,6 +22,7 @@
 - 代表样本由球速、发射角、自旋率、carry 的多维 KMeans 覆盖抽取，分别保存为 `q2_drag_calibration_records.csv` 与 `q2_lift_calibration_records.csv`。
 - 参数标定采用粗网格搜索后接有界 Powell 局部优化；优化尝试分别保存到三张 `q2_*_optimization_runs.csv`。
 - 优化运行表记录 `optimizer_success`、`objective_finite`、`accepted`、初始/最终目标函数、真实终止信息、迭代数和函数评估数。
+- 正式 ODE 求解器增加 `max_flight_time_s=20.0`，未触地但达到时间上限的样本记录为 `time_horizon_exceeded`，在标定目标中按失败惩罚处理。
 - 目标函数统一使用配置中的 `carry_definition=forward_x`，积分失败不再静默丢弃，而是计入失败惩罚；选中运行均满足标定失败数、完整训练集失败数和测试失败率为 0。
 
 重标定参数为：
@@ -70,7 +71,7 @@
 
 ## 6. 验证与元数据
 
-`questions/q2/scripts/validate.py` 已扩展到 165 项检查，覆盖配置接线、优化运行、边界字段、训练/测试无泄漏、风向、forward_x 指标复算、失败样本表、Q3 边界稳定性、状态同步和 metadata。`run_metadata.json` 记录 Git commit、数据与配置 SHA256、包版本、固定 split 哈希、drag/lift 代表样本 ID、ODE 角色、完整训练集目标、Q3 边界检查结论和优化运行表路径，且路径统一为 POSIX 风格。
+`questions/q2/scripts/validate.py` 已扩展到 166 项检查，覆盖配置接线、优化运行、边界字段、训练/测试无泄漏、风向、forward_x 指标复算、失败样本表、Q3 边界稳定性、状态同步、metadata 和 task7 的 `max_flight_time_s` 配置。`run_metadata.json` 记录 Git commit、数据与配置 SHA256、包版本、固定 split 哈希、drag/lift 代表样本 ID、ODE 角色、完整训练集目标、Q3 边界检查结论、求解器配置和优化运行表路径，且路径统一为 POSIX 风格。
 
 重复运行 `python questions/q2/scripts/pipeline.py --config configs/default.yaml` 后，主要 CSV 哈希一致，说明固定测试集、代表样本、参数和主要结果可复现。
 

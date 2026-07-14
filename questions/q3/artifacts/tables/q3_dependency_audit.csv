@@ -5,6 +5,9 @@ q2_train_count,True,514,
 q2_test_count,True,221,
 q2_split_overlap_count,True,0,
 q2_metadata_readable,True,true,
+q2_run_metadata_sha256,True,a60fb722f40916375b3a6b2a49dd3eccaecb9f6634719ae1aa24f6b202ae36a8,D:/Users/zty/数学建模/赛题集/实训2/questions/q2/artifacts/run_metadata.json
+q2_ode_parameters_sha256,True,3d45fcbdf95e10ddfc0e464d77b3498408983772a2371b84720a41bd5784494b,D:/Users/zty/数学建模/赛题集/实训2/questions/q2/artifacts/models/q2_ode_parameters.json
+q2_carry_definition,True,forward_x,
 q2_validation_has_no_blocking_failures,True,0,
 q2_ode_parameters_valid,True,true,
 input_record_count,True,735,

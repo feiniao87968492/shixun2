@@ -10,3 +10,4 @@
 | 2026-07-13 | D006 | q3 单代理稳健推荐 | 仅报告名义最优 / 支持区近优集中按单代理扰动 p90 选稳健最优 | 保留单代理稳健解作为比较项，不作为最终论文推荐 | task6 显示模型分歧不可忽略，单代理 p90 会低估策略不确定性 | `robust_recommended_optimum` 标记为 legacy comparison |
 | 2026-07-13 | D007 | q3 差分进化实现 | scipy 标量目标 / scipy vectorized population 评价 | 使用 `vectorized=True` 批量评价 DE population | 标量 sklearn 预测导致 pipeline 超时；批量评价保留相同优化算法和五种子证据 | q3 pipeline 约 89 秒复现 |
 | 2026-07-13 | D008 | q3 最终稳健推荐 | 单代理参数扰动 p90 / 联合模型-参数 p90 | 论文推荐采用 stable_player 场景下 supported 且 joint p90 最小的候选 | 该规则同时考虑参数误差、发射方向误差和代理模型分歧，并保留训练支持区约束 | 最终推荐为 `joint_robust_recommended_optimum`，模拟比例必须按情景限定解释 |
+| 2026-07-14 | D009 | Q2/Q3 发布复现口径 | 只依赖 Git commit / 额外保存 artifact hash manifest | 生成 `docs/reproducibility/q2_q3_release_manifest.json` 并在 Q3 metadata 记录当前 Q2 metadata hash | task7 要求公开仓库代码、结果和文档属于同一版本；仅看 commit 不能证明 CSV 与 run metadata 未漂移 | 新增 `tests/test_q2_q3_integration.py` 验证 manifest、Q2 hash、carry 定义和文档参数复算 |

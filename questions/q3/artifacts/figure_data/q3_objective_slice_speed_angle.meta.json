@@ -2,7 +2,7 @@
   "stem": "q3_objective_slice_speed_angle",
   "title": "Q3 Speed-angle objective slice",
   "source_script": "questions/q3/scripts/visualize.py",
-  "generated_at": "2026-07-13T12:51:06.868499+00:00",
+  "generated_at": "2026-07-14T04:07:29.063949+00:00",
   "rows": 3016,
   "columns": [
     "ball_speed_mph",

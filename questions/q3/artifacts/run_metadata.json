@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-07-13T12:51:07.645554+00:00",
-  "git_commit": "931bb5976257f147f36323c4208c511f14882a46",
+  "timestamp": "2026-07-14T04:07:29.799636+00:00",
+  "git_commit": "31c554b6bb47b9ded69b59328776fa861457c216",
   "python_version": "3.10.11",
   "package_versions": {
     "numpy": "2.2.6",
@@ -11,7 +11,7 @@
     "PyYAML": "6.0.3"
   },
   "config_path": "configs/default.yaml",
-  "config_sha256": "57002a747fb238d874f2f83f4680f5a5c9496a8bbbd27d6b11b276adcab3d688",
+  "config_sha256": "dd10200fbf3b161f700baa8b3df237b42bf6bce093b2d06e1de7e40c90248317",
   "data_path": "data/processed/golf_shots_clean.csv",
   "data_sha256": "1b0546e153d3676f0164efe5846124c96b93553545717dcd6daa619b08567bcd",
   "train_ids_sha256": "ed5db0c042125bd2cebde098505d9c916b9c14d03dc859877bf57e5ba1ed87b5",
@@ -35,7 +35,11 @@
     "selection_metric": "cv_rmse"
   },
   "q2": {
-    "git_commit": "07c7d7c00a34f87fb89c64d2d5b0c05026b8e99f",
+    "git_commit": "31c554b6bb47b9ded69b59328776fa861457c216",
+    "run_metadata_sha256": "a60fb722f40916375b3a6b2a49dd3eccaecb9f6634719ae1aa24f6b202ae36a8",
+    "ode_parameters_sha256": "3d45fcbdf95e10ddfc0e464d77b3498408983772a2371b84720a41bd5784494b",
+    "config_sha256": "dd10200fbf3b161f700baa8b3df237b42bf6bce093b2d06e1de7e40c90248317",
+    "data_sha256": "1b0546e153d3676f0164efe5846124c96b93553545717dcd6daa619b08567bcd",
     "carry_definition": "forward_x",
     "best_fit_ode_model": "constant_lift",
     "q3_compatible_ode_model": "spin_factor_lift"

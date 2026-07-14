@@ -76,6 +76,7 @@ Q2 当前主结果：
 - carry 最优监督模型：`launch_state_model / hist_gradient_boosting`，测试 RMSE=8.337 yd，MAPE=4.986%。
 - apex 最优监督模型：`launch_state_model / hist_gradient_boosting`，测试 RMSE=1.739 yd，MAPE=14.335%。
 - ODE 重标定：drag 使用 36 条代表样本和 10 点粗网格；lift 使用 24 条代表样本和 6x6 粗网格；三类可标定模型均执行粗网格 + 有界局部优化，选中运行均无标定和全训练集积分失败。
+- ODE 积分正式时间上限由 `q2.ode.solver.max_flight_time_s=20.0` 配置控制；超过上限未触地会记录为 `time_horizon_exceeded`，不会被当作成功积分。
 - ODE 参数：drag `C_D=0.05` 为边界解；constant_lift `C_D=0.238654,C_L=0.203952`；spin_factor_lift `C_D=0.050059,k_L=0.151837`。
 - ODE D_x 测试 RMSE：constant_lift=7.157 yd，spin_factor_lift=30.530 yd，drag=36.830 yd，vacuum=32.502 yd。
 - 第二问 best-fit ODE 自动确定为 `constant_lift`，第三问兼容轨迹单独输出 `spin_factor_lift` 且通过边界稳定性检查。
@@ -102,3 +103,9 @@ Q3 当前主结果：
 - 最终论文推荐采用联合模型-参数稳健解：球速 122.958 mph、发射角 20.437 度、自旋速率 2720.784 rpm、自旋轴偏角 -1.255 度；监督目标函数 0.204 yd，stable_player 联合 p90 距洞 7.133 yd，5 yd 内模拟比例 0.724。该比例仅是在指定参数误差分布、发射方向误差情景和代理模型集合下的模拟比例，不是真实球员命中概率。
 - 支持区近优候选共 482 个，全部纳入稳健性分析；195/200/205 yd 均已独立重优化。考虑模型分歧后，真实策略不确定性明显大于 0.010 yd 的名义代理残差。
 - ODE 复核积分均成功，但与监督代理存在数 yd 级差异；第三问结论表述为监督代理下的稳健推荐策略。
+
+## Q2/Q3 联合复现清单
+
+- 版本清单：`docs/reproducibility/q2_q3_release_manifest.json`
+- 集成验证：`python -m pytest tests/test_q2_q3_integration.py -q`
+- 清单记录当前配置、处理数据、Q2/Q3 run metadata 以及所有 Q2/Q3 核心 CSV 的 SHA256；Q3 metadata 同步记录当前 Q2 run metadata hash 与 `forward_x` carry 定义。

@@ -25,6 +25,7 @@ for path in [SRC, SCRIPT_DIR]:
 from dependencies import LAUNCH_FEATURES, file_sha256, load_dependencies, values_sha256  # noqa: E402
 from modeling_common.artifacts import save_table  # noqa: E402
 from modeling_common.paths import project_root  # noqa: E402
+from modeling_common.reproducibility import write_q2_q3_release_manifest  # noqa: E402
 from objective import VARIABLES, candidate_frame, evaluate_candidates  # noqa: E402
 from ode_verify import run_ode_crosscheck  # noqa: E402
 from optimize import (  # noqa: E402
@@ -482,6 +483,10 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
         },
         "q2": {
             "git_commit": deps.q2_metadata.get("git_commit", "unknown"),
+            "run_metadata_sha256": file_sha256(root / "questions/q2/artifacts/run_metadata.json"),
+            "ode_parameters_sha256": file_sha256(root / "questions/q2/artifacts/models/q2_ode_parameters.json"),
+            "config_sha256": deps.q2_metadata.get("config_sha256", "unknown"),
+            "data_sha256": deps.q2_metadata.get("data_sha256", "unknown"),
             "carry_definition": deps.q2_metadata.get("carry_definition", "unknown"),
             "best_fit_ode_model": deps.q2_metadata.get("best_fit_ode_model", "unknown"),
             "q3_compatible_ode_model": deps.q2_metadata.get("q3_compatible_ode_model", "unknown"),
@@ -503,10 +508,12 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
     failed = checks[~checks["passed"].astype(bool)]
     if not failed.empty:
         raise RuntimeError(f"q3 validation failed after pipeline run: {failed['check'].tolist()}")
+    release_manifest_path = write_q2_q3_release_manifest(root, config_path=config_path)
 
     summary = {
         "train_n": int(len(deps.train)),
         "test_n": int(len(deps.test)),
+        "release_manifest": rel_posix(release_manifest_path, root),
         "nominal_objective_yd": float(optimal.set_index("candidate_type").loc["nominal_optimum", "objective_yd"]),
         "robust_objective_yd": float(
             optimal.set_index("candidate_type").loc["joint_robust_recommended_optimum", "objective_yd"]

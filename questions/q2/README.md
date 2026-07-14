@@ -23,6 +23,9 @@
   - drag 代表样本 36 条，粗网格 10 点。
   - lift 代表样本 24 条，粗网格 6x6。
   - 参数经粗网格 + 有界局部优化获得；局部优化真实记录 `optimizer_success/objective_finite/accepted`，选中运行均无标定和全训练集积分失败。
+- ODE 求解器：
+  - 正式积分时间上限由 `q2.ode.solver.max_flight_time_s=20.0` 配置控制。
+  - 超过时间上限仍未触地时记录 `integration_status=time_horizon_exceeded`，不得作为成功积分参与最终参数选择。
 - ODE 参数：
   - drag: `C_D=0.05`，边界解，仅作 drag-only 基线。
   - constant_lift: `C_D=0.238654, C_L=0.203952`。
@@ -50,6 +53,7 @@
 ```bash
 python questions/q2/scripts/pipeline.py --config configs/default.yaml
 python questions/q2/scripts/validate.py --config configs/default.yaml
+python -m pytest tests/test_q2_q3_integration.py -q
 python -m pytest tests/test_q2_task4_final_remediation.py -q
 python -m pytest tests/test_q2_task3_recalibration.py -q
 ```

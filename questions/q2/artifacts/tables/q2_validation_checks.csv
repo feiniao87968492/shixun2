@@ -31,6 +31,7 @@ q2_typical_trajectories_spin_factor.csv,table,questions/q2/artifacts/tables/q2_t
 q2_typical_trajectories.csv,table,questions/q2/artifacts/tables/q2_typical_trajectories.csv,True,
 q2_ode_sensitivity.csv,table,questions/q2/artifacts/tables/q2_ode_sensitivity.csv,True,
 task4_configured_carry_definition_is_forward_x,config,configs/default.yaml,True,
+task7_solver_max_flight_time_configured,config,configs/default.yaml,True,
 q2_prediction_scatter_carry.png,figure,questions/q2/artifacts/figures/q2_prediction_scatter_carry.png,True,
 q2_prediction_scatter_carry.csv,figure_data,questions/q2/artifacts/figure_data/q2_prediction_scatter_carry.csv,True,
 q2_prediction_scatter_carry.meta.json,figure_metadata,questions/q2/artifacts/figure_data/q2_prediction_scatter_carry.meta.json,True,

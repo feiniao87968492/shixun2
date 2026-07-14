@@ -124,6 +124,12 @@ def validate_outputs(
         root / config_path,
         config.get("ode", {}).get("carry_definition") == "forward_x",
     )
+    add(
+        "task7_solver_max_flight_time_configured",
+        "config",
+        root / config_path,
+        float(config.get("ode", {}).get("solver", {}).get("max_flight_time_s", 0.0)) == 20.0,
+    )
 
     required_figures = [
         "q2_prediction_scatter_carry",
@@ -696,11 +702,8 @@ def validate_outputs(
             "状态：`conditionally_passed`" in q2_readme
             or "鐘舵€侊細`conditionally_passed`" in q2_readme
         )
-        root_status_done = "| q2 | done |" in root_readme and "`q2_done`" in root_readme
-        root_status_conditional = (
-            "| q2 | conditionally_passed |" in root_readme
-            and "`q2_conditionally_passed`" in root_readme
-        )
+        root_status_done = "| q2 | done |" in root_readme
+        root_status_conditional = "| q2 | conditionally_passed |" in root_readme
         status_synced = (
             (manifest_status == "done" and q2_status_done and root_status_done)
             or (manifest_status == "conditionally_passed" and q2_status_conditional and root_status_conditional)

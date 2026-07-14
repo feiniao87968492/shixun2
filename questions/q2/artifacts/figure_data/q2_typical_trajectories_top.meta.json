@@ -2,7 +2,7 @@
   "stem": "q2_typical_trajectories_top",
   "title": "Q2 typical trajectories top view - combined ODE role trajectories",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-13T07:59:53.312569+00:00",
+  "generated_at": "2026-07-14T04:02:50.037187+00:00",
   "rows": 1094,
   "columns": [
     "sample_id",

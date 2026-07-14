@@ -11,3 +11,4 @@
 | R007 | q3 最优解落在模型外推区或边界 | 中 | 高 | 最优参数贴近上下界或超出训练数据分位范围 | 做边界诊断、扰动灵敏度和训练分布覆盖检查 | q3 | open |
 | R008 | q3 最优区对代理模型选择敏感 | 高 | 高 | `q3_model_crosscheck.csv` 中 objective_prediction_std 较大或分类为 highly_model_sensitive | 同时报告模型分歧、优先推荐训练支持区稳健解、避免写成真实物理最优 | q3 | open |
 | R009 | q3 稳健模拟比例被误写成真实命中概率 | 中 | 高 | 论文或摘要出现未限定的“命中概率”“5 yd 内概率”表述 | 统一写成指定参数误差分布、发射方向情景和代理模型集合下的模拟比例，并同时报告模型分歧和 ODE 复核差异 | q3 | open |
+| R010 | Q2/Q3 代码、产物和文档版本不一致 | 中 | 高 | Q3 metadata 指向旧 Q2 hash，或 release manifest hash 与当前 CSV 不匹配 | 生成 Q2/Q3 release manifest，Q3 metadata 记录当前 Q2 run metadata hash，新增集成测试验证 hash/carry/文档参数一致 | q2/q3 | monitored |

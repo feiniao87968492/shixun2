@@ -1,6 +1,6 @@
 check,passed,value,notes
 task5_manifest_uses_final_q2_dependencies,True,6,
-task5_q2_dependencies_verified,True,13,
+task5_q2_dependencies_verified,True,16,
 task5_fixed_split_reused,True,514/221,
 task5_lateral_model_selected_by_cv_rmse,True,5,
 task5_support_threshold_train_only,True,514,

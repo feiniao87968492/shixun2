@@ -2,7 +2,7 @@
   "stem": "q2_residuals_carry",
   "title": "Q2 carry residual plot",
   "source_script": "questions/q2/scripts/visualize.py",
-  "generated_at": "2026-07-13T07:59:43.906423+00:00",
+  "generated_at": "2026-07-14T04:02:42.546532+00:00",
   "rows": 221,
   "columns": [
     "record_id",

@@ -119,6 +119,7 @@ q2:
       rtol: 1.0e-7
       atol: 1.0e-9
       max_step: 0.02
+      max_flight_time_s: 20.0
     parameter_bounds:
       cd: [0.05, 0.60]
       cl: [0.00, 0.45]

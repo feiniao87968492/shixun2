@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-07-13T08:00:02.712809+00:00",
-  "git_commit": "07c7d7c00a34f87fb89c64d2d5b0c05026b8e99f",
+  "timestamp": "2026-07-14T04:02:54.442844+00:00",
+  "git_commit": "31c554b6bb47b9ded69b59328776fa861457c216",
   "python_version": "3.10.11",
   "package_versions": {
     "numpy": "2.2.6",
@@ -11,7 +11,7 @@
     "PyYAML": "6.0.3"
   },
   "config_path": "configs/default.yaml",
-  "config_sha256": "c580a790e43edf57710ecdd153e8ef66458180f8612ef740f4d26fbf42b00fae",
+  "config_sha256": "dd10200fbf3b161f700baa8b3df237b42bf6bce093b2d06e1de7e40c90248317",
   "data_path": "data/processed/golf_shots_clean.csv",
   "data_sha256": "1b0546e153d3676f0164efe5846124c96b93553545717dcd6daa619b08567bcd",
   "train_ids_sha256": "ed5db0c042125bd2cebde098505d9c916b9c14d03dc859877bf57e5ba1ed87b5",
@@ -86,7 +86,7 @@
   "full_train_objectives": {
     "drag": 1.8767170050358932,
     "constant_lift": 0.1339066021311711,
-    "spin_factor_lift": 1.3161158555968424
+    "spin_factor_lift": 1.3161153965205052
   },
   "q3_compatible_ode_model": "spin_factor_lift",
   "q3_compatible_boundary_checks_passed": true,
@@ -102,7 +102,7 @@
   "constant_lift_cd": 0.23865389879466456,
   "constant_lift_cl": 0.20395234754494648,
   "spin_factor_lift_cd": 0.05005882982069819,
-  "spin_factor_lift_k_l": 0.1518366675348651,
+  "spin_factor_lift_k_l": 0.15183682949707672,
   "side_spin_sign": -1,
   "physics_source": "题面 raw OCR 第 9 行；docs/references.md 物理常数表",
   "initial_height_m": 0.01,

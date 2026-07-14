@@ -220,6 +220,9 @@ def simulate_shot(
         raise ValueError(f"q2 ODE supports {ODE_MODELS}, got {model}")
     if carry_definition not in CARRY_DEFINITIONS:
         raise ValueError(f"Unsupported carry_definition: {carry_definition}")
+    max_flight_time_s = float(solver.get("max_flight_time_s", 12.0))
+    if max_flight_time_s <= 0:
+        raise ValueError("solver.max_flight_time_s must be positive")
     initial_state = np.asarray(
         [0.0, 0.0, constants.initial_height_m, *initial_velocity_mps(row)],
         dtype=float,
@@ -236,7 +239,7 @@ def simulate_shot(
             wind_mps=wind_mps,
             spin_decay_s=spin_decay_s,
         ),
-        (0.0, 12.0),
+        (0.0, max_flight_time_s),
         initial_state,
         method=str(solver.get("method", "DOP853")),
         rtol=float(solver.get("rtol", 1e-7)),
@@ -244,7 +247,12 @@ def simulate_shot(
         max_step=float(solver.get("max_step", 0.02)),
         events=_ground_event,
     )
-    status = "success" if sol.success and len(sol.t_events[0]) > 0 else "failed"
+    if sol.success and len(sol.t_events[0]) > 0:
+        status = "success"
+    elif sol.success:
+        status = "time_horizon_exceeded"
+    else:
+        status = "failed"
     if status == "success":
         event_time = float(sol.t_events[0][0])
         event_state = sol.y_events[0][0]
@@ -273,6 +281,7 @@ def simulate_shot(
         "carry_definition": carry_definition,
         "solver_success": bool(sol.success),
         "solver_message": str(sol.message),
+        "max_flight_time_s": max_flight_time_s,
         "cd": float(cd),
         "cl": float(cl),
         "lift_scale": float(lift_scale),
@@ -331,15 +340,16 @@ def _objective(
             side_sign=side_sign,
             carry_definition=carry_definition,
         )
-        if pred["integration_status"] != "success":
+        if pred["integration_status"] == "success":
+            carry_error = (pred["predicted_carry_yd"] - float(row["carry_distance_yd"])) / carry_scale
+            apex_error = (pred["predicted_apex_yd"] - float(row["apex_height_yd"])) / apex_scale
+            lateral_error = 0.0
+            if "lateral_offset_yd" in row:
+                lateral_error = (pred["predicted_lateral_yd"] - float(row["lateral_offset_yd"])) / lateral_scale
+            losses.append(carry_error**2 + apex_error**2 + lateral_weight * lateral_error**2)
+        else:
             failures += 1
-            continue
-        carry_error = (pred["predicted_carry_yd"] - float(row["carry_distance_yd"])) / carry_scale
-        apex_error = (pred["predicted_apex_yd"] - float(row["apex_height_yd"])) / apex_scale
-        lateral_error = 0.0
-        if "lateral_offset_yd" in row:
-            lateral_error = (pred["predicted_lateral_yd"] - float(row["lateral_offset_yd"])) / lateral_scale
-        losses.append(carry_error**2 + apex_error**2 + lateral_weight * lateral_error**2)
+            losses.append(float(failure_penalty))
     failure_fraction = float(failures) / float(len(records)) if len(records) else 1.0
     mean_loss = float(np.mean(losses)) if losses else float(failure_penalty)
     objective = mean_loss + float(failure_penalty) * failure_fraction
@@ -1293,6 +1303,7 @@ def q3_boundary_stability_checks(
     status_ok = frame["integration_status"].eq("success").all()
     finite_ok = frame[["flight_time_s", "predicted_apex_yd", "predicted_lateral_yd"]].notna().all().all()
     max_time = float(frame["flight_time_s"].max())
+    max_time_limit = float(solver.get("max_flight_time_s", 12.0))
     max_apex = float(frame["predicted_apex_yd"].max())
     max_lateral = float(frame["predicted_lateral_yd"].abs().max())
     checks = [
@@ -1303,7 +1314,7 @@ def q3_boundary_stability_checks(
         },
         {
             "check": "q3_spin_factor_boundary_max_flight_time_within_limit",
-            "passed": bool(np.isfinite(max_time) and max_time <= 12.0),
+            "passed": bool(np.isfinite(max_time) and max_time <= max_time_limit),
             "value": max_time,
         },
         {

@@ -3,7 +3,7 @@ constant_lift,D_r,sqrt(carry_distance_yd^2 + lateral_offset_yd^2),predicted_radi
 constant_lift,D_x,carry_distance_yd,predicted_x_carry_yd,True,7.15748878326,5.2974105502,4.41169830841,-2.30366305157
 drag,D_r,sqrt(carry_distance_yd^2 + lateral_offset_yd^2),predicted_radial_carry_yd,False,38.5290758067,31.4059951582,22.4853060256,-30.187008006
 drag,D_x,carry_distance_yd,predicted_x_carry_yd,True,36.8296152902,29.5005821647,21.4483197378,-28.0471688295
-spin_factor_lift,D_r,sqrt(carry_distance_yd^2 + lateral_offset_yd^2),predicted_radial_carry_yd,False,31.8792916249,25.1327047688,18.3943039733,-18.62911905
-spin_factor_lift,D_x,carry_distance_yd,predicted_x_carry_yd,True,30.5300114374,23.8370501888,17.6739409552,-16.6190685639
+spin_factor_lift,D_r,sqrt(carry_distance_yd^2 + lateral_offset_yd^2),predicted_radial_carry_yd,False,31.8792863551,25.1326999734,18.3943008495,-18.6291053309
+spin_factor_lift,D_x,carry_distance_yd,predicted_x_carry_yd,True,30.5300067092,23.83704599,17.6739381839,-16.619055019
 vacuum,D_r,sqrt(carry_distance_yd^2 + lateral_offset_yd^2),predicted_radial_carry_yd,False,33.9225073866,26.4673608189,19.3254067322,-21.5265085015
 vacuum,D_x,carry_distance_yd,predicted_x_carry_yd,True,32.5024345966,25.0523504173,18.5572938062,-19.4263247811

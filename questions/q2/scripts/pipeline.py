@@ -609,6 +609,7 @@ def run_pipeline(*, root: Path, config_path: str) -> dict[str, object]:
     parameter_json = {
         "side_spin_sign": selected_sign,
         "carry_definition": carry_definition,
+        "ode_solver": config["ode"]["solver"],
         "best_fit_ode_model": q2_best_fit_ode,
         "best_fit_selection_rule": "minimum_full_train_objective_among_accepted_models",
         "q3_compatible_ode_model": q3_compatible_ode,
